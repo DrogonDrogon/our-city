@@ -8,11 +8,7 @@ export default class CameraScreen extends React.Component {
   };
 
   render() {
-    return (
-      <ScrollView style={styles.container}>
-        
-      </ScrollView>
-    );
+    return <ScrollView style={styles.container} />;
   }
 }
 
