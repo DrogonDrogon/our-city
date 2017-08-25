@@ -1,66 +1,83 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { ExpoLinksView } from '@expo/samples';
-import { Camera, Permissions } from 'expo';
+import { Button, Image, View } from 'react-native';
+import { ImagePicker, Location, Permissions } from 'expo';
+import * as firebase from 'firebase';
+import config from '../config/config.js';
 
-export default class CameraScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Camera',
-  };
+export default class ImagePickerExample extends React.Component {
   state = {
-    hasCameraPermission: null,
-    type: Camera.Constants.Type.back,
+    image: null,
+    allImageData: {},
   };
+  _;
 
-  async componentWillMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' });
+  componentWillMount() {
+    const getLocationAsync = async () => {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== 'granted') {
+        this.setState({
+          errorMessage: 'Permission to access location was denied',
+        });
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      console.log(location);
+      let imageData = this.state.allImageData;
+
+      imageData.location = location;
+      this.setState({ allImageDataimageData: imageData });
+    };
+    getLocationAsync();
   }
 
   render() {
-    const { hasCameraPermission } = this.state;
-    if (hasCameraPermission === null) {
-      return <View />;
-    } else if (hasCameraPermission === false) {
-      return <Text>No access to camera</Text>;
-    } else {
-      return (
-        <View style={{ flex: 1 }}>
-          <Camera style={{ flex: 1 }} type={this.state.type}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-              }}>
-              <TouchableOpacity
-                style={{
-                  flex: 0.1,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  this.setState({
-                    type:
-                      this.state.type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back,
-                  });
-                }}>
-                <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
-              </TouchableOpacity>
-            </View>
-          </Camera>
-        </View>
-      );
-    }
-  }
-}
+    let { image } = this.state;
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     paddingTop: 15,
-//     backgroundColor: '#fff',
-//   },
-// });
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button title="Pick an image from camera roll" onPress={this._pickImage} />
+        <Button title="take Picture" onPress={this._takePic} />
+        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+        <Button title="upload image" onPress={this._saveImg} />
+      </View>
+    );
+  }
+  _takePic = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true,
+      exif: true,
+    });
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+      let tempImageData = this.state.allImageData;
+      tempImageData.imageData = result;
+      this.setState({ allImageData: tempImageData });
+    }
+  };
+
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true,
+      exif: true,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+      let tempImageData = this.state.allImageData;
+      tempImageData.imageData = result;
+      this.setState({ allImageData: tempImageData });
+    }
+  };
+
+  _saveImg = () => {
+    console.log(this.state.allImageData);
+    firebase.database().ref('photoTags/testupload').set(this.state.allImageData);
+  };
+}
