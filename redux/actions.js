@@ -1,23 +1,26 @@
 import * as firebase from 'firebase';
 
 // Action definitions
-const SET_PHOTOTAGS = 'SET_PHOTOTAGS';
+const RECEIVE_PHOTOTAGS = 'RECEIVE_PHOTOTAGS';
 
 // Action creators
 export const fetchPhototags = () => {
-  console.log('fetch photo tags');
+  console.log('[ACTIONS] fetchPhototags fired', firebase.database());
+
+  // TODO: Figure out why this is not firing the firebase call
   return dispatch => {
-    return firebase.database().ref('/phototags/').once('value').then(snapshot => {
-      console.log('one-time snapshot of users', snapshot);
+    console.log('[ACTIONS] firebase dispatch');
+    firebase.database().ref('/phototags/').once('value').then(snapshot => {
+      console.log('[ACTIONS] one-time snapshot of users', snapshot);
       dispatch(receivePhototags(snapshot));
     });
   };
 };
 
-export const receivePhototags = (results) => {
-  console.log('receive photo tags');
+export const receivePhototags = results => {
+  console.log('[ACTIONS] receivePhototags fired');
   return {
-    type: SET_PHOTOTAGS,
-    payload: results,
+    type: RECEIVE_PHOTOTAGS,
+    phototags: results,
   };
 };
