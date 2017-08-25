@@ -15,4 +15,4 @@ const store = createStore(
   applyMiddleware(loggerMiddleware, thunkMiddleware)
 );
 
-export default () => <Provider store={store}><Login loginWithFacebook={loginWithFacebook.bind(this)}/></Provider>;
+export default () => <Provider store={store}><Login loginWithFacebook={loginWithFacebook}/></Provider>;
