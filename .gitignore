@@ -48,4 +48,5 @@ fastlane/screenshots
 =======
 
 */config.js
-
+jsconfig.json
+.vscode

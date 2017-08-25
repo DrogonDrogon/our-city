@@ -1,9 +1,10 @@
 import { Notifications } from 'expo';
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-
 import MainTabNavigator from './MainTabNavigator';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
+
+// RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
 
 const RootStackNavigator = StackNavigator(
   {
