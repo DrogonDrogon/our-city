@@ -1,4 +1,4 @@
-import db from '../db/db.js';
+import db from '../db';
 
 // Action definitions
 const RECEIVE_PHOTOTAGS = 'RECEIVE_PHOTOTAGS';

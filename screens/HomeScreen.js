@@ -10,26 +10,6 @@ class HomeScreen extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      fakeData: [
-        {
-          id: '1',
-          description: 'Test description1',
-          user_id: 1,
-        },
-        {
-          id: '2',
-          description: 'Test description2',
-          user_id: 2,
-        },
-        {
-          id: '3',
-          description: 'Test description3',
-          user_id: 3,
-        },
-      ],
-    };
   }
 
   componentDidMount() {
@@ -41,6 +21,7 @@ class HomeScreen extends React.Component {
     if (this.props.phototags) {
       return (
         <ScrollView style={styles.container}>
+          <Text>Data from firebase:</Text>
           {this.props.phototags.map((item, i) =>
             <Text key={i}>
               {`Id: ${item.id} - UserId: ${item.user_id} - Description: ${item.description}`}
@@ -49,10 +30,7 @@ class HomeScreen extends React.Component {
         </ScrollView>
       );
     } else {
-      return(
-        <ScrollView>
-        </ScrollView>
-      )
+      return <ScrollView />;
     }
   }
 }
@@ -65,6 +43,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => {
+  // Passes along any updated state that comes from the reducer into the component's props
   return {
     phototags: state.phototags,
   };
