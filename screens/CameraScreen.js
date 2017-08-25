@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Image, View } from 'react-native';
+import { Button, Image, View, TextInput } from 'react-native';
 import { ImagePicker, Location, Permissions } from 'expo';
 import * as firebase from 'firebase';
 import config from '../config/config.js';
@@ -8,8 +8,9 @@ export default class ImagePickerExample extends React.Component {
   state = {
     image: null,
     allImageData: {},
+    description: '',
+    userName: 'walter',
   };
-  _;
 
   componentWillMount() {
     const getLocationAsync = async () => {
@@ -39,6 +40,12 @@ export default class ImagePickerExample extends React.Component {
         <Button title="take Picture" onPress={this._takePic} />
         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
         <Button title="upload image" onPress={this._saveImg} />
+        <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+          placeholder="Enter description"
+          onChangeText={text => this.setState({ description: text })}
+          keyboardType={'default'}
+        />
       </View>
     );
   }
@@ -78,6 +85,10 @@ export default class ImagePickerExample extends React.Component {
 
   _saveImg = () => {
     console.log(this.state.allImageData);
-    firebase.database().ref('photoTags/testupload').set(this.state.allImageData);
+    let allImageData = this.state.allImageData;
+    allImageData.userName = this.state.userName;
+    allImageData.description = this.state.description;
+    let newPostKey = firebase.database().ref().child('photoTags').push().key;
+    firebase.database().ref('photoTags/' + newPostKey).update(allImageData);
   };
 }
