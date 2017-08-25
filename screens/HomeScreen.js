@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { WebBrowser } from 'expo';
-import { MonoText } from '../components/StyledText';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions';
 
@@ -20,28 +10,28 @@ class HomeScreen extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      fakeData: ['one', 'two', 'three'],
-    };
   }
 
   componentDidMount() {
-    console.log('mounted HomeScreen state', this.state, '|| props', this.props);
+    // console.log('mounted HomeScreen state', this.state, '|| props', this.props);
     this.props.getAllPhototags();
   }
 
   render() {
-    return (
-      <ScrollView style={styles.container}>
-        {this.state.fakeData.map((item, i) =>
-          <Text key={i}>
-            {item}
-          </Text>
-        )}
-        <Text>map</Text>
-      </ScrollView>
-    );
+    if (this.props.phototags) {
+      return (
+        <ScrollView style={styles.container}>
+          <Text>Data from firebase:</Text>
+          {this.props.phototags.map((item, i) =>
+            <Text key={i}>
+              {`Id: ${item.id} - UserId: ${item.user_id} - Description: ${item.description}`}
+            </Text>
+          )}
+        </ScrollView>
+      );
+    } else {
+      return <ScrollView />;
+    }
   }
 }
 
@@ -53,10 +43,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  return {};
+  // Passes along any updated state that comes from the reducer into the component's props
+  return {
+    phototags: state.phototags,
+  };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   // Define the function that will be passed as prop
   return {
     getAllPhototags: () => {
