@@ -1,20 +1,28 @@
-import * as firebase from 'firebase';
+import db from '../db/db.js';
 
 // Action definitions
 const RECEIVE_PHOTOTAGS = 'RECEIVE_PHOTOTAGS';
 
 // Action creators
-export const fetchPhototags = () => {
-  console.log('[ACTIONS] fetchPhototags fired', firebase.database());
+export const fetchPhototags = dispatch => {
+  console.log('[ACTIONS] fetchPhototags fired');
 
-  // TODO: Figure out why this is not firing the firebase call
-  return dispatch => {
-    console.log('[ACTIONS] firebase dispatch');
-    firebase.database().ref('/phototags/').once('value').then(snapshot => {
-      console.log('[ACTIONS] one-time snapshot of users', snapshot);
-      dispatch(receivePhototags(snapshot));
-    });
-  };
+  db
+    .ref('phototags')
+    .once('value')
+    .then(snapshot => {
+      let data = snapshot.val();
+      let phototagArray = [];
+
+      for (var key in data) {
+        let obj = {};
+        obj = data[key];
+        obj.id = key;
+        phototagArray.push(obj);
+      }
+      dispatch(receivePhototags(phototagArray));
+    })
+    .catch(error => console.log('Error fetchPhototags', error));
 };
 
 export const receivePhototags = results => {
