@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
- 
+import * as firebase from 'firebase';
+import config from '../config/config.js';
+import RootNavigation from '../components/RootNavigation'; 
 import {
   StyleSheet,
+  Button,
   Text,
   View,
   TextInput,
@@ -10,21 +13,30 @@ import {
  
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import Container from '../components/Container';
-import MyButton from '../components/Button';
-import Label from '../components/Label';
-
+import Container from '../components/Container.js';
+import MyButton from '../components/Button.js';
+import Label from '../components/Label.js';
 
 export default class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
   press() {
     //execute any code here
+  }
+
+  pressFacebook() {
+    this.props.loginWithFacebook();//execute any code here
   }
 
   render() {
     return (
       <ScrollView style={styles.scroll}>
         <Container>
-          <Button 
+          <MyButton 
             label="Forgot Login/Pass"
             styles={{button: styles.alignRight, label: styles.label}} 
             onPress={this.press.bind(this)} />
@@ -43,26 +55,26 @@ export default class Login extends Component {
           />
         </Container>
         <Container>
-          <Button 
+          <MyButton 
             styles={{button: styles.transparentButton}}
-            onPress={this.press.bind(this)}
+            onPress={this.pressFacebook.bind(this)}
         >
             <View style={styles.inline}>
               <Icon name="facebook-official" size={30} color="#3B5699" />
               <Text style={[styles.buttonBlueText, styles.buttonBigText]}>  Connect </Text> 
               <Text style={styles.buttonBlueText}>with Facebook</Text>
             </View>
-          </Button>
+          </MyButton>
         </Container> 
         <View style={styles.footer}>
           <Container>
-            <Button 
+            <MyButton 
               label="Sign In"
               styles={{button: styles.primaryButton, label: styles.buttonWhiteText}} 
               onPress={this.press.bind(this)} />
           </Container>
           <Container>
-            <Button 
+            <MyButton 
               label="CANCEL"
               styles={{label: styles.buttonBlackText}} 
               onPress={this.press.bind(this)} />
