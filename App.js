@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
 import * as firebase from 'firebase';
 import config from './config/config.js';
-
+import Login from './screens/LoginScreen.js';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -17,6 +17,30 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+firebase.auth().onAuthStateChanged((user) => {
+  if (user != null) {
+    console.log("We are authenticated now!");
+  }
+
+  // Do other things
+});
+
+async function loginWithFacebook() {
+  const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
+    config.facebook.API_KEY,
+    { permissions: ['public_profile'] }
+  );
+
+  if (type === 'success') {
+    // Build Firebase credential with the Facebook access token.
+    const credential = firebase.auth.FacebookAuthProvider.credential(token);
+
+    // Sign in with credential from the Facebook user.
+    firebase.auth().signInWithCredential(credential).catch((error) => {
+      // Handle Errors here.
+    });
+  }
+}
 
 export default class App extends React.Component {
   state = {
@@ -25,6 +49,10 @@ export default class App extends React.Component {
 
   componentWillMount() {
     this._loadAssetsAsync();
+  }
+
+  componentDidMount() {
+    // loginWithFacebook();
   }
 
   render() {
