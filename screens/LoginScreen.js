@@ -61,6 +61,10 @@ export default class Login extends Component {
     console.log('facebook pressed');
   }
 
+  pressFacebook() {
+    this.props.loginWithFacebook();//execute any code here
+  }
+
   render() {
     return (
       <ScrollView style={styles.scroll}>
