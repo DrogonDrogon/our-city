@@ -9,6 +9,7 @@ export default class ImagePickerExample extends React.Component {
     image: null,
     allImageData: {},
     description: '',
+    userName: 'walter',
   };
 
   componentWillMount() {
@@ -84,6 +85,10 @@ export default class ImagePickerExample extends React.Component {
 
   _saveImg = () => {
     console.log(this.state.allImageData);
-    firebase.database().ref('photoTags/testupload').set(this.state.allImageData);
+    let allImageData = this.state.allImageData;
+    allImageData.userName = this.state.userName;
+    allImageData.description = this.state.description;
+    let newPostKey = firebase.database().ref().child('photoTags').push().key;
+    firebase.database().ref('photoTags/' + newPostKey).update(allImageData);
   };
 }
