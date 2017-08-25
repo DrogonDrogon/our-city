@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
+import Expo from 'expo';
 import config from '../config/config.js';
 import RootNavigation from '../components/RootNavigation'; 
 import {
@@ -29,7 +30,8 @@ export default class Login extends Component {
   }
 
   pressFacebook() {
-    this.props.loginWithFacebook();//execute any code here
+    // this.props.loginWithFacebook();
+    console.log('facebook pressed');
   }
 
   render() {

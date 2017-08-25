@@ -8,8 +8,8 @@ import reducer from '../redux/reducer';
 import config from '../config/config.js';
 import RootNavigation from './RootNavigation';
 import Login from '../screens/LoginScreen';
-
-// Initialize Firebase
+import Expo from 'expo';
+// Initialize Firebase	
 const firebaseConfig = {
   apiKey: config.firebase.apiKey,
   authDomain: config.firebase.authDomain,
@@ -18,7 +18,9 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
+function testButton(){
+	console.log('prop function successfully passed down');
+}
 // Listen for authentication state to change.
 firebase.auth().onAuthStateChanged((user) => {
   if (user != null) {
@@ -53,4 +55,4 @@ const store = createStore(
   applyMiddleware(loggerMiddleware, thunkMiddleware)
 );
 
-export default () => <Provider store={store}><Login loginWithFacebook={loginWithFacebook.bind(this)}/></Provider>;
+export default () => <Provider store={store}><Login loginWithFacebook={loginWithFacebook}/></Provider>;
