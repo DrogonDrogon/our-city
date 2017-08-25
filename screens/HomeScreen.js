@@ -49,20 +49,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  }
+  },
 });
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-  };
-}
+  return {};
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   // Define the function that will be passed as prop
   return {
     getAllPhototags: () => {
       dispatch(Actions.fetchPhototags);
-    }
+    },
   };
 };
 

@@ -22,7 +22,7 @@ export default class ImagePickerExample extends React.Component {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      console.log(location);
+
       let imageData = this.state.allImageData;
 
       imageData.location = location;
@@ -73,8 +73,6 @@ export default class ImagePickerExample extends React.Component {
       exif: true,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
       this.setState({ image: result.uri });
       let tempImageData = this.state.allImageData;
@@ -84,10 +82,12 @@ export default class ImagePickerExample extends React.Component {
   };
 
   _saveImg = () => {
-    console.log(this.state.allImageData);
     let allImageData = this.state.allImageData;
     allImageData.userName = this.state.userName;
     allImageData.description = this.state.description;
+    allImageData.comments = [];
+    allImageData.upvotes = 0;
+    allImageData.downvotes = 0;
     let newPostKey = firebase.database().ref().child('photoTags').push().key;
     firebase.database().ref('photoTags/' + newPostKey).update(allImageData);
   };
