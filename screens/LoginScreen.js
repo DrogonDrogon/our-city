@@ -56,8 +56,7 @@ export default class Login extends Component {
     }
   }
 
-  pressFacebook() {
-    
+  pressFacebook() {    
     console.log('facebook pressed');  
     this.props.loginWithFacebook();
   }
