@@ -30,8 +30,14 @@ export default class Login extends Component {
   }
 
   pressFacebook() {
+<<<<<<< HEAD
     // this.props.loginWithFacebook();
     console.log('facebook pressed');
+=======
+    
+    console.log('facebook pressed');  
+    this.props.loginWithFacebook();
+>>>>>>> login4
   }
 
   render() {
