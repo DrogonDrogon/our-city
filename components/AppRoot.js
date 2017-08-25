@@ -5,6 +5,7 @@ import thunkMiddleware from 'redux-thunk';
 import loggerMiddleware from 'redux-logger';
 import reducer from '../redux/reducer';
 import RootNavigation from './RootNavigation';
+import Login from '../screens/LoginScreen';
 
 // Create the redux store
 const initialState = {};
@@ -14,4 +15,4 @@ const store = createStore(
   applyMiddleware(loggerMiddleware, thunkMiddleware)
 );
 
-export default () => <Provider store={store}><RootNavigation/></Provider>;
+export default () => <Provider store={store}><Login loginWithFacebook={loginWithFacebook.bind(this)}/></Provider>;
