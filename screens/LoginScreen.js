@@ -33,6 +33,7 @@ export default class Login extends Component {
     });
   }
 
+
   press() {
     this.loginWithFacebook();
   }
@@ -70,6 +71,10 @@ export default class Login extends Component {
   pressFacebook() {
     // this.props.loginWithFacebook();
     console.log('facebook pressed');
+  }
+
+  pressFacebook() {
+    this.props.loginWithFacebook();//execute any code here
   }
 
   pressFacebook() {
