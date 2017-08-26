@@ -2,12 +2,15 @@ import { Notifications } from 'expo';
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
+import LoginScreen from '../screens/LoginScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
-
 const RootStackNavigator = StackNavigator(
   {
+    Login: {
+      screen: LoginScreen,
+    },
     Main: {
       screen: MainTabNavigator,
     },
@@ -22,8 +25,13 @@ const RootStackNavigator = StackNavigator(
 );
 
 export default class RootNavigator extends React.Component {
-  componentDidMount() {
-    this._notificationSubscription = this._registerForPushNotifications();
+  static navigationOptions = {
+    title: 'Login',
+  };
+
+  constructor(props) {
+    super(props);
+    console.log('[RootNavig] PROPS ARE', props);
   }
 
   componentWillUnmount() {
@@ -42,14 +50,10 @@ export default class RootNavigator extends React.Component {
     registerForPushNotificationsAsync();
 
     // Watch for incoming notifications
-    this._notificationSubscription = Notifications.addListener(
-      this._handleNotification
-    );
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
 
   _handleNotification = ({ origin, data }) => {
-    console.log(
-      `Push notification ${origin} with data: ${JSON.stringify(data)}`
-    );
+    console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
   };
 }
