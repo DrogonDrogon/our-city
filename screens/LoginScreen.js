@@ -29,7 +29,6 @@ export default class Login extends Component {
       // Do other things
     });
   }
-
   press() {
     this.loginWithFacebook();
   }
@@ -49,7 +48,6 @@ export default class Login extends Component {
       console.log('Credential from fb', credential);
     }
   }
-
   render() {
     return (
       <ScrollView style={styles.scroll}>
