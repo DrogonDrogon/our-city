@@ -1,15 +1,31 @@
 import React from 'react';
-import { Button, Image, View, TextInput } from 'react-native';
+import { connect } from 'react-redux';
+import { Button, Image, View, TextInput, ActivityIndicator } from 'react-native';
 import { ImagePicker, Location, Permissions } from 'expo';
-import * as firebase from 'firebase';
-import config from '../config/config.js';
+import * as Actions from '../redux/actions';
 
-export default class ImagePickerExample extends React.Component {
+const mapStateToProps = (state, ownProps) => {
+  return {
+    isPosting: state.isPosting,
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    submitOnePhototag: phototag => {
+      dispatch(Actions.postPhototagRequested(phototag));
+      dispatch(Actions.updatePostingStatus(true));
+    },
+  };
+};
+
+class CameraScreen extends React.Component {
   state = {
     image: null,
     allImageData: {},
     description: '',
     userName: 'walter',
+    userId: 123,
   };
 
   componentWillMount() {
@@ -26,29 +42,11 @@ export default class ImagePickerExample extends React.Component {
       let imageData = this.state.allImageData;
 
       imageData.location = location;
-      this.setState({ allImageDataimageData: imageData });
+      this.setState({ allImageData: imageData });
     };
     getLocationAsync();
   }
 
-  render() {
-    let { image } = this.state;
-
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button title="Pick an image from camera roll" onPress={this._pickImage} />
-        <Button title="take Picture" onPress={this._takePic} />
-        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-        <Button title="upload image" onPress={this._saveImg} />
-        <TextInput
-          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-          placeholder="Enter description"
-          onChangeText={text => this.setState({ description: text })}
-          keyboardType={'default'}
-        />
-      </View>
-    );
-  }
   _takePic = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
@@ -82,13 +80,41 @@ export default class ImagePickerExample extends React.Component {
   };
 
   _saveImg = () => {
-    let allImageData = this.state.allImageData;
-    allImageData.userName = this.state.userName;
-    allImageData.description = this.state.description;
-    allImageData.comments = [];
-    allImageData.upvotes = 0;
-    allImageData.downvotes = 0;
-    let newPostKey = firebase.database().ref().child('photoTags').push().key;
-    firebase.database().ref('photoTags/' + newPostKey).update(allImageData);
+    // Set up the format for phototag item to be saved
+    let phototag = {};
+    phototag.userId = this.state.userId;
+    phototag.userName = this.state.userName;
+    phototag.description = this.state.description;
+    phototag.imageDataIn64 = this.state.allImageData.imageData.base64;
+    phototag.imageHeight = this.state.allImageData.imageData.height;
+    phototag.imageWidth = this.state.allImageData.imageData.width;
+    phototag.locationLat = this.state.allImageData.location.coords.latitude;
+    phototag.locationLong = this.state.allImageData.location.coords.longitude;
+    phototag.timestamp = this.state.allImageData.location.timestamp;
+    phototag.upvotes = 0;
+    phototag.downvotes = 0;
+    this.props.submitOnePhototag(phototag);
   };
+
+  render() {
+    let { image } = this.state;
+
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button title="Pick an image from camera roll" onPress={this._pickImage} />
+        <Button title="Use camera" onPress={this._takePic} />
+        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+        <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+          placeholder="Enter description"
+          onChangeText={text => this.setState({ description: text })}
+          keyboardType={'default'}
+        />
+        <Button title="Upload my post" onPress={this._saveImg} />
+        {this.props.isPosting && <ActivityIndicator animated={this.props.isPosting} size="large" />}
+      </View>
+    );
+  }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(CameraScreen);
