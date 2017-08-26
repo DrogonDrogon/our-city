@@ -1,11 +1,13 @@
 import db from '../db';
+import { Location, Permissions } from 'expo';
 
 // Action definitions
 const RECEIVE_PHOTOTAGS = 'RECEIVE_PHOTOTAGS';
+const RECEIVE_LOCATION = 'RECEIVE_LOCATION';
 
 // Action creators
 export const fetchPhototags = dispatch => {
-  console.log('[ACTIONS] fetchPhototags fired');
+  // console.log('[ACTIONS] fetchPhototags fired');
 
   db
     .ref('phototags')
@@ -26,9 +28,13 @@ export const fetchPhototags = dispatch => {
 };
 
 export const receivePhototags = results => {
-  console.log('[ACTIONS] receivePhototags fired');
+  // console.log('[ACTIONS] receivePhototags fired');
   return {
     type: RECEIVE_PHOTOTAGS,
     phototags: results,
   };
 };
+
+export const fetchLocation = dispatch => {
+
+}

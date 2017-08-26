@@ -10,12 +10,12 @@ export default class MapScreen extends React.Component {
     firebase.database().ref('/photoTags/').once('value').then(photoTags => {
       let dataArray = [];
       for (var key in photoTags.val()) {
-        console.log(key);
+        // console.log(key);
         dataArray.push(photoTags.val()[key]);
       }
 
       this.setState({ markers: dataArray }, () => {
-        console.log('now', this.state.markers[0]);
+        // console.log('now', this.state.markers[0]);
       });
     });
   }
