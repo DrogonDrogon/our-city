@@ -29,11 +29,6 @@ export default class RootNavigator extends React.Component {
     title: 'Login',
   };
 
-  constructor(props) {
-    super(props);
-    // console.log('[RootNavig] PROPS ARE', props);
-  }
-
   componentWillUnmount() {
     this._notificationSubscription && this._notificationSubscription.remove();
   }

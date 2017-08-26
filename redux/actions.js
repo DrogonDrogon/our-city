@@ -42,9 +42,14 @@ export const receivePhototags = results => {
 export const postPhototagRequested = phototag => dispatch => {
   let newPostKey = db.child('photoTags').push().key;
   phototag.id = newPostKey;
-  db.child('phototags/' + newPostKey).update(phototag).then(() => {
-    dispatch(updatePostingStatus(false));
-  }, (error) => { console.log('ERROR posting', error) });
+  db.child('phototags/' + newPostKey).update(phototag).then(
+    () => {
+      dispatch(updatePostingStatus(false));
+    },
+    error => {
+      console.log('ERROR posting', error);
+    }
+  );
 };
 
 export const updatePostingStatus = bool => {

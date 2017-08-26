@@ -8,13 +8,12 @@ export default class MapScreen extends React.Component {
   };
   componentWillMount() {
     db.child('phototags').once('value').then(photoTags => {
-      console.log('phototags received:', photoTags);
       let dataArray = [];
       for (var key in photoTags.val()) {
         dataArray.push(photoTags.val()[key]);
       }
       this.setState({ markers: dataArray }, () => {
-        console.log('this.state.markers', this.state.markers);
+        console.log('[MapScreen] data', this.state.markers);
       });
     });
   }
@@ -44,5 +43,3 @@ export default class MapScreen extends React.Component {
     );
   }
 }
-
-

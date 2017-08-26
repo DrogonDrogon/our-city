@@ -1,7 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, Image } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions';
+import PhototagItem from '../components/PhototagItem';
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -10,29 +11,15 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     // console.log('mounted HomeScreen state', this.state, '|| props', this.props);
-    // this.props.getAllPhototags();
+    this.props.getAllPhototags();
   }
 
   render() {
     if (this.props.phototags) {
-      let myTestId = this.props.phototags[5].id;
-      let myTestPhoto = `data:image/png;base64,${this.props.phototags[5].imageData.base64}`;
-
       return (
-        <ScrollView style={styles.container}>
-          <Text>Data from firebase:</Text>
-          {this.props.phototags.map((item, i) =>
-            <Text key={i}>
-              {`Id: ${item.id} - UserId: ${item.user_id} - Description: ${item.description}`}
-            </Text>
-          )}
-          <Text>
-            Id test: {myTestId}
-          </Text>
-          <Image
-            style={{ width: 100, height: 100, resizeMode: Image.resizeMode.contain }}
-            source={{ uri: myTestPhoto }}
-          />
+        <ScrollView>
+          <Text style={styles.titleText}>Tagged Photos</Text>
+          {this.props.phototags.map((item, i) => <PhototagItem key={i} phototag={item} />)}
         </ScrollView>
       );
     } else {
@@ -42,9 +29,9 @@ class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  titleText: {
+    textAlign: 'center',
+    fontSize: 20,
   },
 });
 
