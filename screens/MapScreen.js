@@ -13,7 +13,7 @@ export default class MapScreen extends React.Component {
         dataArray.push(photoTags.val()[key]);
       }
       this.setState({ markers: dataArray }, () => {
-        console.log('[MapScreen] data', this.state.markers);
+        // console.log('[MapScreen] data', this.state.markers);
       });
     });
   }

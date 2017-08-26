@@ -8,6 +8,9 @@ const reducer = (state, action) => {
     case 'IS_POSTING':
       return Object.assign({}, state, { isPosting: action.payload });
 
+    case 'SET_USER':
+      return Object.assign({}, state, { user: action.payload });
+
     default:
       return state;
   }

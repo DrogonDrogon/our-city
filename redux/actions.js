@@ -5,6 +5,7 @@ import db from '../db';
 const RECEIVE_PHOTOTAGS = 'RECEIVE_PHOTOTAGS';
 const IS_POSTING = 'IS_POSTING';
 const RECEIVE_LOCATION = 'RECEIVE_LOCATION';
+const SET_USER = 'SET_USER';
 
 // Action creators
 
@@ -61,3 +62,22 @@ export const updatePostingStatus = bool => {
 
 // For fetching location
 export const fetchLocation = dispatch => {};
+
+// For posting new user
+export const postNewUserBegin = userInfo => dispatch => {
+  db.child('users/' + userInfo.id).update(userInfo).then(
+    () => {
+      dispatch(postNewUserCompleted(userInfo));
+    },
+    error => {
+      console.log('ERROR posting new user', error);
+    }
+  );
+};
+
+export const postNewUserCompleted = userInfo => {
+  return {
+    type: SET_USER,
+    payload: userInfo,
+  };
+};
