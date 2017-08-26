@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions';
 
@@ -8,17 +8,16 @@ class HomeScreen extends React.Component {
     title: 'Home',
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     // console.log('mounted HomeScreen state', this.state, '|| props', this.props);
-    this.props.getAllPhototags();
+    // this.props.getAllPhototags();
   }
 
   render() {
     if (this.props.phototags) {
+      let myTestId = this.props.phototags[5].id;
+      let myTestPhoto = `data:image/png;base64,${this.props.phototags[5].imageData.base64}`;
+
       return (
         <ScrollView style={styles.container}>
           <Text>Data from firebase:</Text>
@@ -27,6 +26,13 @@ class HomeScreen extends React.Component {
               {`Id: ${item.id} - UserId: ${item.user_id} - Description: ${item.description}`}
             </Text>
           )}
+          <Text>
+            Id test: {myTestId}
+          </Text>
+          <Image
+            style={{ width: 100, height: 100, resizeMode: Image.resizeMode.contain }}
+            source={{ uri: myTestPhoto }}
+          />
         </ScrollView>
       );
     } else {

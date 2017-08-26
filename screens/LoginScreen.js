@@ -19,7 +19,7 @@ const navigateAction = NavigationActions.navigate({
 export default class Login extends Component {
   constructor(props) {
     super(props);
-    console.log('PROPS ARE', props);
+    // console.log('PROPS ARE', props);
   }
 
   componentWillMount() {

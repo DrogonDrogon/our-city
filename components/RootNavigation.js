@@ -31,7 +31,7 @@ export default class RootNavigator extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log('[RootNavig] PROPS ARE', props);
+    // console.log('[RootNavig] PROPS ARE', props);
   }
 
   componentWillUnmount() {
