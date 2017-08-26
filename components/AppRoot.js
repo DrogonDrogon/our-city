@@ -5,6 +5,7 @@ import thunkMiddleware from 'redux-thunk';
 import loggerMiddleware from 'redux-logger';
 import reducer from '../redux/reducer';
 import RootNavigation from './RootNavigation';
+import LoginScreen from '../screens/LoginScreen'
 
 // Create the redux store
 const initialState = {};

@@ -9,19 +9,16 @@ import Button from '../components/Button';
 import Label from '../components/Label';
 import config from '../config/config';
 import RootNavigation from '../components/RootNavigation';
-
 const navigateAction = NavigationActions.navigate({
   routeName: 'Main',
   params: {},
   action: NavigationActions.navigate({ routeName: 'Main' })
 });
-
 export default class Login extends Component {
   constructor(props) {
     super(props);
     // console.log('PROPS ARE', props);
   }
-
   componentWillMount() {
     // Check if user is authenticated
     firebase.auth().onAuthStateChanged(user => {
@@ -33,17 +30,14 @@ export default class Login extends Component {
     });
   }
 
-
   press() {
     this.loginWithFacebook();
   }
-
   async loginWithFacebook() {
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
       config.facebook.API_KEY,
       { permissions: ['public_profile'] }
     );
-
     if (type === 'success') {
       // Build Firebase credential with the Facebook access token.
       const credential = firebase.auth.FacebookAuthProvider.credential(token);
@@ -52,34 +46,8 @@ export default class Login extends Component {
         // Handle Errors here.
         console.log('Error with fb login', error);
       });
-
       console.log('Credential from fb', credential);
     }
-  }
-
-  pressFacebook() {    
-    console.log('facebook pressed');  
-    this.props.loginWithFacebook();
-  }
-
-  pressFacebook() {
-    
-    console.log('facebook pressed');  
-    this.props.loginWithFacebook();
-  }
-
-  pressFacebook() {
-    // this.props.loginWithFacebook();
-    console.log('facebook pressed');
-  }
-
-  pressFacebook() {
-    this.props.loginWithFacebook();//execute any code here
-  }
-
-  pressFacebook() {
-    // this.props.loginWithFacebook();
-    console.log('facebook pressed');
   }
 
   render() {
@@ -129,7 +97,6 @@ export default class Login extends Component {
     );
   }
 }
-
 const styles = StyleSheet.create({
   scroll: {
     backgroundColor: '#E1D7D8',
