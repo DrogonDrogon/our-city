@@ -11,7 +11,7 @@ const RECEIVE_LOCATION = 'RECEIVE_LOCATION';
 // For fetching all phototags (todo: add fetch by user)
 export const fetchPhototags = dispatch => {
   // console.log('[ACTIONS] fetchPhototags fired');
-  db.child('/photoTags').once('value').then(
+  db.child('phototags').once('value').then(
     snapshot => {
       let data = snapshot.val();
       let phototagArray = [];
@@ -42,7 +42,7 @@ export const receivePhototags = results => {
 export const postPhototagRequested = phototag => dispatch => {
   let newPostKey = db.child('photoTags').push().key;
   phototag.id = newPostKey;
-  db.child('photoTags/' + newPostKey).update(phototag).then(() => {
+  db.child('phototags/' + newPostKey).update(phototag).then(() => {
     dispatch(updatePostingStatus(false));
   }, (error) => { console.log('ERROR posting', error) });
 };

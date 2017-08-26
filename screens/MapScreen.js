@@ -1,21 +1,20 @@
 import React from 'react';
 import { MapView } from 'expo';
-import * as firebase from 'firebase';
+import db from '../db';
 
 export default class MapScreen extends React.Component {
   state = {
     markers: [],
   };
   componentWillMount() {
-    firebase.database().ref('/photoTags/').once('value').then(photoTags => {
+    db.child('phototags').once('value').then(photoTags => {
+      console.log('phototags received:', photoTags);
       let dataArray = [];
       for (var key in photoTags.val()) {
-        // console.log(key);
         dataArray.push(photoTags.val()[key]);
       }
-
       this.setState({ markers: dataArray }, () => {
-        // console.log('now', this.state.markers[0]);
+        console.log('this.state.markers', this.state.markers);
       });
     });
   }
@@ -35,8 +34,8 @@ export default class MapScreen extends React.Component {
           <MapView.Marker
             key={i}
             coordinate={{
-              latitude: marker.location.coords.latitude,
-              longitude: marker.location.coords.longitude,
+              latitude: marker.locationLat,
+              longitude: marker.locationLong,
             }}
             title={marker.description}
           />
@@ -45,3 +44,5 @@ export default class MapScreen extends React.Component {
     );
   }
 }
+
+
