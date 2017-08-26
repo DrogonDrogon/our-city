@@ -1,16 +1,13 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions';
+import PhototagItem from '../components/PhototagItem';
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Home',
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
     // console.log('mounted HomeScreen state', this.state, '|| props', this.props);
@@ -20,13 +17,9 @@ class HomeScreen extends React.Component {
   render() {
     if (this.props.phototags) {
       return (
-        <ScrollView style={styles.container}>
-          <Text>Data from firebase:</Text>
-          {this.props.phototags.map((item, i) =>
-            <Text key={i}>
-              {`Id: ${item.id} - UserId: ${item.user_id} - Description: ${item.description}`}
-            </Text>
-          )}
+        <ScrollView>
+          <Text style={styles.titleText}>Tagged Photos</Text>
+          {this.props.phototags.map((item, i) => <PhototagItem key={i} phototag={item} />)}
         </ScrollView>
       );
     } else {
@@ -36,9 +29,9 @@ class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  titleText: {
+    textAlign: 'center',
+    fontSize: 20,
   },
 });
 
