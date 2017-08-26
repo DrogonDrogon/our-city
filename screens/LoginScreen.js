@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, TextInput, ScrollView } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import firebase from 'firebase';
+import db from '../db';
+import * as Actions from '../redux/actions';
 import Expo from 'expo';
 import Container from '../components/Container';
 import Button from '../components/Button';
@@ -12,21 +15,47 @@ import RootNavigation from '../components/RootNavigation';
 const navigateAction = NavigationActions.navigate({
   routeName: 'Main',
   params: {},
-  action: NavigationActions.navigate({ routeName: 'Main' })
+  action: NavigationActions.navigate({ routeName: 'Main' }),
 });
-export default class Login extends Component {
-  constructor(props) {
-    super(props);
-    // console.log('PROPS ARE', props);
-  }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    user: state.user,
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    saveNewUser: userInfo => {
+      dispatch(Actions.postNewUserBegin(userInfo));
+    },
+  };
+};
+
+class Login extends Component {
   componentWillMount() {
     // Check if user is authenticated
     firebase.auth().onAuthStateChanged(user => {
       if (user != null) {
-        console.log('We are authenticated now!');
+        console.log('We are authenticated now! User is', user);
+
+        // Navigate to main view
         this.props.navigation.dispatch(navigateAction);
+
+        // Set up user info to save
+        let userInfo = {};
+        userInfo.id = user.uid;
+
+        // If auth through fb, can save displayName and photoUrl
+        if (user.providerData[0].providerId === 'facebook.com') {
+          userInfo.authMethod = 'facebook';
+          userInfo.photoUrl = user.photoURL;
+          userInfo.displayName = user.displayName;
+        }
+
+        // Save user if authenticated
+        this.props.saveNewUser(userInfo);
       }
-      // Do other things
     });
   }
   press() {
@@ -144,3 +173,5 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
