@@ -13,7 +13,6 @@ const nav = StackNavigator({
   },
 });
 const mapStateToProps = (state, ownProps) => {
-  console.log('state', state.user);
   return {
     phototags: state.phototags,
   };
@@ -24,21 +23,9 @@ class MapScreen extends React.Component {
     markers: [],
   };
 
-  componentWillMount() {
-    db.child('phototags').once('value').then(photoTags => {
-      let dataArray = [];
-      for (var key in photoTags.val()) {
-        dataArray.push(photoTags.val()[key]);
-      }
-      this.setState({ markers: dataArray }, () => {
-        // console.log('[MapScreen] data', this.state.markers);
-      });
-    });
-  }
-
   goTophototags() {
-    NavigationActions.navigate({ routeName: nav.phototag });
-    console.log('photo', this.props);
+    //  this.props.navigation.push('selectedPhototag');
+    console.log('props', this.props.phototags);
   }
 
   render() {
@@ -52,17 +39,18 @@ class MapScreen extends React.Component {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-        {this.state.markers.map((marker, i) =>
-          <MapView.Marker
-            key={i}
-            coordinate={{
-              latitude: marker.locationLat,
-              longitude: marker.locationLong,
-            }}
-            title={marker.description}
-            onPress={this.goTophototags}
-          />
-        )}
+        {this.props.phototags &&
+          this.props.phototags.map((marker, i) =>
+            <MapView.Marker
+              key={i}
+              coordinate={{
+                latitude: marker.locationLat,
+                longitude: marker.locationLong,
+              }}
+              title={marker.description}
+              onPress={this.goTophototags}
+            />
+          )}
       </MapView>
     );
   }

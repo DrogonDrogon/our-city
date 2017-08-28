@@ -89,3 +89,10 @@ export const selectedPhototagMap = phototag => {
     payload: phototag,
   };
 };
+
+export const selectedPhototagUser = phototag => {
+  return {
+    type: SET_TAG_FROM_USER,
+    payload: phototag,
+  };
+};
