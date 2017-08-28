@@ -5,8 +5,6 @@ import { ImagePicker, Location, Permissions } from 'expo';
 import * as Actions from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(state.isPosting);
-
   return {
     user: state.user,
     isPosting: state.isPosting,
@@ -85,7 +83,7 @@ class CameraScreen extends React.Component {
   _saveImg = () => {
     // Set up the format for phototag item to be saved
     let phototag = {};
-    phototag.userId = this.state.userId;
+    phototag.userId = this.props.user.id;
     phototag.userName = this.props.user.displayName;
     phototag.description = this.state.description;
     phototag.imageDataIn64 = this.state.allImageData.imageData.base64;

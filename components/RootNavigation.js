@@ -3,11 +3,15 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import LoginScreen from '../screens/LoginScreen';
+import SplashScreen from '../screens/SplashScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
 const RootStackNavigator = StackNavigator(
   {
+    SplashScreen: {
+      screen: SplashScreen,
+    },
     Login: {
       screen: LoginScreen,
     },
@@ -26,7 +30,7 @@ const RootStackNavigator = StackNavigator(
 
 export default class RootNavigator extends React.Component {
   static navigationOptions = {
-    title: 'Login',
+    title: 'SplashScreen',
   };
 
   componentWillUnmount() {
