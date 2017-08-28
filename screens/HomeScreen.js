@@ -1,10 +1,6 @@
 import React from 'react';
-<<<<<<< HEAD
-import { ScrollView, StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native';
-=======
-import { ScrollView, StyleSheet, Text, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, Button, TouchableHighlight } from 'react-native';
 import { NavigationActions } from 'react-navigation';
->>>>>>> data
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import * as Actions from '../redux/actions';
@@ -14,6 +10,7 @@ const mapStateToProps = (state, ownProps) => {
   // Passes along any updated state that comes from the reducer into the component's props
   return {
     phototags: state.phototags,
+    user: state.user,
   };
 };
 
@@ -106,22 +103,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
-
-const mapStateToProps = (state, ownProps) => {
-  // Passes along any updated state that comes from the reducer into the component's props
-  return {
-    phototags: state.phototags,
-    user: state.user,
-  };
-};
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  // Define the function that will be passed as prop
-  return {
-    getAllPhototags: () => {
-      dispatch(Actions.fetchPhototags);
-    },
-  };
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
