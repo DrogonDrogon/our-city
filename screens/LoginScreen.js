@@ -14,6 +14,7 @@ import config from '../config/config';
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
+    isLoggedIn: state.isLoggedIn,
   };
 };
 
@@ -22,38 +23,29 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     saveNewUser: userInfo => {
       dispatch(Actions.postNewUserBegin(userInfo));
     },
+    checkIfLoggedIn: () => {
+      dispatch(Actions.checkUserLogin());
+    },
   };
 };
 
 class Login extends Component {
   componentWillMount() {
     // Check if user is authenticated
-    firebase.auth().onAuthStateChanged(user => {
-      if (user != null) {
-        console.log('We are authenticated now! User is', user);
-
-        // Navigate to main view
-        this._navigateTo('Main');
-
-        // Set up user info to save
-        let userInfo = {};
-        userInfo.id = user.uid;
-
-        // If auth through fb, can save displayName and photoUrl
-        if (user.providerData[0].providerId === 'facebook.com') {
-          userInfo.authMethod = 'facebook';
-          userInfo.photoUrl = user.photoURL;
-          userInfo.displayName = user.displayName;
-        }
-
-        // Save user if authenticated
-        this.props.saveNewUser(userInfo);
-      }
-    });
+    this.props.checkIfLoggedIn();
   }
+
+  componentWillUpdate(nextProps, nextState) {
+    // If logged in, Navigate to main view
+    if (nextProps.isLoggedIn === true) {
+      this._navigateTo('Main');
+    }
+  }
+
   press() {
     this.loginWithFacebook();
   }
+
   async loginWithFacebook() {
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
       config.facebook.API_KEY,
