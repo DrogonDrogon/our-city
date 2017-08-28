@@ -11,6 +11,12 @@ const reducer = (state, action) => {
     case 'SET_USER':
       return Object.assign({}, state, { user: action.payload });
 
+    case 'SET_TAG_FROM_MAP':
+      return Object.assign({}, state, { selectedPhototagMap: action.payload });
+
+    case 'SET_TAG_FROM_USER':
+      return Object.assign({}, state, { selectedPhototagUser: action.payload });
+
     default:
       return state;
   }

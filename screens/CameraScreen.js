@@ -5,7 +5,9 @@ import { ImagePicker, Location, Permissions } from 'expo';
 import * as Actions from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => {
+  console.log('state', state.user);
   return {
+    user: state.user,
     isPosting: state.isPosting,
   };
 };
@@ -94,6 +96,7 @@ class CameraScreen extends React.Component {
     phototag.upvotes = 0;
     phototag.downvotes = 0;
     this.props.submitOnePhototag(phototag);
+    console.log('USSER', this.props.user);
   };
 
   render() {
