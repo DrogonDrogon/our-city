@@ -1,17 +1,10 @@
 import React from 'react';
 import { MapView } from 'expo';
 import db from '../db';
-import { createRouter, NavigationProvider, StackNavigation } from '@expo/ex-navigation';
-import selectedPhototag from '../screens/selectedPhototag';
 import { StackNavigator, NavigationActions } from 'react-navigation';
 import * as Actions from '../redux/actions';
 import { connect } from 'react-redux';
 
-const nav = StackNavigator({
-  phototag: {
-    screen: selectedPhototag,
-  },
-});
 const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
@@ -19,13 +12,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 class MapScreen extends React.Component {
-  state = {
-    markers: [],
-  };
-
-  goTophototags() {
-    //  this.props.navigation.push('selectedPhototag');
-    console.log('props', this.props.phototags);
+  goTophototags(marker) {
+    this.props.navigation.navigate('phototagFromMap', marker);
   }
 
   render() {
@@ -40,7 +28,7 @@ class MapScreen extends React.Component {
           longitudeDelta: 0.0421,
         }}>
         {this.props.phototags &&
-          this.props.phototags.map((marker, i) =>
+          this.props.phototags.map((marker, i) => (
             <MapView.Marker
               key={i}
               coordinate={{
@@ -48,9 +36,9 @@ class MapScreen extends React.Component {
                 longitude: marker.locationLong,
               }}
               title={marker.description}
-              onPress={this.goTophototags}
+              onPress={this.goTophototags.bind(this, marker)}
             />
-          )}
+          ))}
       </MapView>
     );
   }
