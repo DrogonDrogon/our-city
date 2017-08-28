@@ -17,6 +17,9 @@ const reducer = (state, action) => {
     case 'SET_TAG_FROM_USER':
       return Object.assign({}, state, { selectedPhototagUser: action.payload });
 
+    case 'IS_LOGGED_IN':
+      return Object.assign({}, state, { isLoggedIn: action.payload });
+
     default:
       return state;
   }

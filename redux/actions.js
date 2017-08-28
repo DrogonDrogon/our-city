@@ -1,4 +1,5 @@
 import { Location, Permissions } from 'expo';
+import firebase from 'firebase';
 import db from '../db';
 
 // Action definitions
@@ -8,7 +9,28 @@ const RECEIVE_LOCATION = 'RECEIVE_LOCATION';
 const SET_USER = 'SET_USER';
 const SET_TAG_FROM_MAP = 'SET_TAG_FROM_MAP';
 const SET_TAG_FROM_USER = 'SET_TAG_FROM_USER';
+const IS_LOGGED_IN = 'IS_LOGGED_IN';
+
 // Action creators
+
+// For checking if user is logged in
+export const checkUserLogin = () => dispatch => {
+  firebase.auth().onAuthStateChanged(user => {
+    if (user != null) {
+      console.log('We are authenticated now! User is', user);
+      dispatch(checkUserLoginComplete(true));
+    } else {
+      dispatch(checkUserLoginComplete(false));
+    }
+  });
+};
+
+export const checkUserLoginComplete = bool => {
+  return {
+    type: IS_LOGGED_IN,
+    payload: bool,
+  };
+};
 
 // For fetching all phototags (todo: add fetch by user)
 export const fetchPhototags = dispatch => {
@@ -47,6 +69,7 @@ export const postPhototagRequested = phototag => dispatch => {
   db.child('phototags/' + newPostKey).update(phototag).then(
     () => {
       dispatch(updatePostingStatus(false));
+      dispatch(fetchPhototags());
     },
     error => {
       console.log('ERROR posting', error);
