@@ -27,6 +27,11 @@ class CameraScreen extends React.Component {
     description: '',
   };
 
+  componentWillUpdate() {
+    console.log('PROPS', this.props);
+    // console.log('PROPS.USER.ID', this.props.user.id);
+  }
+
   componentWillMount() {
     const getLocationAsync = async () => {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);

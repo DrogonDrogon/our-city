@@ -45,8 +45,10 @@ export const checkUserLoginComplete = bool => {
 // For fetching all phototags (todo: add fetch by user)
 export const fetchPhototags = dispatch => {
   // console.log('[ACTIONS] fetchPhototags fired');
-  db.child('phototags').once('value').then(
-    snapshot => {
+  db
+    .child('phototags')
+    .once('value')
+    .then(snapshot => {
       let data = snapshot.val();
       let phototagArray = [];
 
@@ -57,11 +59,8 @@ export const fetchPhototags = dispatch => {
         phototagArray.push(obj);
       }
       dispatch(receivePhototags(phototagArray));
-    },
-    error => {
-      console.log('Error fetchPhototags', error);
-    }
-  );
+    })
+    .catch(error => console.log('ERROR fetch', error));
 };
 
 export const receivePhototags = results => {
@@ -76,15 +75,13 @@ export const receivePhototags = results => {
 export const postPhototagRequested = phototag => dispatch => {
   let newPostKey = db.child('photoTags').push().key;
   phototag.id = newPostKey;
-  db.child('phototags/' + newPostKey).update(phototag).then(
-    () => {
+  db
+    .child('phototags/' + newPostKey)
+    .update(phototag)
+    .then(() => {
       dispatch(updatePostingStatus(false));
-      dispatch(fetchPhototags());
-    },
-    error => {
-      console.log('ERROR posting', error);
-    }
-  );
+    })
+    .catch(error => console.log('ERROR post', error));
 };
 
 export const updatePostingStatus = bool => {
@@ -96,14 +93,15 @@ export const updatePostingStatus = bool => {
 
 // For posting new user
 export const postNewUserBegin = userInfo => dispatch => {
-  db.child('users/' + userInfo.id).update(userInfo).then(
-    () => {
+  db
+    .child('users/' + userInfo.id)
+    .update(userInfo)
+    .then(() => {
       dispatch(postNewUserCompleted(userInfo));
-    },
-    error => {
+    })
+    .catch(error => {
       console.log('ERROR posting new user', error);
-    }
-  );
+    });
 };
 
 export const postNewUserCompleted = userInfo => {
