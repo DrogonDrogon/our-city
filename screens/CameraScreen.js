@@ -5,7 +5,10 @@ import { ImagePicker, Location, Permissions } from 'expo';
 import * as Actions from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => {
+  console.log(state.isPosting);
+
   return {
+    user: state.user,
     isPosting: state.isPosting,
   };
 };
@@ -83,7 +86,7 @@ class CameraScreen extends React.Component {
     // Set up the format for phototag item to be saved
     let phototag = {};
     phototag.userId = this.state.userId;
-    phototag.userName = this.state.userName;
+    phototag.userName = this.props.user.displayName;
     phototag.description = this.state.description;
     phototag.imageDataIn64 = this.state.allImageData.imageData.base64;
     phototag.imageHeight = this.state.allImageData.imageData.height;
@@ -93,7 +96,9 @@ class CameraScreen extends React.Component {
     phototag.timestamp = this.state.allImageData.location.timestamp;
     phototag.upvotes = 0;
     phototag.downvotes = 0;
+    phototag.comments = ['like', 'dislike'];
     this.props.submitOnePhototag(phototag);
+    console.log('USSER', this.props.user);
   };
 
   render() {

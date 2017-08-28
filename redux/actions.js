@@ -6,7 +6,8 @@ const RECEIVE_PHOTOTAGS = 'RECEIVE_PHOTOTAGS';
 const IS_POSTING = 'IS_POSTING';
 const RECEIVE_LOCATION = 'RECEIVE_LOCATION';
 const SET_USER = 'SET_USER';
-
+const SET_TAG_FROM_MAP = 'SET_TAG_FROM_MAP';
+const SET_TAG_FROM_USER = 'SET_TAG_FROM_USER';
 // Action creators
 
 // For fetching all phototags (todo: add fetch by user)
@@ -79,5 +80,19 @@ export const postNewUserCompleted = userInfo => {
   return {
     type: SET_USER,
     payload: userInfo,
+  };
+};
+
+export const selectedPhototagMap = phototag => {
+  return {
+    type: SET_TAG_FROM_MAP,
+    payload: phototag,
+  };
+};
+
+export const selectedPhototagUser = phototag => {
+  return {
+    type: SET_TAG_FROM_USER,
+    payload: phototag,
   };
 };
