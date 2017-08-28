@@ -5,6 +5,7 @@ import firebase from 'firebase';
 import * as Actions from '../redux/actions';
 import PhototagItem from '../components/PhototagItem';
 
+
 class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Home',
@@ -34,7 +35,7 @@ class HomeScreen extends React.Component {
       return (
         <ScrollView>
           <Text style={styles.titleText}>Tagged Photos</Text>
-          {this.props.phototags.map((item, i) => <PhototagItem key={i} phototag={item} />)}
+          {this.props.phototags.filter(item => item.userName === this.props.user.displayName).map((item, i) => <PhototagItem key={i} phototag={item} />)}
           <Button onPress={this._logout.bind(this)} title="Logout" />
         </ScrollView>
       );
@@ -55,6 +56,7 @@ const mapStateToProps = (state, ownProps) => {
   // Passes along any updated state that comes from the reducer into the component's props
   return {
     phototags: state.phototags,
+    user: state.user,
   };
 };
 
