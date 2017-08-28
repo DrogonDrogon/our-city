@@ -12,13 +12,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 class MapScreen extends React.Component {
-  state = {
-    markers: [],
-  };
-
-  goTophototags() {
-    //  this.props.navigation.push('selectedPhototag');
-    this.props.navigation.navigate('phototagFromMap');
+  goTophototags(marker) {
+    this.props.navigation.navigate('phototagFromMap', marker);
   }
 
   render() {
@@ -41,7 +36,7 @@ class MapScreen extends React.Component {
                 longitude: marker.locationLong,
               }}
               title={marker.description}
-              onPress={this.goTophototags.bind(this)}
+              onPress={this.goTophototags.bind(this, marker)}
             />
           ))}
       </MapView>
