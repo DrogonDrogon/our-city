@@ -1,10 +1,9 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import * as Actions from '../redux/actions';
 import PhototagItem from '../components/PhototagItem';
-
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -29,13 +28,26 @@ class HomeScreen extends React.Component {
         console.log('Error sign out', error);
       });
   }
-
+  goTopPhototags(item) {
+    console.log('clicked!!!!!!!!');
+    this.props.navigation.navigate('phototagFromUser', item);
+  }
   render() {
     if (this.props.phototags) {
       return (
         <ScrollView>
           <Text style={styles.titleText}>Tagged Photos</Text>
-          {this.props.phototags.filter(item => item.userName === this.props.user.displayName).map((item, i) => <PhototagItem key={i} phototag={item} />)}
+          {this.props.phototags
+            .filter(item => item.userName === this.props.user.displayName)
+            .map((item, i) => (
+              <TouchableHighlight
+                style={{ width: '100%', height: 200 }}
+                title=""
+                key={i}
+                onPress={this.goTopPhototags.bind(this, item)}>
+                <PhototagItem phototag={item} />
+              </TouchableHighlight>
+            ))}
           <Button onPress={this._logout.bind(this)} title="Logout" />
         </ScrollView>
       );

@@ -3,17 +3,16 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 
 class PhototagItem extends React.Component {
   render() {
+    console.log(this.props);
     let imageUri = `data:image/png;base64,${this.props.phototag.imageDataIn64}`;
 
     return (
       <View style={styles.container}>
         <Image
-          style={{ width: 100, height: 100, resizeMode: Image.resizeMode.contain }}
+          style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
           source={{ uri: imageUri }}
         />
-        <Text style={styles.descriptionText}>
-          {this.props.phototag.description}
-        </Text>
+        <Text style={styles.descriptionText}>{this.props.phototag.description}</Text>
       </View>
     );
   }
@@ -21,6 +20,8 @@ class PhototagItem extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
+    height: 300,
     flex: 1,
     padding: 20,
     alignItems: 'center',

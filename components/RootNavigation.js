@@ -3,7 +3,8 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import LoginScreen from '../screens/LoginScreen';
-import selectedPhototag from '../screens/selectedPhototag';
+import selectedPhototagMap from '../screens/selectedPhototagMap';
+import selectedPhototagUser from '../screens/SelectedPhotoTagUser';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
@@ -16,7 +17,10 @@ const RootStackNavigator = StackNavigator(
       screen: MainTabNavigator,
     },
     phototagFromMap: {
-      screen: selectedPhototag,
+      screen: selectedPhototagMap,
+    },
+    phototagFromUser: {
+      screen: selectedPhototagUser,
     },
   },
   {
