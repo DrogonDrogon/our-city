@@ -74,21 +74,13 @@ class HomeScreen extends React.Component {
     this.props.navigation.navigate('phototagFromUser', item);
   }
   render() {
-    if (this.props.phototags) {
+    if (this.props.phototags && this.props.user) {
       return (
         <ScrollView>
           <Text style={styles.titleText}>Tagged Photos</Text>
           {this.props.phototags
             .filter(item => item.userName === this.props.user.displayName)
-            .map((item, i) => (
-              <TouchableHighlight
-                style={{ width: '100%', height: 200 }}
-                title=""
-                key={i}
-                onPress={this.goTopPhototags.bind(this, item)}>
-                <PhototagItem phototag={item} />
-              </TouchableHighlight>
-            ))}
+            .map((item, i) => <PhototagItem phototag={item} key={i} />)}
         </ScrollView>
       );
     } else {
@@ -105,3 +97,9 @@ const styles = StyleSheet.create({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+//<TouchableHighlight
+//  style={{ width: '100%', height: 200 }}
+//  title=""
+//  key={i}
+//  onPress={this.goTopPhototags.bind(this, item)}
+///>;

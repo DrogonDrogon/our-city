@@ -26,7 +26,7 @@ class CameraScreen extends React.Component {
     allImageData: {},
     description: '',
   };
-
+  
   componentWillMount() {
     const getLocationAsync = async () => {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
