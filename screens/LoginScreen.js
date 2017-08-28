@@ -10,6 +10,8 @@ import Container from '../components/Container';
 import Button from '../components/Button';
 import Label from '../components/Label';
 import config from '../config/config';
+import AppStyles from '../styles/AppStyles.js';
+import LoginStyles from '../styles/LoginStyles.js';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -73,43 +75,43 @@ class Login extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.scroll}>
+      <ScrollView style={LoginStyles.scroll}>
         <Container>
           <Button
             label="Forgot Login/Pass"
-            styles={{ button: styles.alignRight, label: styles.label }}
+            styles={{ button: LoginStyles.alignRight, label: LoginStyles.label }}
             onPress={this.press.bind(this)}
           />
         </Container>
         <Container>
           <Label text="Username or Email" />
-          <TextInput style={styles.textInput} />
+          <TextInput style={LoginStyles.textInput} />
         </Container>
         <Container>
           <Label text="Password" />
-          <TextInput secureTextEntry style={styles.textInput} />
+          <TextInput secureTextEntry style={LoginStyles.textInput} />
         </Container>
         <Container>
-          <Button styles={{ button: styles.transparentButton }} onPress={this.press.bind(this)}>
-            <View style={styles.inline}>
+          <Button styles={{ button: LoginStyles.transparentButton }} onPress={this.press.bind(this)}>
+            <View style={LoginStyles.inline}>
               <Icon name="facebook-official" size={30} color="#3B5699" />
-              <Text style={[styles.buttonBlueText, styles.buttonBigText]}> Connect </Text>
-              <Text style={styles.buttonBlueText}>with Facebook</Text>
+              <Text style={[LoginStyles.buttonBlueText, LoginStyles.buttonBigText]}> Connect </Text>
+              <Text style={LoginStyles.buttonBlueText}>with Facebook</Text>
             </View>
           </Button>
         </Container>
-        <View style={styles.footer}>
+        <View style={LoginStyles.footer}>
           <Container>
             <Button
               label="Sign In"
-              styles={{ button: styles.primaryButton, label: styles.buttonWhiteText }}
+              styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
               onPress={this.press.bind(this)}
             />
           </Container>
           <Container>
             <Button
               label="CANCEL"
-              styles={{ label: styles.buttonBlackText }}
+              styles={{ label: LoginStyles.buttonBlackText }}
               onPress={this.press.bind(this)}
             />
           </Container>
@@ -118,54 +120,6 @@ class Login extends Component {
     );
   }
 }
-const styles = StyleSheet.create({
-  scroll: {
-    backgroundColor: '#E1D7D8',
-    padding: 30,
-    flexDirection: 'column',
-  },
-  label: {
-    color: '#0d8898',
-    fontSize: 20,
-  },
-  alignRight: {
-    alignSelf: 'flex-end',
-  },
-  textInput: {
-    height: 80,
-    fontSize: 30,
-    backgroundColor: '#FFF',
-  },
-  transparentButton: {
-    marginTop: 30,
-    borderColor: '#3B5699',
-    borderWidth: 2,
-  },
-  buttonBlueText: {
-    fontSize: 20,
-    color: '#3B5699',
-  },
-  buttonBigText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  inline: {
-    flexDirection: 'row',
-  },
-  buttonWhiteText: {
-    fontSize: 20,
-    color: '#FFF',
-  },
-  buttonBlackText: {
-    fontSize: 20,
-    color: '#595856',
-  },
-  primaryButton: {
-    backgroundColor: '#34A853',
-  },
-  footer: {
-    marginTop: 100,
-  },
-});
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
