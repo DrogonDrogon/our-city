@@ -1,7 +1,6 @@
 import React from 'react';
 import { MapView } from 'expo';
 import db from '../db';
-import { StackNavigator, NavigationActions } from 'react-navigation';
 import * as Actions from '../redux/actions';
 import { connect } from 'react-redux';
 
