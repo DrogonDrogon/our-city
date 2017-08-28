@@ -25,8 +25,6 @@ class CameraScreen extends React.Component {
     image: null,
     allImageData: {},
     description: '',
-    userName: 'walter',
-    userId: 123,
   };
 
   componentWillMount() {
@@ -96,7 +94,6 @@ class CameraScreen extends React.Component {
     phototag.downvotes = 0;
     phototag.comments = ['like', 'dislike'];
     this.props.submitOnePhototag(phototag);
-    console.log('USSER', this.props.user);
   };
 
   render() {

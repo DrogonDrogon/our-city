@@ -5,7 +5,6 @@ import db from '../db';
 // Action definitions
 const RECEIVE_PHOTOTAGS = 'RECEIVE_PHOTOTAGS';
 const IS_POSTING = 'IS_POSTING';
-const RECEIVE_LOCATION = 'RECEIVE_LOCATION';
 const SET_USER = 'SET_USER';
 const SET_TAG_FROM_MAP = 'SET_TAG_FROM_MAP';
 const SET_TAG_FROM_USER = 'SET_TAG_FROM_USER';
@@ -18,6 +17,17 @@ export const checkUserLogin = () => dispatch => {
   firebase.auth().onAuthStateChanged(user => {
     if (user != null) {
       console.log('We are authenticated now! User is', user);
+      // Set up user info to save
+      let userInfo = {};
+      userInfo.id = user.uid;
+
+      // If auth through fb, can save displayName and photoUrl
+      if (user.providerData[0].providerId === 'facebook.com') {
+        userInfo.authMethod = 'facebook';
+        userInfo.photoUrl = user.photoURL;
+        userInfo.displayName = user.displayName;
+      }
+      dispatch(postNewUserBegin(userInfo));
       dispatch(checkUserLoginComplete(true));
     } else {
       dispatch(checkUserLoginComplete(false));
@@ -83,9 +93,6 @@ export const updatePostingStatus = bool => {
     payload: bool,
   };
 };
-
-// For fetching location
-export const fetchLocation = dispatch => {};
 
 // For posting new user
 export const postNewUserBegin = userInfo => dispatch => {
