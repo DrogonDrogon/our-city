@@ -80,7 +80,13 @@ class HomeScreen extends React.Component {
           <Text style={styles.titleText}>Tagged Photos</Text>
           {this.props.phototags
             .filter(item => item.userName === this.props.user.displayName)
-            .map((item, i) => <PhototagItem phototag={item} key={i} />)}
+            .map((item, i) => (
+              <PhototagItem
+                phototag={item}
+                key={i}
+                goTophototags={this.goTopPhototags.bind(this, item)}
+              />
+            ))}
         </ScrollView>
       );
     } else {

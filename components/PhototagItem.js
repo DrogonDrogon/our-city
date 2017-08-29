@@ -1,5 +1,5 @@
 import React from 'React';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
 
 class PhototagItem extends React.Component {
   render() {
@@ -8,11 +8,17 @@ class PhototagItem extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Image
-          style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-          source={{ uri: imageUri }}
-        />
-        <Text style={styles.descriptionText}>{this.props.phototag.description}</Text>
+        <TouchableHighlight
+          onPress={this.props.goTophototags}
+          style={{ width: '100%', height: 200 }}>
+          <Image
+            style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
+            source={{ uri: imageUri }}
+          />
+        </TouchableHighlight>
+        <Text onPress={this.props.goTophototags} style={styles.descriptionText}>
+          {this.props.phototag.description}
+        </Text>
       </View>
     );
   }
