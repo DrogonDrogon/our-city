@@ -18,6 +18,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   // Define the function that will be passed as prop
   return {
     getAllPhototags: () => {
+      console.log('dispatching fetchPhototags');
       dispatch(Actions.fetchPhototags);
     },
   };

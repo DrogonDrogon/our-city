@@ -80,6 +80,8 @@ export const postPhototagRequested = phototag => dispatch => {
     .update(phototag)
     .then(() => {
       dispatch(updatePostingStatus(false));
+      // Fire another fetch to get all updated phototags
+      dispatch(fetchPhototags);
     })
     .catch(error => console.log('ERROR post', error));
 };

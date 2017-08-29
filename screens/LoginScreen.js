@@ -32,6 +32,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 class Login extends Component {
+  state = {
+    email: '',
+    password: '',
+  };
+
   componentWillMount() {
     // Check if user is authenticated
     this.props.checkIfLoggedIn();
@@ -44,8 +49,12 @@ class Login extends Component {
     }
   }
 
-  press() {
+  pressLoginWithFb() {
     this.loginWithFacebook();
+  }
+
+  pressLoginWithEmail() {
+    this.login(this.state.email, this.state.password);
   }
 
   async loginWithFacebook() {
@@ -65,10 +74,19 @@ class Login extends Component {
     }
   }
 
+  async login(email, pass) {
+    try {
+      await firebase.auth().signInWithEmailAndPassword(email, pass);
+      console.log('Logged In!');
+    } catch (error) {
+      console.log('Error logging in with email:', error.toString());
+    }
+  }
+
   _navigateTo(routeName) {
     const actionToDispatch = NavigationActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName }, )],
+      actions: [NavigationActions.navigate({ routeName })],
     });
     this.props.navigation.dispatch(actionToDispatch);
   }
@@ -80,19 +98,28 @@ class Login extends Component {
           <Button
             label="Forgot Login/Pass"
             styles={{ button: LoginStyles.alignRight, label: LoginStyles.label }}
-            onPress={this.press.bind(this)}
+            onPress={this.pressLoginWithFb.bind(this)}
           />
         </Container>
         <Container>
           <Label text="Username or Email" />
-          <TextInput style={LoginStyles.textInput} />
+          <TextInput
+            style={LoginStyles.textInput}
+            onChangeText={text => this.setState({ email: text })}
+          />
         </Container>
         <Container>
           <Label text="Password" />
-          <TextInput secureTextEntry style={LoginStyles.textInput} />
+          <TextInput
+            secureTextEntry
+            style={LoginStyles.textInput}
+            onChangeText={text => this.setState({ password: text })}
+          />
         </Container>
         <Container>
-          <Button styles={{ button: LoginStyles.transparentButton }} onPress={this.press.bind(this)}>
+          <Button
+            styles={{ button: LoginStyles.transparentButton }}
+            onPress={this.pressLoginWithFb.bind(this)}>
             <View style={LoginStyles.inline}>
               <Icon name="facebook-official" size={30} color="#3B5699" />
               <Text style={[LoginStyles.buttonBlueText, LoginStyles.buttonBigText]}> Connect </Text>
@@ -105,14 +132,7 @@ class Login extends Component {
             <Button
               label="Sign In"
               styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
-              onPress={this.press.bind(this)}
-            />
-          </Container>
-          <Container>
-            <Button
-              label="CANCEL"
-              styles={{ label: LoginStyles.buttonBlackText }}
-              onPress={this.press.bind(this)}
+              onPress={this.pressLoginWithEmail.bind(this)}
             />
           </Container>
         </View>
@@ -120,6 +140,5 @@ class Login extends Component {
     );
   }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
