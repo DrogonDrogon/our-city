@@ -21,6 +21,8 @@ export const checkUserLogin = () => dispatch => {
       let userInfo = {};
       userInfo.id = user.uid;
       userInfo.votes = {};
+      userInfo.votes.photoID = '1:like, 0:no vote, -1:dislike ';
+
 
       // If auth through fb, can save displayName and photoUrl
       if (user.providerData[0].providerId === 'facebook.com') {
