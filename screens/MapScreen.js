@@ -3,6 +3,8 @@ import { MapView } from 'expo';
 import db from '../db';
 import * as Actions from '../redux/actions';
 import { connect } from 'react-redux';
+import { Text, Image, StyleSheet } from 'react-native';
+import PhototagItem from '../components/PhototagItem';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -34,9 +36,11 @@ class MapScreen extends React.Component {
                 latitude: marker.locationLat,
                 longitude: marker.locationLong,
               }}
-              title={marker.description}
-              onPress={this.goTophototags.bind(this, marker)}
-            />
+              title={marker.description}>
+              <MapView.Callout tooltip onPress={this.goTophototags.bind(this, marker)}>
+                <Text style={styles.descriptionText}>{marker.description}</Text>
+              </MapView.Callout>
+            </MapView.Marker>
           ))}
       </MapView>
     );
@@ -44,3 +48,17 @@ class MapScreen extends React.Component {
 }
 
 export default connect(mapStateToProps)(MapScreen);
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: 300,
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+  },
+  descriptionText: {
+    marginTop: 10,
+    marginBottom: 20,
+  },
+});
