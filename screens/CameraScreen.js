@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Image, View, TextInput, ActivityIndicator } from 'react-native';
+import { Button, Image, View, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { ImagePicker, Location, Permissions } from 'expo';
 import * as Actions from '../redux/actions';
 
@@ -26,7 +26,7 @@ class CameraScreen extends React.Component {
     allImageData: {},
     description: '',
   };
-  
+
   componentWillMount() {
     const getLocationAsync = async () => {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -94,21 +94,39 @@ class CameraScreen extends React.Component {
     phototag.downvotes = 0;
     phototag.comments = ['like', 'dislike'];
     this.props.submitOnePhototag(phototag);
+    this.setState({  image: null  });
+    this.descriptionInput.clear();
+    Alert.alert('Success', 'Your post was sent!', [
+      { text: 'OK', onPress: () => console.log('OK pressed')},
+    ]);
   };
 
   render() {
     let { image } = this.state;
 
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ flex: 1, alignItems: 'center' }}>
         <Button title="Pick an image from camera roll" onPress={this._pickImage} />
         <Button title="Use camera" onPress={this._takePic} />
         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
         <TextInput
-          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+          style={{
+            height: 80,
+            borderColor: 'gray',
+            borderWidth: 1,
+            width: '80%',
+            textAlignVertical: 'top',
+            fontSize: 16,
+            padding: 10,
+          }}
           placeholder="Enter description"
           onChangeText={text => this.setState({ description: text })}
           keyboardType={'default'}
+          multiline
+          ref={input => {
+            console.log('input is', input);
+            this.descriptionInput = input;
+          }}
         />
         <Button title="Upload my post" onPress={this._saveImg} />
         {this.props.isPosting && <ActivityIndicator animated={this.props.isPosting} size="large" />}
