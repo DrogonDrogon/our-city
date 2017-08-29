@@ -95,7 +95,7 @@ class CameraScreen extends React.Component {
     phototag.comments = ['like', 'dislike'];
     this.props.submitOnePhototag(phototag);
     this.setState({  image: null  });
-    this.descriptionInput.clear();
+    this.descriptionInput.setNativeProps({text: ''});
     Alert.alert('Success', 'Your post was sent!', [
       { text: 'OK', onPress: () => console.log('OK pressed')},
     ]);
@@ -123,10 +123,7 @@ class CameraScreen extends React.Component {
           onChangeText={text => this.setState({ description: text })}
           keyboardType={'default'}
           multiline
-          ref={input => {
-            console.log('input is', input);
-            this.descriptionInput = input;
-          }}
+          ref={input => this.descriptionInput = input}
         />
         <Button title="Upload my post" onPress={this._saveImg} />
         {this.props.isPosting && <ActivityIndicator animated={this.props.isPosting} size="large" />}
