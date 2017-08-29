@@ -4,7 +4,7 @@ import db from '../db';
 import * as Actions from '../redux/actions';
 import { connect } from 'react-redux';
 import { Text, Image, StyleSheet } from 'react-native';
-import PhototagItem from '../components/PhototagItem';
+import MarkerTag from '../components/markerTag';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -38,7 +38,7 @@ class MapScreen extends React.Component {
               }}
               title={marker.description}>
               <MapView.Callout tooltip onPress={this.goTophototags.bind(this, marker)}>
-                <Text style={styles.descriptionText}>{marker.description}</Text>
+                <MarkerTag phototag={marker} />
               </MapView.Callout>
             </MapView.Marker>
           ))}
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     flex: 1,
-    padding: 20,
+    padding: 1,
     alignItems: 'center',
   },
   descriptionText: {
