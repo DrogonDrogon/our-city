@@ -15,6 +15,7 @@ const IS_LOGGED_IN = 'IS_LOGGED_IN';
 // For checking if user is logged in
 export const checkUserLogin = () => dispatch => {
   firebase.auth().onAuthStateChanged(user => {
+    console.log('firebase auth', user);
     if (user != null) {
       console.log('We are authenticated now! User is', user);
       // Set up user info to save
@@ -30,6 +31,7 @@ export const checkUserLogin = () => dispatch => {
       dispatch(postNewUserBegin(userInfo));
       dispatch(checkUserLoginComplete(true));
     } else {
+      console.log('not loggeddin');
       dispatch(checkUserLoginComplete(false));
     }
   });
@@ -80,6 +82,7 @@ export const postPhototagRequested = phototag => dispatch => {
     .update(phototag)
     .then(() => {
       dispatch(updatePostingStatus(false));
+      dispatch(fetchPhototags);
     })
     .catch(error => console.log('ERROR post', error));
 };
