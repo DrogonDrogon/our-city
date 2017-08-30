@@ -44,7 +44,6 @@ class SignupScreen extends Component {
 
   pressSignupWithEmail() {
     console.log('Click Create Account with Email');
-
     // Only allow saving if not blank
     if (
       this.state.email !== '' &&
@@ -91,14 +90,19 @@ class SignupScreen extends Component {
           </Container>
           <Container>
             <Label text="Password" />
-            <TextInput style={LoginStyles.textInput} placeholder="Password" secureTextEntry />
+            <TextInput
+              style={LoginStyles.textInput}
+              placeholder="Password"
+              secureTextEntry
+              onChangeText={text => this.setState({ password: text })}
+            />
           </Container>
           <Container>
             <TextInput
               style={LoginStyles.textInput}
               placeholder="Confirm Password"
               secureTextEntry
-              onChangeText={text => this.setState({ password: text })}
+              onChangeText={text => this.setState({ passwordConfirm: text })}
             />
           </Container>
         </Container>
