@@ -37,4 +37,7 @@ const styles = StyleSheet.create({
   },
 });
 
+// <Text>
+// Location: {this.props.phototag.locationLat}, {this.props.phototag.locationLong}
+// </Text>
 export default PhototagItem;

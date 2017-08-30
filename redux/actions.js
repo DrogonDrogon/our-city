@@ -23,7 +23,6 @@ export const checkUserLogin = () => dispatch => {
       userInfo.votes = {};
       userInfo.votes.photoID = '1:like, 0:no vote, -1:dislike ';
 
-
       // If auth through fb, can save displayName and photoUrl
       if (user.providerData[0].providerId === 'facebook.com') {
         userInfo.authMethod = 'facebook';
@@ -76,8 +75,14 @@ export const receivePhototags = results => {
 
 // For posting one phototag
 export const postPhototagRequested = phototag => dispatch => {
-  let newPostKey = db.child('photoTags').push().key;
-  phototag.id = newPostKey;
+  let newPostKey;
+  if (!phototag.id) {
+    newPostKey = db.child('photoTags').push().key;
+    phototag.id = newPostKey;
+  } else {
+    newPostKey = phototag.id;
+  }
+
   db
     .child('phototags/' + newPostKey)
     .update(phototag)
