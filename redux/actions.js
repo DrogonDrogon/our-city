@@ -22,7 +22,8 @@ export const checkUserLogin = () => dispatch => {
       userInfo.id = user.uid;
       userInfo.votes = {};
       userInfo.votes.photoID = '1:like, 0:no vote, -1:dislike ';
-
+      userInfo.photoUrl = 'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png';
+      userInfo.displayName = 'user.displayName';
 
       // If auth through fb, can save displayName and photoUrl
       if (user.providerData[0].providerId === 'facebook.com') {
