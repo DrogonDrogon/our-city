@@ -6,6 +6,7 @@ import LoginScreen from '../screens/LoginScreen';
 import selectedPhototagMap from '../screens/selectedPhototagMap';
 import selectedPhototagUser from '../screens/SelectedPhotoTagUser';
 import SplashScreen from '../screens/SplashScreen';
+import SignupScreen from '../screens/SignupScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
@@ -25,6 +26,9 @@ const RootStackNavigator = StackNavigator(
     },
     phototagFromUser: {
       screen: selectedPhototagUser,
+    },
+    Signup: {
+      screen: SignupScreen,
     },
   },
   {

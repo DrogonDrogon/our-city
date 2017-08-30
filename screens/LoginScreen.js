@@ -22,9 +22,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    saveNewUser: userInfo => {
-      dispatch(Actions.postNewUserBegin(userInfo));
-    },
     checkIfLoggedIn: () => {
       dispatch(Actions.checkUserLogin());
     },
@@ -32,6 +29,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 class Login extends Component {
+  static navigationOptions = { header: null };
+
   state = {
     email: '',
     password: '',
@@ -57,10 +56,14 @@ class Login extends Component {
     this.login(this.state.email, this.state.password);
   }
 
+  pressSignup() {
+    this.props.navigation.navigate('Signup');
+  }
+
   async loginWithFacebook() {
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
       config.facebook.API_KEY,
-      { permissions: ['public_profile'] }
+      { permissions: ['public_profile', 'email'] }
     );
     if (type === 'success') {
       // Build Firebase credential with the Facebook access token.
@@ -95,13 +98,6 @@ class Login extends Component {
     return (
       <ScrollView style={LoginStyles.scroll}>
         <Container>
-          <Button
-            label="Forgot Login/Pass"
-            styles={{ button: LoginStyles.alignRight, label: LoginStyles.label }}
-            onPress={this.pressLoginWithFb.bind(this)}
-          />
-        </Container>
-        <Container>
           <Label text="Username or Email" />
           <TextInput
             style={LoginStyles.textInput}
@@ -118,6 +114,13 @@ class Login extends Component {
         </Container>
         <Container>
           <Button
+            label="Sign In"
+            styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
+            onPress={this.pressLoginWithEmail.bind(this)}
+          />
+        </Container>
+        <Container>
+          <Button
             styles={{ button: LoginStyles.transparentButton }}
             onPress={this.pressLoginWithFb.bind(this)}>
             <View style={LoginStyles.inline}>
@@ -127,15 +130,20 @@ class Login extends Component {
             </View>
           </Button>
         </Container>
-        <View style={LoginStyles.footer}>
-          <Container>
-            <Button
-              label="Sign In"
-              styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
-              onPress={this.pressLoginWithEmail.bind(this)}
-            />
-          </Container>
-        </View>
+        <Container>
+          <Button
+            label="New user? Sign up"
+            styles={{ label: LoginStyles.label }}
+            onPress={this.pressSignup.bind(this)}
+          />
+        </Container>
+        <Container>
+          <Button
+            label="Forgot Login/Pass"
+            styles={{ label: LoginStyles.label }}
+            onPress={this.pressLoginWithFb.bind(this)}
+          />
+        </Container>
       </ScrollView>
     );
   }

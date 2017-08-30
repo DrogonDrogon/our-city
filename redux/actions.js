@@ -22,12 +22,19 @@ export const checkUserLogin = () => dispatch => {
       userInfo.id = user.uid;
       userInfo.votes = {};
       userInfo.votes.photoID = '1:like, 0:no vote, -1:dislike ';
-      userInfo.photoUrl = 'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png';
-      userInfo.displayName = 'user.displayName';
+
+      // If auth through email/password, save info
+      if (user.providerData[0].providerId === 'password') {
+        userInfo.authMethod = 'email-password';
+        userInfo.email = user.email;
+        userInfo.photoUrl = 'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png';
+        userInfo.displayName = '';
+      }
 
       // If auth through fb, can save displayName and photoUrl
       if (user.providerData[0].providerId === 'facebook.com') {
         userInfo.authMethod = 'facebook';
+        userInfo.email = user.providerData[0].email;
         userInfo.photoUrl = user.photoURL;
         userInfo.displayName = user.displayName;
       }
@@ -45,6 +52,10 @@ export const checkUserLoginComplete = bool => {
     payload: bool,
   };
 };
+
+// export const signupNewUserByEmail = (userName) => dispatch => {
+
+// }
 
 // For fetching all phototags (todo: add fetch by user)
 export const fetchPhototags = dispatch => {
