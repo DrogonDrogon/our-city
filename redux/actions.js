@@ -13,7 +13,7 @@ const IS_LOGGED_IN = 'IS_LOGGED_IN';
 // Action creators
 
 // For checking if user is logged in
-export const checkUserLogin = () => dispatch => {
+export const checkUserLogin = (userName) => dispatch => {
   firebase.auth().onAuthStateChanged(user => {
     if (user != null) {
       console.log('We are authenticated now! User is', user);
@@ -44,6 +44,10 @@ export const checkUserLoginComplete = bool => {
     payload: bool,
   };
 };
+
+// export const signupNewUserByEmail = (userName) => dispatch => {
+
+// }
 
 // For fetching all phototags (todo: add fetch by user)
 export const fetchPhototags = dispatch => {

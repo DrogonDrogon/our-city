@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  ScrollView,
-  Modal,
-  TouchableHighlight,
-} from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Expo from 'expo';
@@ -30,9 +22,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    saveNewUser: userInfo => {
-      dispatch(Actions.postNewUserBegin(userInfo));
-    },
     checkIfLoggedIn: () => {
       dispatch(Actions.checkUserLogin());
     },
@@ -45,7 +34,6 @@ class Login extends Component {
   state = {
     email: '',
     password: '',
-    modalVisible: false,
   };
 
   componentWillMount() {
@@ -145,14 +133,14 @@ class Login extends Component {
         <Container>
           <Button
             label="New user? Sign up"
-            styles={{ button: LoginStyles.alignRight, label: LoginStyles.label }}
+            styles={{ label: LoginStyles.label }}
             onPress={this.pressSignup.bind(this)}
           />
         </Container>
         <Container>
           <Button
             label="Forgot Login/Pass"
-            styles={{ button: LoginStyles.alignRight, label: LoginStyles.label }}
+            styles={{ label: LoginStyles.label }}
             onPress={this.pressLoginWithFb.bind(this)}
           />
         </Container>
