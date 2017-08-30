@@ -15,9 +15,10 @@ export default LoginStyles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   textInput: {
-    height: 80,
-    fontSize: 30,
+    height: 40,
+    fontSize: 20,
     backgroundColor: '#FFF',
+    padding: 10,
   },
   transparentButton: {
     marginTop: 30,

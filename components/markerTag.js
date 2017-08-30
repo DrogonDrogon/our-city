@@ -3,7 +3,6 @@ import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native'
 
 class MarkerTag extends React.Component {
   render() {
-    console.log(this.props);
     let imageUri = `data:image/png;base64,${this.props.phototag.imageDataIn64}`;
 
     return (
