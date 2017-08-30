@@ -36,6 +36,17 @@ export const checkUserLoginComplete = bool => {
   };
 };
 
+export const updateUser = user => dispatch => {
+  db
+    .child('users/' + user.id)
+    .update(user)
+    .then(() => {
+      dispatch(getUserInfoCompleted(user));
+    })
+    .catch(error => {
+      console.log('ERROR posting updating user', error);
+    });
+};
 // For posting new user
 export const postNewUserBegin = user => dispatch => {
   // Set up user info to save
