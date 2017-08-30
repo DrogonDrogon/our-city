@@ -85,17 +85,20 @@ export const getUserInfoCompleted = userInfo => {
 
 // For fetching user by userId
 export const getUserByIdBegin = user => dispatch => {
-  db.child('users/' + user.uid).once('value').then(snapshot => {
-    let userData = snapshot.val();
-    if (userData) {
-      // if the data exists, then we return the data
-      dispatch(getUserInfoCompleted(userData));
-      dispatch(checkUserLoginComplete(true));
-    } else {
-      // if the data doesn't exist, we create a new user to save
-      dispatch(postNewUserBegin(user));
-    }
-  });
+  db
+    .child('users/' + user.uid)
+    .once('value')
+    .then(snapshot => {
+      let userData = snapshot.val();
+      if (userData) {
+        // if the data exists, then we return the data
+        dispatch(getUserInfoCompleted(userData));
+        dispatch(checkUserLoginComplete(true));
+      } else {
+        // if the data doesn't exist, we create a new user to save
+        dispatch(postNewUserBegin(user));
+      }
+    });
 };
 
 // export const signupNewUserByEmail = (userName) => dispatch => {
@@ -133,8 +136,14 @@ export const receivePhototags = results => {
 
 // For posting one phototag
 export const postPhototagRequested = phototag => dispatch => {
-  let newPostKey = db.child('photoTags').push().key;
-  phototag.id = newPostKey;
+  let newPostKey;
+  if (!phototag.id) {
+    newPostKey = db.child('photoTags').push().key;
+    phototag.id = newPostKey;
+  } else {
+    newPostKey = phototag.id;
+  }
+
   db
     .child('phototags/' + newPostKey)
     .update(phototag)
