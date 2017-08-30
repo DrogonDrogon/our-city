@@ -20,6 +20,9 @@ class MapScreen extends React.Component {
   render() {
     return (
       <MapView
+        showsUserLocation
+        followsUserLocation
+        toolbarEnabled
         provider={MapView.PROVIDER_GOOGLE}
         style={{ flex: 1 }}
         initialRegion={{
