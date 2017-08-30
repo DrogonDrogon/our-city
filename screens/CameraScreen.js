@@ -79,26 +79,33 @@ class CameraScreen extends React.Component {
   };
 
   _saveImg = () => {
-    // Set up the format for phototag item to be saved
-    let phototag = {};
-    phototag.userId = this.props.user.id;
-    phototag.userName = this.props.user.displayName;
-    phototag.description = this.state.description;
-    phototag.imageDataIn64 = this.state.allImageData.imageData.base64;
-    phototag.imageHeight = this.state.allImageData.imageData.height;
-    phototag.imageWidth = this.state.allImageData.imageData.width;
-    phototag.locationLat = this.state.allImageData.location.coords.latitude;
-    phototag.locationLong = this.state.allImageData.location.coords.longitude;
-    phototag.timestamp = this.state.allImageData.location.timestamp;
-    phototag.upvotes = 0;
-    phototag.downvotes = 0;
-    phototag.comments = ['like', 'dislike'];
-    this.props.submitOnePhototag(phototag);
-    this.setState({ image: null });
-    this.descriptionInput.setNativeProps({ text: '' });
-    Alert.alert('Success', 'Your post was sent!', [
-      { text: 'OK', onPress: () => console.log('OK pressed') },
-    ]);
+    // Check to see if all fields filled in
+    if (this.state.image === null || this.state.description === '') {
+      Alert.alert('Error', 'Please select a photo and fill in description', [
+        { text: 'OK', onPress: () => {} },
+      ]);
+    } else {
+      // Set up the format for phototag item to be saved
+      let phototag = {};
+      phototag.userId = this.props.user.id;
+      phototag.userName = this.props.user.displayName;
+      phototag.description = this.state.description;
+      phototag.imageDataIn64 = this.state.allImageData.imageData.base64;
+      phototag.imageHeight = this.state.allImageData.imageData.height;
+      phototag.imageWidth = this.state.allImageData.imageData.width;
+      phototag.locationLat = this.state.allImageData.location.coords.latitude;
+      phototag.locationLong = this.state.allImageData.location.coords.longitude;
+      phototag.timestamp = this.state.allImageData.location.timestamp;
+      phototag.upvotes = 0;
+      phototag.downvotes = 0;
+      phototag.comments = ['like', 'dislike'];
+      this.props.submitOnePhototag(phototag);
+      this.setState({ image: null });
+      this.descriptionInput.setNativeProps({ text: '' });
+      Alert.alert('Success', 'Your post was sent!', [
+        { text: 'OK', onPress: () => console.log('OK pressed') },
+      ]);
+    }
   };
 
   render() {

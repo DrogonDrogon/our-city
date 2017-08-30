@@ -98,17 +98,6 @@ class Login extends Component {
     return (
       <ScrollView style={LoginStyles.scroll}>
         <Container>
-          <Button
-            styles={{ button: LoginStyles.transparentButton }}
-            onPress={this.pressLoginWithFb.bind(this)}>
-            <View style={LoginStyles.inline}>
-              <Icon name="facebook-official" size={30} color="#3B5699" />
-              <Text style={[LoginStyles.buttonBlueText, LoginStyles.buttonBigText]}> Connect </Text>
-              <Text style={LoginStyles.buttonBlueText}>with Facebook</Text>
-            </View>
-          </Button>
-        </Container>
-        <Container>
           <Label text="Username or Email" />
           <TextInput
             style={LoginStyles.textInput}
@@ -129,6 +118,17 @@ class Login extends Component {
             styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
             onPress={this.pressLoginWithEmail.bind(this)}
           />
+        </Container>
+        <Container>
+          <Button
+            styles={{ button: LoginStyles.transparentButton }}
+            onPress={this.pressLoginWithFb.bind(this)}>
+            <View style={LoginStyles.inline}>
+              <Icon name="facebook-official" size={30} color="#3B5699" />
+              <Text style={[LoginStyles.buttonBlueText, LoginStyles.buttonBigText]}> Connect </Text>
+              <Text style={LoginStyles.buttonBlueText}>with Facebook</Text>
+            </View>
+          </Button>
         </Container>
         <Container>
           <Button

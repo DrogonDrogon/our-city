@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { TextInput, ScrollView } from 'react-native';
+import { TextInput, ScrollView, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'firebase';
 import * as Actions from '../redux/actions';
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class SignupScreen extends Component {
   state = {
-    name: '',
+    signupName: '',
     email: '',
     password: '',
   };
@@ -43,20 +43,26 @@ class SignupScreen extends Component {
   }
 
   pressSignupWithEmail() {
-    console.log('Sign up with email');
+    console.log('Click Create Account with Email');
 
-    // TODO: Add error checking or logic for valid email & matching password
+    // Check if blank
+    if (this.state.email !== '' && this.state.password !== '' && this.state.signupName !== '') {
+      let email = this.state.email;
+      let password = this.state.password;
+      // if valid: continue to create user with firebase auth
+      firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        console.log('Error with create user', error.code, error.message);
+        Alert.alert('Error', error.message, [{ text: 'OK', onPress: () => {} }]);
+      });
 
-    let email = this.state.email;
-    let password = this.state.password;
-
-    // if valid: continue to create user with firebase auth
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-      // Handle Errors here.
-      console.log('Error with create user', error.code, error.message);
-    });
-
-    // if not valid, show message whether email is wrong or password does not match
+      // TODO: Check & Alert if invalid email OR invalid or non-matching password
+    } else {
+      // If fields blank, show alert message to user
+      Alert.alert('Error', 'Please fill in name, email, and password', [
+        { text: 'OK', onPress: () => console.log('OK pressed') },
+      ]);
+    }
   }
 
   _navigateTo(routeName) {
@@ -76,7 +82,7 @@ class SignupScreen extends Component {
             <TextInput
               style={LoginStyles.textInput}
               placeholder="Name"
-              onChangeText={text => this.setState({ name: text })}
+              onChangeText={text => this.setState({ signupName: text })}
             />
           </Container>
           <Container>
