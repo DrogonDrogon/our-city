@@ -31,28 +31,25 @@ class MapScreen extends React.Component {
   };
 
   upvote() {
-    if (!this.props.user.votes.hasOwnProperty(this.state.phototag.id)) {
+    if (
+      !this.props.user.votes.hasOwnProperty(this.state.phototag.id) ||
+      this.props.user.votes[this.state.phototag.id] === 0
+    ) {
       this.setState({ votes: this.state.votes + 1 });
       this.props.user.votes[this.state.phototag.id] = 1;
     }
   }
 
   unvote() {
-    this.setState({ votes: this.state.votes - 1 }, () => {
-      if (this.state.votes < 0) {
-        this.setState({ votes: 0 });
-      }
-      delete this.props.user.votes[this.state.phototag.id];
-      console.log('yes', this.props.user.votes[this.state.phototag.id]);
-    });
+    if (
+      this.props.user.votes.hasOwnProperty(this.state.phototag.id) &&
+      this.props.user.votes[this.state.phototag.id] === 1
+    ) {
+      this.props.user.votes[this.state.phototag.id] = 0;
+      this.setState({ votes: this.state.votes - 1 });
+    }
   }
-  //  wrong file saving for later
-  // discriptionEdit(text) {
-  //   let tempPhotoTag = this.state.phototag;
-  //   tempPhotoTag.description = text;
-  //   this.setState({ phototag: tempPhotoTag });
-  //   this.setState({ edited: true });
-  // }
+
   editComment(text) {
     this.setState({ comment: text });
   }
