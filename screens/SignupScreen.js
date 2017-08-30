@@ -28,6 +28,7 @@ class SignupScreen extends Component {
   state = {
     email: '',
     password: '',
+    passwordConfirm: '',
   };
 
   componentDidMount() {
@@ -44,8 +45,12 @@ class SignupScreen extends Component {
   pressSignupWithEmail() {
     console.log('Click Create Account with Email');
 
-    // Check if blank
-    if (this.state.email !== '' && this.state.password !== '') {
+    // Only allow saving if not blank
+    if (
+      this.state.email !== '' &&
+      this.state.password !== '' &&
+      this.state.passwordConfirm !== ''
+    ) {
       let email = this.state.email;
       let password = this.state.password;
       // if valid: continue to create user with firebase auth
@@ -56,6 +61,8 @@ class SignupScreen extends Component {
       });
 
       // TODO: If not valid because invalid email/password logic
+    } else if (this.state.password !== this.state.passwordConfirm) {
+      Alert.alert('Error', 'Passwords do not match', [{ text: 'OK', onPress: () => {} }]);
     } else {
       // If not valid because fields blank, show alert message to user
       Alert.alert('Error', 'Email and password are required', [{ text: 'OK', onPress: () => {} }]);
