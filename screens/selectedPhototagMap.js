@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { ScrollView, StyleSheet, Text, TextInput, View, Button } from 'react-native';
 import PhototagItem from '../components/PhototagItem';
 import * as Actions from '../redux/actions';
+import moment from 'moment';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -58,7 +59,12 @@ class MapScreen extends React.Component {
   addTocomments() {
     console.log('logged');
     let tempComments = this.state.comments;
-    tempComments.push(this.state.comment);
+    let commentObject = {
+      userName: this.props.user.displayName,
+      text: this.state.comment,
+      timeStamp: new Date(),
+    };
+    tempComments.push(commentObject);
     this.setState({ comments: tempComments });
     this.setState({ comment: '' });
   }
@@ -88,9 +94,11 @@ class MapScreen extends React.Component {
         <Button title="submit comment" onPress={this.addTocomments.bind(this)} />
         <Text style={styles.titleText}>Comments</Text>
         {this.state.comments.map((comment, i) => (
-          <Text key={i} style={styles.titleText}>
-            {comment}
-          </Text>
+          <View key={i}>
+            <Text style={styles.titleText}>{this.state.phototag.userName}</Text>
+            <Text style={styles.titleText}>{comment.text}</Text>
+            <Text style={styles.titleText}>{moment(comment.timeStamp).fromNow()}</Text>
+          </View>
         ))}
         <Button title="save changes" onPress={this.saveChanges.bind(this)} />
       </ScrollView>
