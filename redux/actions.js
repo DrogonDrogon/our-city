@@ -13,7 +13,7 @@ const IS_LOGGED_IN = 'IS_LOGGED_IN';
 // Action creators
 
 // For checking if user is logged in
-export const checkUserLogin = (userName) => dispatch => {
+export const checkUserLogin = () => dispatch => {
   firebase.auth().onAuthStateChanged(user => {
     if (user != null) {
       console.log('We are authenticated now! User is', user);
@@ -23,6 +23,13 @@ export const checkUserLogin = (userName) => dispatch => {
       userInfo.votes = {};
       userInfo.votes.photoID = '1:like, 0:no vote, -1:dislike ';
 
+      // If auth through email/password, save info
+      if (user.providerData[0].providerId === 'password') {
+        userInfo.authMethod = 'email-password';
+        userInfo.email = user.email;
+        // note: signing up with email/password does not give you displayName and photoUrl,
+        // the user should be able to set those fields in their profile/account view
+      }
 
       // If auth through fb, can save displayName and photoUrl
       if (user.providerData[0].providerId === 'facebook.com') {

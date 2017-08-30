@@ -26,13 +26,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class SignupScreen extends Component {
   state = {
-    signupName: '',
     email: '',
     password: '',
   };
 
   componentDidMount() {
-    this.props.checkIfLoggedIn();
+    this.props.checkIfLoggedIn(this.state.signupName);
   }
 
   componentDidUpdate() {
@@ -46,7 +45,7 @@ class SignupScreen extends Component {
     console.log('Click Create Account with Email');
 
     // Check if blank
-    if (this.state.email !== '' && this.state.password !== '' && this.state.signupName !== '') {
+    if (this.state.email !== '' && this.state.password !== '') {
       let email = this.state.email;
       let password = this.state.password;
       // if valid: continue to create user with firebase auth
@@ -56,12 +55,10 @@ class SignupScreen extends Component {
         Alert.alert('Error', error.message, [{ text: 'OK', onPress: () => {} }]);
       });
 
-      // TODO: Check & Alert if invalid email OR invalid or non-matching password
+      // TODO: If not valid because invalid email/password logic
     } else {
-      // If fields blank, show alert message to user
-      Alert.alert('Error', 'Please fill in name, email, and password', [
-        { text: 'OK', onPress: () => console.log('OK pressed') },
-      ]);
+      // If not valid because fields blank, show alert message to user
+      Alert.alert('Error', 'Email and password are required', [{ text: 'OK', onPress: () => {} }]);
     }
   }
 
@@ -77,14 +74,6 @@ class SignupScreen extends Component {
     return (
       <ScrollView style={LoginStyles.scroll}>
         <Container>
-          <Container>
-            <Label text="Name" />
-            <TextInput
-              style={LoginStyles.textInput}
-              placeholder="Name"
-              onChangeText={text => this.setState({ signupName: text })}
-            />
-          </Container>
           <Container>
             <Label text="Email" />
             <TextInput
