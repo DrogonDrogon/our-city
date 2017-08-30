@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, TextInput, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  ScrollView,
+  Modal,
+  TouchableHighlight,
+} from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Expo from 'expo';
@@ -32,9 +40,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 class Login extends Component {
+  static navigationOptions = { header: null };
+
   state = {
     email: '',
     password: '',
+    modalVisible: false,
   };
 
   componentWillMount() {
@@ -55,6 +66,10 @@ class Login extends Component {
 
   pressLoginWithEmail() {
     this.login(this.state.email, this.state.password);
+  }
+
+  pressSignup() {
+    this.props.navigation.navigate('Signup');
   }
 
   async loginWithFacebook() {
@@ -96,10 +111,14 @@ class Login extends Component {
       <ScrollView style={LoginStyles.scroll}>
         <Container>
           <Button
-            label="Forgot Login/Pass"
-            styles={{ button: LoginStyles.alignRight, label: LoginStyles.label }}
-            onPress={this.pressLoginWithFb.bind(this)}
-          />
+            styles={{ button: LoginStyles.transparentButton }}
+            onPress={this.pressLoginWithFb.bind(this)}>
+            <View style={LoginStyles.inline}>
+              <Icon name="facebook-official" size={30} color="#3B5699" />
+              <Text style={[LoginStyles.buttonBlueText, LoginStyles.buttonBigText]}> Connect </Text>
+              <Text style={LoginStyles.buttonBlueText}>with Facebook</Text>
+            </View>
+          </Button>
         </Container>
         <Container>
           <Label text="Username or Email" />
@@ -118,24 +137,25 @@ class Login extends Component {
         </Container>
         <Container>
           <Button
-            styles={{ button: LoginStyles.transparentButton }}
-            onPress={this.pressLoginWithFb.bind(this)}>
-            <View style={LoginStyles.inline}>
-              <Icon name="facebook-official" size={30} color="#3B5699" />
-              <Text style={[LoginStyles.buttonBlueText, LoginStyles.buttonBigText]}> Connect </Text>
-              <Text style={LoginStyles.buttonBlueText}>with Facebook</Text>
-            </View>
-          </Button>
+            label="Sign In"
+            styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
+            onPress={this.pressLoginWithEmail.bind(this)}
+          />
         </Container>
-        <View style={LoginStyles.footer}>
-          <Container>
-            <Button
-              label="Sign In"
-              styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
-              onPress={this.pressLoginWithEmail.bind(this)}
-            />
-          </Container>
-        </View>
+        <Container>
+          <Button
+            label="New user? Sign up"
+            styles={{ button: LoginStyles.alignRight, label: LoginStyles.label }}
+            onPress={this.pressSignup.bind(this)}
+          />
+        </Container>
+        <Container>
+          <Button
+            label="Forgot Login/Pass"
+            styles={{ button: LoginStyles.alignRight, label: LoginStyles.label }}
+            onPress={this.pressLoginWithFb.bind(this)}
+          />
+        </Container>
       </ScrollView>
     );
   }
