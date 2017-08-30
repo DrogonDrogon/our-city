@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Image, View, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { Button, Image, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePicker, Location, Permissions } from 'expo';
 import * as Actions from '../redux/actions';
 
@@ -112,20 +113,12 @@ class CameraScreen extends React.Component {
     let { image } = this.state;
 
     return (
-      <View style={{ flex: 1, alignItems: 'center' }}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.center} behavior="padding">
         <Button title="Pick an image from camera roll" onPress={this._pickImage} />
         <Button title="Use camera" onPress={this._takePic} />
-        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+        {image && <Image source={{ uri: image }} style={styles.imageSetting} />}
         <TextInput
-          style={{
-            height: 80,
-            borderColor: 'gray',
-            borderWidth: 1,
-            width: '80%',
-            textAlignVertical: 'top',
-            fontSize: 16,
-            padding: 10,
-          }}
+          style={styles.descriptionInput}
           placeholder="Enter description"
           onChangeText={text => this.setState({ description: text })}
           keyboardType={'default'}
@@ -134,9 +127,28 @@ class CameraScreen extends React.Component {
         />
         <Button title="Upload my post" onPress={this._saveImg} />
         {this.props.isPosting && <ActivityIndicator animated={this.props.isPosting} size="large" />}
-      </View>
+      </KeyboardAwareScrollView>
     );
   }
 }
+
+const styles = {
+  imageSetting: {
+    width: 200,
+    height: 200,
+  },
+  descriptionInput: {
+    height: 80,
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: '80%',
+    textAlignVertical: 'top',
+    fontSize: 16,
+    padding: 10,
+  },
+  center: {
+    alignItems: 'center',
+  },
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CameraScreen);
