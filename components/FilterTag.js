@@ -2,14 +2,14 @@ import React from 'React';
 import { View, Text, Image, StyleSheet, Button } from 'react-native';
 
 
-class FilterTagItem extends React.Component {
-
+class FilterTag extends React.Component {
+  constructor
 
   render(){
     return(
       <Button
-        onPress={}
-        title="Learn More"
+        onPress={this.props.title}
+        title={this.props.tag}
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
       />
