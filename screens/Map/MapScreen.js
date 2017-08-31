@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapView } from 'expo';
+import { MapView, Location, Permissions } from 'expo';
 import { connect } from 'react-redux';
 import { Text, Image, StyleSheet } from 'react-native';
 import db from '../../db';
@@ -12,10 +12,46 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 class MapScreen extends React.Component {
+  state = {
+    region: {
+      latitude: 40.750355960509054,
+      longitude: -73.97669815393424,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    },
+  };
+
+  componentWillMount() {
+    this.getLocation();
+  }
+
   goTophototags(marker) {
     this.props.navigation.navigate('phototagFromMap', marker);
   }
 
+  getLocation() {
+    const getLocationAsync = async () => {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== 'granted') {
+        this.setState({
+          errorMessage: 'Permission to access location was denied',
+        });
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+
+      let tempRegion = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+      console.log(tempRegion);
+      this.setState({ region: tempRegion });
+    };
+
+    getLocationAsync();
+  }
   render() {
     return (
       <MapView
@@ -24,12 +60,7 @@ class MapScreen extends React.Component {
         toolbarEnabled
         provider={MapView.PROVIDER_GOOGLE}
         style={{ flex: 1 }}
-        initialRegion={{
-          latitude: 40.750355960509054,
-          longitude: -73.97669815393424,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}>
+        region={this.state.region}>
         {this.props.phototags &&
           this.props.phototags.map((marker, i) => (
             <MapView.Marker
