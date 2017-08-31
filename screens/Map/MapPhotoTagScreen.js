@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
-import PhototagItem from '../../components/PhototagItem';
+import PhototDisplay from '../../components/PhotoDisplay';
 import Comment from '../../components/comment';
 import * as Actions from '../../actions';
 
@@ -106,7 +106,7 @@ class MapScreen extends React.Component {
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={{ alignItems: 'center' }}>
-        <PhototagItem phototag={this.state.phototag} />
+        <PhototDisplay phototag={this.state.phototag} />
         <TouchableHighlight onPress={this.addFavourite.bind(this)}>
           <Ionicons name="md-heart" size={32} color={this.state.favouriteBtn} />
         </TouchableHighlight>
