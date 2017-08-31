@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, Button } from 'react-native';
 
 
 class FilterTag extends React.Component {
-  constructor
+  
 
   render(){
     return(
@@ -13,6 +13,8 @@ class FilterTag extends React.Component {
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
       />
-      )
+    );
   }
 }
+
+export default FilterTag;

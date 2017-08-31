@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View, Button , Slider} from 'react-native';
 import * as Actions from '../../actions';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Expo from 'expo';
 import firebase from 'firebase';
 import db from '../../db';
-import FilterTag from './<FilterTag></FilterTag>.js'
+import FilterTag from '../../components/FilterTag.js';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -16,15 +16,19 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 class FilterScreen extends Component {
-
-state = {
-    selectedTags: [],
-    numResults: 50,
-    radius: .5,
-    favories: false,
-    tags: [],
-  };
-
+  constructor(props) {
+    super(props)
+    this.state = {
+        selectedTags: [],
+        numResults: 50,
+        radius: .5,
+        favories: false,
+        tags: [],
+      };
+  }
+  getVal(val){
+  console.warn(val);
+  }
 
   render(){
     return(
