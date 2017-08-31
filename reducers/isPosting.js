@@ -1,10 +1,8 @@
-const user = (state = {}, action) => {
+export default (state = null, action) => {
   switch (action.type) {
-    case 'SET_USER':
+    case 'IS_POSTING':
       return action.payload;
     default:
       return state;
   }
 };
-
-export default user;

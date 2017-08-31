@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Image, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePicker, Location, Permissions } from 'expo';
-import * as Actions from '../redux/actions';
+import * as Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {

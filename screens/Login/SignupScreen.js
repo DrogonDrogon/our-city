@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { TextInput, ScrollView, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'firebase';
-import * as Actions from '../../redux/actions';
+import * as Actions from '../../actions';
 import Container from '../../components/Container';
 import Button from '../../components/Button';
 import Label from '../../components/Label';

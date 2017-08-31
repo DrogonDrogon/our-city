@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, Button, TouchableHighlight } from 'react-
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import * as Actions from '../../redux/actions';
+import * as Actions from '../../actions';
 import PhototagItem from '../../components/PhototagItem';
 
 const mapStateToProps = (state, ownProps) => {

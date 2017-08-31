@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
-import * as Actions from '../redux/actions';
+import * as Actions from '../actions';
 
 const mapStateToProps = state => {
   return {
