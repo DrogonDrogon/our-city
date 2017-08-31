@@ -3,6 +3,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { ScrollView, StyleSheet, Text, TextInput, View, Button } from 'react-native';
 import PhototagItem from '../../components/PhototagItem';
+import Comment from '../../components/comment';
 import * as Actions from '../../actions';
 
 const mapStateToProps = (state, ownProps) => {
@@ -77,10 +78,10 @@ class MapScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView>
+      <View>
         <PhototagItem phototag={this.state.phototag} />
-        <Text style={styles.titleText}>{this.state.votes}</Text>
         <Button title="upvote" onPress={this.upvote.bind(this)} />
+        <Text style={styles.titleText}>{this.state.votes}</Text>
         <Button title="unvote" onPress={this.unvote.bind(this)} />
         <TextInput
           value={this.state.comment}
@@ -90,15 +91,13 @@ class MapScreen extends React.Component {
         />
         <Button title="submit comment" onPress={this.addTocomments.bind(this)} />
         <Text style={styles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => (
-          <View key={i}>
-            <Text style={styles.titleText}>{this.state.phototag.userName}</Text>
-            <Text style={styles.titleText}>{comment.text}</Text>
-            <Text style={styles.titleText}>{moment(comment.timeStamp).fromNow()}</Text>
-          </View>
-        ))}
         <Button title="save changes" onPress={this.saveChanges.bind(this)} />
-      </ScrollView>
+        <ScrollView>
+          {this.state.comments.map((comment, i) => (
+            <Comment key={i} userName={this.state.phototag.userName} comment={comment} />
+          ))}
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -107,6 +106,7 @@ const styles = StyleSheet.create({
   titleText: {
     textAlign: 'center',
     fontSize: 20,
+    alignItems: 'center',
   },
 });
 
