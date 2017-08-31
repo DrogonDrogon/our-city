@@ -5,13 +5,13 @@ import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Expo from 'expo';
 import firebase from 'firebase';
-import * as Actions from '../redux/actions';
-import Container from '../components/Container';
-import Button from '../components/Button';
-import Label from '../components/Label';
-import config from '../config/config';
-import AppStyles from '../styles/AppStyles.js';
-import LoginStyles from '../styles/LoginStyles.js';
+import * as Actions from '../../redux/actions';
+import Container from '../../components/Container';
+import Button from '../../components/Button';
+import Label from '../../components/Label';
+import config from '../../config/config';
+import AppStyles from '../../styles/AppStyles.js';
+import LoginStyles from '../../styles/LoginStyles.js';
 
 const mapStateToProps = (state, ownProps) => {
   return {

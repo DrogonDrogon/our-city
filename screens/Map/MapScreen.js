@@ -1,10 +1,10 @@
 import React from 'react';
 import { MapView } from 'expo';
 import db from '../db';
-import * as Actions from '../redux/actions';
+import * as Actions from '../../redux/actions';
 import { connect } from 'react-redux';
 import { Text, Image, StyleSheet } from 'react-native';
-import MarkerTag from '../components/markerTag';
+import MarkerTag from '../../components/markerTag';
 
 const mapStateToProps = (state, ownProps) => {
   return {

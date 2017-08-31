@@ -3,9 +3,9 @@ import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import Colors from '../constants/Colors';
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from '../screens/User/ProfileScreen';
 import CameraScreen from '../screens/CameraScreen';
-import MapScreen from '../screens/MapScreen';
+import MapScreen from '../screens/Map/MapScreen';
 
 export default TabNavigator(
   {
@@ -27,18 +27,18 @@ export default TabNavigator(
         switch (routeName) {
           case 'Home':
             iconName = Platform.OS === 'ios'
-              ? `ios-information-circle${focused ? '' : '-outline'}`
-              : 'md-information-circle';
+              ? `ios-person${focused ? '' : '-outline'}`
+              : 'md-person';
             break;
           case 'Camera':
             iconName = Platform.OS === 'ios'
               ? `ios-camera${focused ? '' : '-outline'}`
-              : 'md-link';
+              : 'md-camera';
             break;
           case 'Map':
             iconName = Platform.OS === 'ios'
               ? `ios-map${focused ? '' : '-outline'}`
-              : 'md-options';
+              : 'md-map';
         }
         return (
           <Ionicons
