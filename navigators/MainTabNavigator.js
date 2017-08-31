@@ -2,9 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
-
 import Colors from '../constants/Colors';
-
 import HomeScreen from '../screens/HomeScreen';
 import CameraScreen from '../screens/CameraScreen';
 import MapScreen from '../screens/MapScreen';
@@ -34,12 +32,12 @@ export default TabNavigator(
             break;
           case 'Camera':
             iconName = Platform.OS === 'ios'
-              ? `ios-link${focused ? '' : '-outline'}`
+              ? `ios-camera${focused ? '' : '-outline'}`
               : 'md-link';
             break;
           case 'Map':
             iconName = Platform.OS === 'ios'
-              ? `ios-options${focused ? '' : '-outline'}`
+              ? `ios-map${focused ? '' : '-outline'}`
               : 'md-options';
         }
         return (
