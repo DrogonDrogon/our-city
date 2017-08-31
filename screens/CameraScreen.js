@@ -100,6 +100,7 @@ class CameraScreen extends React.Component {
       phototag.upvotes = 0;
       phototag.downvotes = 0;
       phototag.comments = ['like', 'dislike'];
+      phototag.url = this.props.user.photoUrl;
       this.props.submitOnePhototag(phototag);
       this.setState({ image: null });
       this.descriptionInput.setNativeProps({ text: '' });
