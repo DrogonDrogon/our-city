@@ -35,17 +35,15 @@ const styles = StyleSheet.create({
   container: {
     width: '75%',
     height: 300,
-    flex: 1,
-    padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 0,
+    marginBottom: 5,
     alignItems: 'center',
     borderColor: '#000000',
     borderWidth: 1,
   },
   descriptionText: {
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });
 
