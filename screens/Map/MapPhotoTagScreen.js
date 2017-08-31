@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
   titleText: {
     textAlign: 'center',
     fontSize: 20,
+    alignItems: 'center',
   },
 });
 

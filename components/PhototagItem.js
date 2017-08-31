@@ -8,7 +8,7 @@ class PhototagItem extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          style={{ width: 50, height: 50, marginTop: 5, marginBottom: 5 }}
+          style={{ width: 10, height: 10, marginTop: 5, marginBottom: 5 }}
           source={{
             uri:
               this.props.phototag.photoUrl ||
