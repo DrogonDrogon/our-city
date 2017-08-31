@@ -1,5 +1,5 @@
 import db from '../db';
-import { RECEIVE_PHOTOTAGS, IS_POSTING } from './constants';
+import { RECEIVE_PHOTOTAGS, IS_LOADING } from './constants';
 
 // TODO: For fetching all phototags for ONE user
 
@@ -38,7 +38,7 @@ export const postPhototagRequested = phototag => dispatch => {
     .child('phototags/' + newPostKey)
     .update(phototag)
     .then(() => {
-      dispatch(updatePostingStatus(false));
+      dispatch(updateLoadingStatus(false));
       // Fire another fetch to get all updated phototags
       dispatch(fetchPhototags);
     })
@@ -46,9 +46,9 @@ export const postPhototagRequested = phototag => dispatch => {
 };
 
 // For updating posting/loading status
-export const updatePostingStatus = bool => {
+export const updateLoadingStatus = bool => {
   return {
-    type: IS_POSTING,
+    type: IS_LOADING,
     payload: bool,
   };
 };

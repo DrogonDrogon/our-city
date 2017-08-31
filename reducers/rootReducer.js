@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 import user from './user';
 import phototags from './phototags';
-import isPosting from './isPosting';
+import isLoading from './isLoading';
 import isLoggedIn from './isLoggedIn';
 
-const rootReducer = combineReducers({ user, phototags, isPosting, isLoggedIn });
+const rootReducer = combineReducers({ user, phototags, isLoading, isLoggedIn });
 
 export default rootReducer;
