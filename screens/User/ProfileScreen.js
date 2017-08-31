@@ -5,9 +5,20 @@ import NavigationBar from 'react-native-navbar';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ImagePicker } from 'expo';
+import { RNS3 } from 'react-native-aws3';
 import firebase from 'firebase';
+import config from '../../config/config';
 import * as Actions from '../../actions';
 import PhototagItem from '../../components/PhototagItem';
+
+const awsOptions = {
+  keyPrefix: 'users/',
+  bucket: 'arcity',
+  region: 'us-east-1',
+  accessKey: config.aws.accessKey,
+  secretKey: config.aws.secretKey,
+  successActionStatus: 201,
+};
 
 const mapStateToProps = (state, ownProps) => {
   // Passes along any updated state that comes from the reducer into the component's props
@@ -101,7 +112,6 @@ class HomeScreen extends React.Component {
   };
 
   goToPhototags = item => {
-    console.log('clicked!!!!!!!!');
     this.props.navigation.navigate('phototagFromUser', item);
   };
 
@@ -121,7 +131,6 @@ class HomeScreen extends React.Component {
 
     if (!result.cancelled) {
       this.setState({ imageUri: result.uri });
-      // this.setState({ imageData: result.base64 });
     }
   };
 
@@ -132,27 +141,30 @@ class HomeScreen extends React.Component {
       this.state.editDisplayNameText !== this.props.user.displayName ||
       this.state.image !== this.props.user.photoUrl
     ) {
+
+      // Set up an updated user object
       let updatedUser = this.props.user;
       updatedUser.displayName = this.state.editDisplayNameText;
+      updatedUser.photoUrl = `https://s3.amazonaws.com/arcity/users/${this.props.user.id}.jpg`;
 
-      console.log('image data uri', this.state.imageUri);
-      // console.log('image data data', this.state.imageData);
-      // let imageFile = this.state.imageData;
+      // Set up file uri to save to AWS
+      let file = {
+        uri: this.state.imageUri,
+        name: `${this.props.user.id}.jpg`,
+        type: 'image/png',
+      };
 
-      // firebase
-      //   .storage()
-      //   .ref()
-      //   .child(`test/test.png`)
-      //   .putString(imageFile)
-      //   .then(snapshot => {
-      //     console.log('uploaded a base 64 string');
-      //   })
-      //   .catch(err => {
-      //     console.log('problems upload err', err);
-      //   });
-
-      // dispatch saving user
-      this.props.submitUserUpdate(updatedUser);
+      // Make AWS upload request
+      RNS3.put(file, awsOptions).then(response => {
+        if (response.status !== 201) {
+          console.log('[s3 upload] ERROR failed to upload image', response.body);
+          // TODO: handle error through alert
+        } else {
+          console.log('[s3 upload] Success!');
+          // Dispatch saving user to firebase
+          this.props.submitUserUpdate(updatedUser);
+        }
+      });
     }
     this._toggleModal(false);
   };
