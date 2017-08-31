@@ -18,9 +18,9 @@ const mapStateToProps = (state, ownProps) => {
 class FilterScreen extends Component {
 
 state = {
-    comment: '',
+    selectedTags: [],
     numResults: 50,
-    radius: 500,
+    radius: .5,
     favories: false,
     tags: [],
   };
@@ -37,20 +37,20 @@ state = {
         <View>
           <Slider
            style={{ width: 300 }}
-           step={1}
-           minimumValue={}
-           maximumValue={71}
-           value={this.state.age}
-           onValueChange={val => this.setState({ age: val })}
+           step={.25}
+           minimumValue={.25}
+           maximumValue={10}
+           value={this.state.radius}
+           onValueChange={val => this.setState({ radius: val })}
            onSlidingComplete={ val => this.getVal(val)}
           />
           <Slider
            style={{ width: 300 }}
            step={1}
-           minimumValue={18}
-           maximumValue={71}
-           value={this.state.age}
-           onValueChange={val => this.setState({ age: val })}
+           minimumValue={10}
+           maximumValue={100}
+           value={this.state.numResults}
+           onValueChange={val => this.setState({ numResults: val })}
            onSlidingComplete={ val => this.getVal(val)}
           />
         </View>
