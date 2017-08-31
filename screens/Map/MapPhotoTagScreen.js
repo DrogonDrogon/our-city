@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ScrollView, StyleSheet, Text, TextInput, View, Button } from 'react-native';
-import PhototagItem from '../components/PhototagItem';
-import * as Actions from '../redux/actions';
+import PhototagItem from '../../components/PhototagItem';
+import * as Actions from '../../redux/actions';
 import moment from 'moment';
 
 const mapStateToProps = (state, ownProps) => {

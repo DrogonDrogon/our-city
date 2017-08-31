@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { TextInput, ScrollView, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'firebase';
-import * as Actions from '../redux/actions';
-import Container from '../components/Container';
-import Button from '../components/Button';
-import Label from '../components/Label';
-import LoginStyles from '../styles/LoginStyles.js';
+import * as Actions from '../../redux/actions';
+import Container from '../../components/Container';
+import Button from '../../components/Button';
+import Label from '../../components/Label';
+import LoginStyles from '../../styles/LoginStyles.js';
 
 const mapStateToProps = (state, ownProps) => {
   return {

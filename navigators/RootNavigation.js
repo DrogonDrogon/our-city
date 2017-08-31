@@ -2,11 +2,11 @@ import { Notifications } from 'expo';
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
-import LoginScreen from '../screens/LoginScreen';
-import selectedPhototagMap from '../screens/selectedPhototagMap';
-import selectedPhototagUser from '../screens/SelectedPhotoTagUser';
+import LoginScreen from '../screens/Login/LoginScreen';
+import selectedPhototagMap from '../screens/Map/MapPhotoTagScreen';
+import selectedPhototagUser from '../screens/User/UserPhotoTagScreen';
 import SplashScreen from '../screens/SplashScreen';
-import SignupScreen from '../screens/SignupScreen';
+import SignupScreen from '../screens//Login/SignupScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
