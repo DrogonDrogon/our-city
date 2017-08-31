@@ -77,7 +77,7 @@ class HomeScreen extends React.Component {
   render() {
     if (this.props.phototags && this.props.user) {
       return (
-        <ScrollView>
+        <ScrollView contentContainer={styles.content}>
           <Text style={styles.titleText}>Tagged Photos</Text>
           {this.props.phototags
             .filter(item => item.userName === this.props.user.displayName)
@@ -100,6 +100,12 @@ const styles = StyleSheet.create({
   titleText: {
     textAlign: 'center',
     fontSize: 20,
+  },
+  content: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

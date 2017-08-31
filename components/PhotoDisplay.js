@@ -1,7 +1,7 @@
 import React from 'React';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
 
-class PhototagItem extends React.Component {
+export default class PhototDisplay extends React.Component {
   render() {
     let imageUri = `data:image/png;base64,${this.props.phototag.imageDataIn64}`;
 
@@ -17,7 +17,7 @@ class PhototagItem extends React.Component {
         />
         <TouchableHighlight
           onPress={this.props.goTophototags}
-          style={{ width: '100%', height: 200 }}>
+          style={{ width: '100%', height: 250 }}>
           <Image
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
             source={{ uri: imageUri }}
@@ -33,13 +33,11 @@ class PhototagItem extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: '75%',
+    width: '100%',
     height: 300,
     marginTop: 0,
     marginBottom: 5,
     alignItems: 'center',
-    borderColor: '#000000',
-    borderWidth: 1,
   },
   descriptionText: {
     marginTop: 10,
@@ -50,4 +48,3 @@ const styles = StyleSheet.create({
 // <Text>
 // Location: {this.props.phototag.locationLat}, {this.props.phototag.locationLong}
 // </Text>
-export default PhototagItem;

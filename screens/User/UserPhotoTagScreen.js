@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ScrollView, StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import * as Actions from '../../actions';
-import PhototagItem from '../../components/PhototagItem';
+import PhotoDisplay from '../../components/PhotoDisplay';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -42,7 +42,7 @@ class UserScreen extends React.Component {
     return (
       <ScrollView>
         <Text style={styles.titleText} />
-        <PhototagItem phototag={this.state.phototag} />
+        <PhotoDisplay phototag={this.state.phototag} />
 
         <Text style={styles.titleText} />
         <TextInput
