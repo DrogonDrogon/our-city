@@ -1,9 +1,8 @@
 import React from 'react';
 import { MapView } from 'expo';
-import db from '../../db';
-import * as Actions from '../../redux/actions';
 import { connect } from 'react-redux';
 import { Text, Image, StyleSheet } from 'react-native';
+import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 
 const mapStateToProps = (state, ownProps) => {

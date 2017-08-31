@@ -5,7 +5,7 @@ import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Expo from 'expo';
 import firebase from 'firebase';
-import * as Actions from '../../redux/actions';
+import * as Actions from '../../actions';
 import Container from '../../components/Container';
 import Button from '../../components/Button';
 import Label from '../../components/Label';
