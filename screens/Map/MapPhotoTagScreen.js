@@ -1,8 +1,20 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { ScrollView, StyleSheet, Text, TextInput, View, Button } from 'react-native';
-import PhototagItem from '../../components/PhototagItem';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+  ListView,
+  TouchableHighlight,
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Ionicons } from '@expo/vector-icons';
+import PhototDisplay from '../../components/PhotoDisplay';
+import Comment from '../../components/comment';
 import * as Actions from '../../actions';
 
 const mapStateToProps = (state, ownProps) => {
@@ -28,6 +40,8 @@ class MapScreen extends React.Component {
     phototag: this.props.navigation.state.params,
     edited: false,
     comments: this.props.navigation.state.params.comments,
+    favouriteBtn: 'black',
+    isFavourite: 'false',
   };
 
   upvote() {
@@ -50,20 +64,34 @@ class MapScreen extends React.Component {
     }
   }
 
+  addFavourite() {
+    if (!this.state.isFavourite) {
+      this.props.user.favs[this.state.phototag.id] = this.state.phototag;
+      this.setState({ favouriteBtn: 'red' });
+      this.setState({ isFavourite: true });
+    } else {
+      delete this.props.user.favs[this.state.phototag.id];
+      this.setState({ favouriteBtn: 'black' });
+      this.setState({ isFavourite: false });
+    }
+  }
+
   editComment(text) {
     this.setState({ comment: text });
   }
   addTocomments() {
-    console.log('logged');
-    let tempComments = this.state.comments;
-    let commentObject = {
-      userName: this.props.user.displayName,
-      text: this.state.comment,
-      timeStamp: new Date(),
-    };
-    tempComments.push(commentObject);
-    this.setState({ comments: tempComments });
-    this.setState({ comment: '' });
+    if (this.state.comment !== '') {
+      console.log('logged');
+      let tempComments = this.state.comments;
+      let commentObject = {
+        userName: this.props.user.displayName,
+        text: this.state.comment,
+        timeStamp: new Date(),
+      };
+      tempComments.push(commentObject);
+      this.setState({ comments: tempComments });
+      this.setState({ comment: '' });
+    }
   }
 
   saveChanges() {
@@ -77,11 +105,18 @@ class MapScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView>
-        <PhototagItem phototag={this.state.phototag} />
+      <KeyboardAwareScrollView contentContainerStyle={{ alignItems: 'center' }}>
+        <PhototDisplay phototag={this.state.phototag} />
+        <TouchableHighlight onPress={this.addFavourite.bind(this)}>
+          <Ionicons name="md-heart" size={32} color={this.state.favouriteBtn} />
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this.upvote.bind(this)}>
+          <Ionicons name="md-arrow-up" size={32} color="blue" />
+        </TouchableHighlight>
         <Text style={styles.titleText}>{this.state.votes}</Text>
-        <Button title="upvote" onPress={this.upvote.bind(this)} />
-        <Button title="unvote" onPress={this.unvote.bind(this)} />
+        <TouchableHighlight onPress={this.unvote.bind(this)}>
+          <Ionicons name="md-arrow-down" size={32} color="blue" />
+        </TouchableHighlight>
         <TextInput
           value={this.state.comment}
           placeholder="Enter comment"
@@ -89,16 +124,13 @@ class MapScreen extends React.Component {
           clearButtonMode={'always'}
         />
         <Button title="submit comment" onPress={this.addTocomments.bind(this)} />
-        <Text style={styles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => (
-          <View key={i}>
-            <Text style={styles.titleText}>{this.state.phototag.userName}</Text>
-            <Text style={styles.titleText}>{comment.text}</Text>
-            <Text style={styles.titleText}>{moment(comment.timeStamp).fromNow()}</Text>
-          </View>
-        ))}
         <Button title="save changes" onPress={this.saveChanges.bind(this)} />
-      </ScrollView>
+        <Text style={styles.titleText}>Comments</Text>
+
+        {this.state.comments.map((comment, i) => (
+          <Comment key={i} userName={this.state.phototag.userName} comment={comment} />
+        ))}
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -107,6 +139,7 @@ const styles = StyleSheet.create({
   titleText: {
     textAlign: 'center',
     fontSize: 20,
+    alignItems: 'center',
   },
 });
 
