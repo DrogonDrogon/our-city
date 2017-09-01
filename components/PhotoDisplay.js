@@ -9,7 +9,7 @@ export default class PhotoDisplay extends React.Component {
           style={{ width: 10, height: 10, marginTop: 5, marginBottom: 5 }}
           source={{
             uri:
-              this.props.phototag.photoUrl ||
+              this.props.phototag.userProfileUrl ||
               'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png',
           }}
         />
