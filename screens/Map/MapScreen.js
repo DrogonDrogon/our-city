@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 class MapScreen extends React.Component {
-  goTophototags(marker) {
+  goToPhototags(marker) {
     this.props.navigation.navigate('phototagFromMap', marker);
   }
 
@@ -39,7 +39,7 @@ class MapScreen extends React.Component {
                 longitude: marker.locationLong,
               }}
               title={marker.description}>
-              <MapView.Callout tooltip onPress={this.goTophototags.bind(this, marker)}>
+              <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, marker)}>
                 <MarkerTag phototag={marker} />
               </MapView.Callout>
             </MapView.Marker>

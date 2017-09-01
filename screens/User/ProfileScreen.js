@@ -121,7 +121,6 @@ class HomeScreen extends React.Component {
   };
 
   _pickImage = async () => {
-    console.log('Click change pic');
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3],
@@ -145,13 +144,13 @@ class HomeScreen extends React.Component {
       // Set up an updated user object
       let updatedUser = this.props.user;
       updatedUser.displayName = this.state.editDisplayNameText;
-      updatedUser.photoUrl = `https://s3.amazonaws.com/arcity/users/${this.props.user.id}.jpg`;
+      updatedUser.photoUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${this.props.user.id}.jpg`;
 
       // Set up file uri to save to AWS
       let file = {
         uri: this.state.imageUri,
         name: `${this.props.user.id}.jpg`,
-        type: 'image/png',
+        type: 'image/jpg',
       };
 
       // Make AWS upload request
@@ -224,7 +223,7 @@ class HomeScreen extends React.Component {
               <PhototagItem
                 phototag={item}
                 key={i}
-                goTophototags={this.goToPhototags.bind(this, item)}
+                goToPhototags={this.goToPhototags.bind(this, item)}
               />
             ))}
         </ScrollView>
