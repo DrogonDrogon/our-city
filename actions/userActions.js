@@ -6,7 +6,7 @@ import { SET_USER, IS_LOGGED_IN } from './constants';
 export const checkUserLogin = () => dispatch => {
   firebase.auth().onAuthStateChanged(user => {
     if (user != null) {
-      console.log('We are authenticated now! User is', user);
+      console.log('We are authenticated now! User is', user.uid);
       // check if new user
       dispatch(getUserByIdBegin(user));
     } else {

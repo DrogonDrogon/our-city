@@ -3,8 +3,6 @@ import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native'
 
 class PhototagItem extends React.Component {
   render() {
-    let imageUri = `data:image/png;base64,${this.props.phototag.imageDataIn64}`;
-
     return (
       <View style={styles.container}>
         <Image
@@ -16,14 +14,14 @@ class PhototagItem extends React.Component {
           }}
         />
         <TouchableHighlight
-          onPress={this.props.goTophototags}
+          onPress={this.props.goToPhototags}
           style={{ width: '100%', height: 200 }}>
           <Image
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-            source={{ uri: imageUri }}
+            source={{ uri: this.props.phototag.imageUrl }}
           />
         </TouchableHighlight>
-        <Text onPress={this.props.goTophototags} style={styles.descriptionText}>
+        <Text onPress={this.props.goToPhototags} style={styles.descriptionText}>
           {this.props.phototag.description}
         </Text>
       </View>
