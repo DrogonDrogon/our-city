@@ -40,7 +40,7 @@ class MapScreen extends React.Component {
     phototag: this.props.navigation.state.params,
     edited: false,
     comments: this.props.navigation.state.params.comments,
-    favouriteBtn: 'black',
+    favouriteBtn: this.props.user[this.state.phototag.id] ? 'red' : 'black',
     isFavourite: 'false',
   };
 

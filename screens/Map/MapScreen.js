@@ -66,24 +66,21 @@ class MapScreen extends React.Component {
     lon1,
     lat2 = this.state.region.latitude,
     lon2 = this.state.region.longitude,
-    distance = 1000
+    distance = 10
   ) {
-    Number.prototype.toRadians = () => {
-      return this * Math.PI / 180;
+    const deg2rad = deg => {
+      return deg * (Math.PI / 180);
     };
-    var R = 6371e3; // metres
-    var φ1 = lat1.toRadians();
-    var φ2 = lat2.toRadians();
-    var Δφ = (lat2 - lat1).toRadians();
-    var Δλ = (lon2 - lon1).toRadians();
-
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
     var a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    var d = R * c;
-    //if (d > distance) return false;
+    var d = R * c; // Distance in km
+    console.log(d);
+    if (d > distance) return false;
     return true;
   }
 
@@ -109,19 +106,21 @@ class MapScreen extends React.Component {
         style={{ flex: 1 }}
         region={this.state.region}>
         {this.props.phototags &&
-          this.props.phototags.map((marker, i) => (
-            <MapView.Marker
-              key={i}
-              coordinate={{
-                latitude: marker.locationLat,
-                longitude: marker.locationLong,
-              }}
-              title={marker.description}>
-              <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, marker)}>
-                <MarkerTag phototag={marker} />
-              </MapView.Callout>
-            </MapView.Marker>
-          ))}
+          this.props.phototags
+            .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
+            .map((marker, i) => (
+              <MapView.Marker
+                key={i}
+                coordinate={{
+                  latitude: marker.locationLat,
+                  longitude: marker.locationLong,
+                }}
+                title={marker.description}>
+                <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, marker)}>
+                  <MarkerTag phototag={marker} />
+                </MapView.Callout>
+              </MapView.Marker>
+            ))}
       </MapView>
     );
   }
