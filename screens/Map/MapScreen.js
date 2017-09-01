@@ -28,7 +28,7 @@ class MapScreen extends React.Component {
     });
   }
 
-  goTophototags(marker) {
+  goToPhototags(marker) {
     this.props.navigation.navigate('phototagFromMap', marker);
   }
 
