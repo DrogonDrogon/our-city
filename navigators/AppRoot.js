@@ -14,7 +14,8 @@ const store = createStore(
   applyMiddleware(loggerMiddleware, thunkMiddleware)
 );
 
-export default () =>
+export default () => (
   <Provider store={store}>
     <RootNavigation />
-  </Provider>;
+  </Provider>
+);
