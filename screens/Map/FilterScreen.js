@@ -44,22 +44,22 @@ class FilterScreen extends Component {
         </ScrollView>
         <View>
           <Slider
-           style={{ width: 300 }}
-           step={.25}
-           minimumValue={.25}
-           maximumValue={10}
-           value={this.state.radius}
-           onValueChange={val => this.setState({ radius: val })}
-           onSlidingComplete={ val => this.getVal(val)}
+            style={{ width: 300 }}
+            step={0.25}
+            minimumValue={0.25}
+            maximumValue={10}
+            value={this.state.radius}
+            onValueChange={val => this.setState({ radius: val })}
+            onSlidingComplete={ val => this.getVal(val)}
           />
           <Slider
-           style={{ width: 300 }}
-           step={1}
-           minimumValue={10}
-           maximumValue={100}
-           value={this.state.numResults}
-           onValueChange={val => this.setState({ numResults: val })}
-           onSlidingComplete={ val => this.getVal(val)}
+            style={{ width: 300 }}
+            step={1}
+            minimumValue={10}
+            maximumValue={100}
+            value={this.state.numResults}
+            onValueChange={val => this.setState({ numResults: val })}
+            onSlidingComplete={ val => this.getVal(val)}
           />
         </View>
         <View>
