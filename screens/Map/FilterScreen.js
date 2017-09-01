@@ -17,26 +17,30 @@ const mapStateToProps = (state, ownProps) => {
 
 class FilterScreen extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
         selectedTags: [],
         numResults: 50,
         radius: .5,
         favories: false,
-        tags: [],
+        tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       };
   }
   getVal(val){
   console.warn(val);
   }
 
+  Select
+
   render(){
     return(
       <ScrollView>
         <ScrollView>
-        {this.state.tags.map((tag, i) => (
-            <FilterTag key={i} tag={tag} />
-          ))}
+          <View> 
+            {this.state.tags.map((tag, i) => (
+                <FilterTag key={i} tag={tag} />
+              ))}
+          </View>
         </ScrollView>
         <View>
           <Slider
@@ -59,6 +63,7 @@ class FilterScreen extends Component {
           />
         </View>
         <View>
+
         </View>
       </ScrollView>
       )
