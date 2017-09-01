@@ -135,16 +135,20 @@ class HomeScreen extends React.Component {
 
   _handleSaveProfile = () => {
     console.log('Click save profile');
-    // check to see if the name is different, if it's different than make the database call
-    if (
-      this.state.editDisplayNameText !== this.props.user.displayName ||
-      this.state.image !== this.props.user.photoUrl
-    ) {
 
+    let didNameChange = this.state.editDisplayNameText !== this.props.user.displayName;
+    let didPhotoChange = this.state.image !== this.props.user.photoUrl;
+    // check to see if fields are different, if it's different than make the database call to update user
+    if (didNameChange || didPhotoChange) {
       // Set up an updated user object
       let updatedUser = this.props.user;
-      updatedUser.displayName = this.state.editDisplayNameText;
-      updatedUser.photoUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${this.props.user.id}.jpg`;
+      if (didNameChange) {
+        updatedUser.displayName = this.state.editDisplayNameText;
+      }
+      if (didPhotoChange) {
+        updatedUser.photoUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${this
+        .props.user.id}.jpg`;
+      }
 
       // Set up file uri to save to AWS
       let file = {
