@@ -14,7 +14,7 @@ const mapStateToProps = (state, ownProps) => {
 class MapScreen extends React.Component {
   state = {
     region: {
-      latitude: 40.750355960509054,
+      latitude: 20.750355960509054,
       longitude: -73.97669815393424,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
@@ -24,13 +24,7 @@ class MapScreen extends React.Component {
   componentWillMount() {
     this.getLocation();
     Location.watchPositionAsync(location => {
-      let tempRegion = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      };
-      this.setState({ region: tempRegion });
+      this.setLocation(location);
     });
   }
 
@@ -46,21 +40,23 @@ class MapScreen extends React.Component {
           errorMessage: 'Permission to access location was denied',
         });
       }
-
       let location = await Location.getCurrentPositionAsync({});
-
-      let tempRegion = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      };
-      console.log(tempRegion);
-      this.setState({ region: tempRegion });
+      this.setLocation(location);
     };
 
     getLocationAsync();
   }
+  setLocation(location) {
+    let tempRegion = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    };
+    console.log(tempRegion);
+    this.setState({ region: tempRegion });
+  }
+
   render() {
     return (
       <MapView
