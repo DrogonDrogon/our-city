@@ -3,15 +3,13 @@ import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native'
 
 class MarkerTag extends React.Component {
   render() {
-    let imageUri = `data:image/png;base64,${this.props.phototag.imageDataIn64}`;
-
     return (
       <View style={styles.container}>
         <Image
           style={{ width: 50, height: 50, resizeMode: Image.resizeMode.contain }}
-          source={{ uri: imageUri }}
+          source={{ uri: this.props.phototag.imageUrl }}
         />
-        <Text onPress={this.props.goTophototags} style={styles.descriptionText}>
+        <Text onPress={this.props.goToPhototags} style={styles.descriptionText}>
           {this.props.phototag.description}
         </Text>
       </View>
@@ -29,7 +27,4 @@ const styles = StyleSheet.create({
   // },
 });
 
-// <Text>
-// Location: {this.props.phototag.locationLat}, {this.props.phototag.locationLong}
-// </Text>
 export default MarkerTag;
