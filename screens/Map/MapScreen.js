@@ -108,16 +108,16 @@ class MapScreen extends React.Component {
         {this.props.phototags &&
           this.props.phototags
             .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
-            .map((marker, i) => (
+            .map((markerMapped, i) => (
               <MapView.Marker
                 key={i}
                 coordinate={{
-                  latitude: marker.locationLat,
-                  longitude: marker.locationLong,
+                  latitude: markerMapped.locationLat,
+                  longitude: markerMapped.locationLong,
                 }}
-                title={marker.description}>
-                <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, marker)}>
-                  <MarkerTag phototag={marker} />
+                title={markerMapped.description}>
+                <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, markerMapped)}>
+                  <MarkerTag phototag={markerMapped} />
                 </MapView.Callout>
               </MapView.Marker>
             ))}
