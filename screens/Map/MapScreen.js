@@ -23,6 +23,15 @@ class MapScreen extends React.Component {
 
   componentWillMount() {
     this.getLocation();
+    Location.watchPositionAsync(location => {
+      let tempRegion = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+      this.setState({ region: tempRegion });
+    });
   }
 
   goTophototags(marker) {
