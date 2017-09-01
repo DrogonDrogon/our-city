@@ -5,14 +5,6 @@ class PhototagItem extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image
-          style={{ width: 10, height: 10, marginTop: 5, marginBottom: 5 }}
-          source={{
-            uri:
-              this.props.phototag.photoUrl ||
-              'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png',
-          }}
-        />
         <TouchableHighlight
           onPress={this.props.goToPhototags}
           style={{ width: '100%', height: 200 }}>
@@ -33,6 +25,7 @@ const styles = StyleSheet.create({
   container: {
     width: '75%',
     height: 300,
+    padding: 5,
     marginTop: 0,
     marginBottom: 5,
     alignItems: 'center',
