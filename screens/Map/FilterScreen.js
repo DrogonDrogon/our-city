@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View, Button , Slider} from 'react-native';
 import * as Actions from '../../actions';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Expo from 'expo';
 import firebase from 'firebase';
 import db from '../../db';
-import FilterTag from './<FilterTag></FilterTag>.js'
+import FilterTag from '../../components/FilterTag.js';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -16,23 +16,31 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 class FilterScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        selectedTags: [],
+        numResults: 50,
+        radius: .5,
+        favories: false,
+        tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
+      };
+  }
+  getVal(val){
+  console.warn(val);
+  }
 
-state = {
-    selectedTags: [],
-    numResults: 50,
-    radius: .5,
-    favories: false,
-    tags: [],
-  };
-
+  Select
 
   render(){
     return(
       <ScrollView>
         <ScrollView>
-        {this.state.tags.map((tag, i) => (
-            <FilterTag key={i} tag={tag} />
-          ))}
+          <View> 
+            {this.state.tags.map((tag, i) => (
+                <FilterTag key={i} tag={tag} />
+              ))}
+          </View>
         </ScrollView>
         <View>
           <Slider
@@ -55,6 +63,7 @@ state = {
           />
         </View>
         <View>
+
         </View>
       </ScrollView>
       )
