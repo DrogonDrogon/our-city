@@ -24,11 +24,24 @@ class MapScreen extends React.Component {
     markers: {},
     isMapToggled: true,
     modalVisible: false,
+    filters: {
+      selectedTags: [],
+      numResults: 25,
+      radius: 5,
+      favorites: false,
+      tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
+      modalVisible: false,
+      sortBy: 'Date',
+      FavIsSelected: false,
+      user: null,
+    },
   };
 
   componentWillMount() {
     this.getLocation();
-    this.setState({ markers: this.props.phototags });
+    this.setState({ 
+      markers: this.props.phototags,
+     });
     //this.setMarkersByDistance();
     Location.watchPositionAsync(location => {
       this.setLocation(location);
@@ -73,12 +86,52 @@ class MapScreen extends React.Component {
     this.setState({ region: tempRegion });
   }
 
+  getFilters(filters){
+    this.setState({
+      filters: filters,
+    });
+  };
+
+  filterPhotoTags(photoTags){
+    let filters = this.state.filters;
+    let filteredTags = [];
+    //when filtering for tags, need to make sure that photo has all of the tags in the array
+
+
+    return filteredTags;
+  };
+
+  sortPhotoTags(photoTags){
+    let sortBy = this.state.filters.sortBy;
+    if (sortBy === 'Date') {
+      return photoTags.sort((a, b) => {
+        return Date.parse(a.timestamp) - Date.parse(b.timestamp);
+      });
+    } 
+    if (sortBy === 'Popular') {
+      return photoTags.sort((a, b) => {
+        return Date.parse(a.timestamp) - Date.parse(b.timestamp);
+      });
+    }
+    if (sortBy === 'Votes') {
+      return photoTags.sort((a, b) => {
+        return a.upvotes - b.upvotes;
+      });
+    }
+    if(sortBy === 'Favorites') {
+      return photoTags.sort((a, b) => {
+        return a.upvotes - b.upvotes;
+      });
+    }
+    return photoTags;
+  }
+
   checkDistance(
+    distance = 10,
     lat1,
     lon1,
     lat2 = this.state.region.latitude,
     lon2 = this.state.region.longitude,
-    distance = 10
   ) {
     const deg2rad = deg => {
       return deg * (Math.PI / 180);
@@ -95,6 +148,8 @@ class MapScreen extends React.Component {
     if (d > distance) return false;
     return true;
   }
+
+  
 
   setMarkersByDistance() {
     var tempMarkers = [];
@@ -115,7 +170,7 @@ class MapScreen extends React.Component {
     if (this.state.isMapToggled === true) {
       return (
         <View style={{height: '100%'}}>  
-          <FilterScreen />
+          <FilterScreen getFilters={this.getFilters.bind(this)}/>
           <MapView
             showsUserLocation
             followsUserLocation
@@ -127,7 +182,7 @@ class MapScreen extends React.Component {
 
             {this.props.phototags &&
               this.props.phototags
-                .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
+                .filter(marker => this.checkDistance(this.state.filters.radius, marker.locationLat, marker.locationLong))
                 .map((markerMapped, i) => (
                   <MapView.Marker
                     key={i}
@@ -147,9 +202,9 @@ class MapScreen extends React.Component {
     } else {
       return (
         <View style={{height: '100%'}}>
-          <FilterScreen />
+          <FilterScreen getFilters={this.getFilters.bind(this)}/>
           <Button onPress={this.toggleView} title="Switch to Map" />
-          <ListView phototags={this.props.phototags} />
+          <ListView phototags={this.sortPhotoTags(this.props.phototags)} />
         </View>
       );
     }
