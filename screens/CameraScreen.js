@@ -29,6 +29,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(Actions.postPhototagRequested(phototag));
       dispatch(Actions.updateLoadingStatus(true));
     },
+    submitUserUpdate: user => {
+      dispatch(Actions.updateUser(user));
+    },
   };
 };
 
@@ -127,8 +130,9 @@ class CameraScreen extends React.Component {
           // TODO: handle error through alert
         } else {
           console.log('[s3 upload] Success!');
-          // Dispatch saving user to firebase
+          // Dispatch saving to firebase
           this.props.submitOnePhototag(phototag);
+          // this.props.submitUserUpdate({ id: this.props.user.id, phototags: {phototag.id}})
 
           // Reset image and description
           this.setState({ imageUri: null });

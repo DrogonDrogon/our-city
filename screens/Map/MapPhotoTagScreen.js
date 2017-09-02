@@ -57,7 +57,7 @@ class MapScreen extends React.Component {
 
   addFavourite() {
     if (!this.state.isFavourite) {
-      this.props.user.favs[this.state.phototag.id] = this.state.phototag;
+      this.props.user.favs[this.state.phototag.id] = true;
       this.setState({ favouriteBtn: 'red' });
       this.setState({ isFavourite: true });
     } else {
