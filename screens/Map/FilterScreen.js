@@ -88,7 +88,7 @@ class FilterScreen extends Component {
                   <Slider
                     style={{ width: 300 }}
                     step={1}
-                    minimumValue={10}
+                    minimumValue={1}
                     maximumValue={50}
                     value={this.state.numResults}
                     onValueChange={val => this.setState({ numResults: val })}
