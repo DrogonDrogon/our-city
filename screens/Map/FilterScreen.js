@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, StyleSheet, Text, TextInput, View, Button , Slider, TouchableHighlight, Modal} from 'react-native';
+import { ScrollView, StyleSheet, Text, Picker, View, Switch, Slider, TouchableHighlight, Modal} from 'react-native';
 import * as Actions from '../../actions';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -19,19 +19,25 @@ class FilterScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        selectedTags: [],
-        numResults: 50,
-        radius: .5,
-        favories: false,
-        tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
-        modalVisible: false,
-      };
+      selectedTags: [],
+      numResults: 25,
+      radius: .50,
+      favories: false,
+      tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
+      modalVisible: false,
+      sortBy: 'date',
+      FavIsSelected: false,
+    };
   }
   getVal(val){
-  console.warn(val);
+  
   }
-
- setModalVisible(visible) {
+  getInitialState() {
+    return {
+      FavIsSelected: false,
+    };
+  }
+  setModalVisible(visible) {
     this.setState({modalVisible: visible});
   }
 
@@ -42,14 +48,14 @@ class FilterScreen extends Component {
           animationType={"slide"}
           transparent={false}
           visible={this.state.modalVisible}
-          onRequestClose={() => { alert("Modal has been closed.")}}
+          onRequestClose={() => {alert("Filters has been closed.")}}
           >
           <View style={{ marginTop: 22 }}>
             <View>
               <TouchableHighlight onPress={() => {
-                this.setModalVisible(!this.state.modalVisible)
+               this.setModalVisible(!this.state.modalVisible)
               }}>
-                <Text>Hide Modal</Text>
+                <Text>Hide Filters</Text>
               </TouchableHighlight>
               <ScrollView>
                 <ScrollView>
@@ -59,28 +65,53 @@ class FilterScreen extends Component {
                       ))}
                   </View>
                 </ScrollView>
-                <View>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
                   <Slider
                     style={{ width: 300 }}
-                    step={0.25}
-                    minimumValue={0.25}
-                    maximumValue={10}
+                    step={0.10}
+                    minimumValue={0.10}
+                    maximumValue={10.0}
                     value={this.state.radius}
-                    onValueChange={val => this.setState({ radius: val })}
+                    onValueChange={val => this.setState({ radius: Number(val.toPrecision(2)) })}
                     onSlidingComplete={ val => this.getVal(val)}
                   />
+                  <Text>
+                    Distance (miles): {this.state.radius}
+                  </Text>
                   <Slider
                     style={{ width: 300 }}
                     step={1}
                     minimumValue={10}
-                    maximumValue={100}
+                    maximumValue={50}
                     value={this.state.numResults}
                     onValueChange={val => this.setState({ numResults: val })}
                     onSlidingComplete={ val => this.getVal(val)}
                   />
+                  <Text>Results: {this.state.numResults}</Text>
                 </View>
-                <View>
-
+                <View style={{flex: 1, flexDirection: 'row', alignItems: 'center',}}>
+                  <Picker
+                    style={{width: '50%'}}
+                    selectedValue={this.state.sortBy}
+                    onValueChange={(method) => this.setState({sortBy: method})}>
+                    <Picker.Item label="Most Recent" value="Date" />
+                    <Picker.Item label="Most Popular" value="Popular" />
+                    <Picker.Item label="Most Voted" value="Votes" />
+                    <Picker.Item label="Most Favorited" value="Favorite" />
+                  </Picker>
+                  <View style={{width: '50%', flex: 1, flexDirection: 'column', alignItems: 'center',}}>
+                    <Text>Only Show Favorites</Text>
+                    <Switch
+                      onValueChange={(value) => this.setState({FavIsSelected: value})}
+                      style={{ marginBottom: 10 }}
+                      value={this.state.FavIsSelected}/>
+                  </View>
                 </View>
               </ScrollView>
             </View>
@@ -90,7 +121,7 @@ class FilterScreen extends Component {
         <TouchableHighlight style={{ zIndex: 2}} onPress={() => {
             this.setModalVisible(true)
           }}>
-          <Text>Show Modal</Text>
+          <Text>Filters</Text>
         </TouchableHighlight>
         </View>
       )
@@ -103,4 +134,3 @@ export default FilterScreen;
 //need a selector for recent, popular, most voted, most faved
 //need to allow selection by tag (check marks?)
 //allow for different zoom levels?
-//change search radius
