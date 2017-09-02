@@ -1,5 +1,6 @@
 import db from '../db';
 import { RECEIVE_PHOTOTAGS, IS_LOADING } from './constants';
+import * as Actions from './userActions';
 
 // TODO: For fetching all phototags for ONE user
 
@@ -27,23 +28,40 @@ export const fetchPhototags = dispatch => {
 
 // For posting one phototag
 export const postPhototagRequested = phototag => dispatch => {
-  let newPostKey;
+  let postKey;
   if (!phototag.id) {
-    newPostKey = db.child('photoTags').push().key;
-    phototag.id = newPostKey;
+    postKey = db.child('photoTags').push().key;
+    phototag.id = postKey;
   } else {
-    newPostKey = phototag.id;
+    postKey = phototag.id;
   }
 
+  let userToUpdate = {};
+  userToUpdate.id = phototag.userId;
+  userToUpdate.phototags = {};
+  userToUpdate.phototags[`${phototag.id}`] = true;
+  console.log('user TO update', userToUpdate);
+  dispatch(Actions.updateUser(userToUpdate));
+
   db
-    .child('phototags/' + newPostKey)
+    .child('phototags/' + postKey)
     .update(phototag)
     .then(() => {
       // Fire another fetch to get all updated phototags
       dispatch(fetchPhototags);
       dispatch(updateLoadingStatus(false));
     })
-    .catch(error => console.log('ERROR post', error));
+    .catch(error => console.log('ERROR writing to /posts', error));
+
+  
+
+//   db
+//     .child('users/' + phototag.userId + '/phototags/')
+//     .update({ postKey: true })
+//     .then(() => {
+//       dispatch()
+//     })
+//     .catch(error => console.log('ERROR writing to /users', error));
 };
 
 // For updating posting/loading status

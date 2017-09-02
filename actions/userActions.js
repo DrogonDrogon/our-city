@@ -16,6 +16,7 @@ export const checkUserLogin = () => dispatch => {
 };
 
 export const updateUser = user => dispatch => {
+  console.log('[ACTIONS] updateUser is firing with user', user);
   db
     .child('users/' + user.id)
     .update(user)
@@ -26,6 +27,16 @@ export const updateUser = user => dispatch => {
       console.log('ERROR posting updating user', error);
     });
 };
+
+// export const updateUserPhototags = (user, phototagId) => dispatch => {
+//   db
+//   .child('users/' + user.id + '/phototags/')
+//   .update({ phototagId: true })
+//   .then(() => {
+//     dispatch(getUserInfoCompleted(user));
+//   })
+//   .catch(error => console.log('ERROR writing to /users', error));
+// }
 
 // For fetching user by userId
 export const getUserByIdBegin = user => dispatch => {
