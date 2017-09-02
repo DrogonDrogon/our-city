@@ -8,7 +8,7 @@ export const checkUserLogin = () => dispatch => {
     if (user != null) {
       console.log('We are authenticated now! User is', user.uid);
       // check if new user
-      dispatch(getUserByIdBegin(user));
+      dispatch(checkUserLoginBegin(user));
     } else {
       dispatch(checkUserLoginComplete(false));
     }
@@ -39,7 +39,7 @@ export const updatePhototagsUnderUserId = (userId, phototagIdData) => dispatch =
 };
 
 // For fetching user by userId
-export const getUserByIdBegin = user => dispatch => {
+export const checkUserLoginBegin = user => dispatch => {
   db
     .child('users/' + user.uid)
     .once('value')
