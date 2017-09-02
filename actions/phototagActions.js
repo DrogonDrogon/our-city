@@ -2,11 +2,8 @@ import db from '../db';
 import { RECEIVE_PHOTOTAGS, IS_LOADING } from './constants';
 import * as Actions from './userActions';
 
-// TODO: For fetching all phototags for ONE user
-
 // For fetching all phototags (ALL users)
 export const fetchPhototags = dispatch => {
-  // console.log('[ACTIONS] fetchPhototags fired');
   db
     .child('phototags')
     .once('value')
@@ -36,12 +33,6 @@ export const postPhototagRequested = phototag => dispatch => {
     postKey = phototag.id;
   }
 
-  // let userToUpdate = {};
-  // userToUpdate.id = phototag.userId;
-  // userToUpdate['phototags'][`${phototag.id}`] = true;
-  // console.log('user TO update', userToUpdate);
-  // dispatch(Actions.updateUser(userToUpdate));
-
   var phototagRecord = {};
   var key = phototag.id;
   phototagRecord[key] = true;
@@ -57,19 +48,18 @@ export const postPhototagRequested = phototag => dispatch => {
       dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR writing to /posts', error));
-
-  
-
-//   db
-//     .child('users/' + phototag.userId + '/phototags/')
-//     .update({ postKey: true })
-//     .then(() => {
-//       dispatch()
-//     })
-//     .catch(error => console.log('ERROR writing to /users', error));
 };
 
-// For updating posting/loading status
+// For fetching a user's favorites
+export const fetchFavoritesByUserId = userId => dispatch => {
+  
+}
+
+// For fetching a user's phototags
+export const fetchPhototagsByUserId = userId => dispatch => {
+  
+}
+
 export const updateLoadingStatus = bool => {
   return {
     type: IS_LOADING,
@@ -78,7 +68,6 @@ export const updateLoadingStatus = bool => {
 };
 
 export const receivePhototags = results => {
-  // console.log('[ACTIONS] receivePhototags fired');
   return {
     type: RECEIVE_PHOTOTAGS,
     phototags: results,
