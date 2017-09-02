@@ -1,21 +1,8 @@
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Button,
-  ListView,
-  TouchableHighlight,
-} from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Ionicons } from '@expo/vector-icons';
-import PhototDisplay from '../../components/PhotoDisplay';
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import PhotoDisplay from '../../components/PhotoDisplay';
 import PhototagItem from '../../components/PhototagItem';
-import Comment from '../../components/comment';
 import * as Actions from '../../actions';
 
 const mapStateToProps = (state, ownProps) => {
@@ -31,22 +18,34 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
   };
 };
+
 class Favourites extends React.Component {
   goToPhototags = item => {
-    this.props.navigation.navigate('phototagFromUser', item);
+    this.props.navigation.navigate('PhototagFromUser', item);
   };
   render() {
     return (
-      <ScrollView>
-        {Object.entries(this.props.favs).map(fav => (
+      <View>
+        <Text style={styles.titleText}>My Favourites</Text>
+      </View>
+    );
+  }
+}
+/*
+{Object.entries(this.props.favs).map(fav => (
           <PhototagItem
             key={fav[0]}
             phototag={fav[1]}
             goToPhototags={this.goToPhototags.bind(this, fav)}
           />
         ))}
-      </ScrollView>
-    );
-  }
-}
+*/
+const styles = StyleSheet.create({
+  titleText: {
+    textAlign: 'center',
+    fontSize: 20,
+    margin: 10,
+  },
+});
+
 export default connect(mapStateToProps, mapDispatchToProps)(Favourites);
