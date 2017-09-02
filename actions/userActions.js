@@ -38,7 +38,7 @@ export const updatePhototagsUnderUserId = (userId, phototagIdData) => dispatch =
     .catch(error => console.log('ERROR writing to /users', error));
 };
 
-// For fetching user by userId
+// For determining whether or not user exists already upon Login
 export const checkUserLoginBegin = user => dispatch => {
   db
     .child('users/' + user.uid)
@@ -56,6 +56,7 @@ export const checkUserLoginBegin = user => dispatch => {
     });
 };
 
+// For fetching user by userId
 export const queryUsersById = userId => dispatch => {
   db
     .child('users/' + userId)

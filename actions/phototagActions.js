@@ -1,12 +1,9 @@
 import db from '../db';
-import { RECEIVE_PHOTOTAGS, IS_LOADING } from './constants';
+import { RECEIVE_PHOTOTAGS, IS_LOADING, RECEIVE_FAVS } from './constants';
 import * as Actions from './userActions';
-
-// TODO: For fetching all phototags for ONE user
 
 // For fetching all phototags (ALL users)
 export const fetchPhototags = dispatch => {
-  // console.log('[ACTIONS] fetchPhototags fired');
   db
     .child('phototags')
     .once('value')
@@ -36,12 +33,6 @@ export const postPhototagRequested = phototag => dispatch => {
     postKey = phototag.id;
   }
 
-  // let userToUpdate = {};
-  // userToUpdate.id = phototag.userId;
-  // userToUpdate['phototags'][`${phototag.id}`] = true;
-  // console.log('user TO update', userToUpdate);
-  // dispatch(Actions.updateUser(userToUpdate));
-
   var phototagRecord = {};
   var key = phototag.id;
   phototagRecord[key] = true;
@@ -57,19 +48,51 @@ export const postPhototagRequested = phototag => dispatch => {
       dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR writing to /posts', error));
-
-  
-
-//   db
-//     .child('users/' + phototag.userId + '/phototags/')
-//     .update({ postKey: true })
-//     .then(() => {
-//       dispatch()
-//     })
-//     .catch(error => console.log('ERROR writing to /users', error));
 };
 
-// For updating posting/loading status
+// For fetching favorite-phototags by userObject
+export const fetchFavoritesByUser = userInfo => dispatch => {
+  // fetch favorites
+  let favKeys = Object.keys(userInfo.favs);
+  const favPromises = favKeys.map(id => {
+    return db
+      .child('phototags')
+      .child(id)
+      .once('value')
+      .then(snapshot => {
+        return snapshot.val();
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
+  });
+  // return an array of phototags (userFavs)
+  Promise.all(favPromises)
+    .then(userFavs => {
+      // check to filter out placeholders
+      let validEntries = [];
+      userFavs.forEach(item => {
+        if (item) {
+          validEntries.push(item);
+        }
+      });
+      dispatch(receiveFavoritesByUser(validEntries));
+    })
+    .catch(err => {
+      console.log('ERR getting userFavs', err);
+    });
+};
+
+export const receiveFavoritesByUser = favs => {
+  return {
+    type: RECEIVE_FAVS,
+    payload: favs,
+  };
+};
+
+// For fetching all-phototags by userId
+export const fetchPhototagsByUserId = userId => dispatch => {};
+
 export const updateLoadingStatus = bool => {
   return {
     type: IS_LOADING,
@@ -78,7 +101,6 @@ export const updateLoadingStatus = bool => {
 };
 
 export const receivePhototags = results => {
-  // console.log('[ACTIONS] receivePhototags fired');
   return {
     type: RECEIVE_PHOTOTAGS,
     phototags: results,

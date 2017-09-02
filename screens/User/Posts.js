@@ -3,12 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import PhototagItem from '../../components/PhototagItem';
 
 class Posts extends React.Component {
-  componentDidMount() {
-    console.log('poSTS mounted', this.props);
-  }
-
   componentWillUpdate() {
-    console.log('posts updated', this.props);
+    // console.log('posts updated', this.props);
   }
 
   render() {
