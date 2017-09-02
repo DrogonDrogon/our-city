@@ -1,10 +1,9 @@
 import React from 'react';
 import { MapView, Location, Permissions } from 'expo';
 import { connect } from 'react-redux';
-import { Button, Text, Image, StyleSheet, View, ScrollView } from 'react-native';
+import { Text, Image, StyleSheet, View, Modal, ScrollView, TouchableHighlight } from 'react-native';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
-import ListView from './ListView.js';
 import FilterScreen from './FilterScreen';
 
 const mapStateToProps = (state, ownProps) => {
@@ -22,7 +21,6 @@ class MapScreen extends React.Component {
       longitudeDelta: 0.0421,
     },
     markers: {},
-    isMapToggled: true,
     modalVisible: false,
   };
 
@@ -35,13 +33,6 @@ class MapScreen extends React.Component {
       //this.setMarkersByDistance();
     });
   }
-
-  toggleView = () => {
-    let reverse = !this.state.isMapToggled;
-    this.setState({ isMapToggled: reverse }, () => {
-      console.log('toggled', this.state.isMapToggled);
-    });
-  };
 
   goToPhototags(marker) {
     this.props.navigation.navigate('phototagFromMap', marker);
@@ -61,7 +52,6 @@ class MapScreen extends React.Component {
 
     getLocationAsync();
   }
-  
   setLocation(location) {
     let tempRegion = {
       latitude: location.coords.latitude,
@@ -107,24 +97,22 @@ class MapScreen extends React.Component {
       console.log('markers', this.state.markers);
     });
   }
+
   setModalVisible(visible) {
     this.setState({modalVisible: visible});
   }
 
   render() {
-    if (this.state.isMapToggled === true) {
-      return (
-        <View style={{height: '100%'}}>  
-          <FilterScreen />
+    return (
+      <View>
+        <View style={{ width: '100%', height: '90%' }}>
           <MapView
             showsUserLocation
             followsUserLocation
             toolbarEnabled
             provider={MapView.PROVIDER_GOOGLE}
-            style={styles.map}
+            style={{ flex: 1 }}
             region={this.state.region}>
-            <Button onPress={this.toggleView} title="Switch to List" />
-
             {this.props.phototags &&
               this.props.phototags
                 .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
@@ -141,25 +129,52 @@ class MapScreen extends React.Component {
                     </MapView.Callout>
                   </MapView.Marker>
                 ))}
-          </MapView> 
+          </MapView>
         </View>
-      );
-    } else {
-      return (
-        <View style={{height: '100%'}}>
-          <FilterScreen />
-          <Button onPress={this.toggleView} title="Switch to Map" />
-          <ListView phototags={this.props.phototags} />
+        <View style={{marginTop: 22}}>
+          <Modal
+            animationType={"slide"}
+            transparent={false}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {alert("Modal has been closed.")}}
+            >
+           <View style={{marginTop: 22}}>
+            
+            <View>
+              <TouchableHighlight onPress={() => {
+                this.setModalVisible(!this.state.modalVisible)
+              }}>
+                <Text>Hide Modal</Text>
+              </TouchableHighlight>
+              <FilterScreen/>
+            </View>
+           </View>
+          </Modal>
+
+          <TouchableHighlight style={{zIndex: 2, marginBottom:50, backgroundColor: 'black'}} onPress={() => {
+            this.setModalVisible(true)
+          }}>
+            <Text>Show Modal</Text>
+          </TouchableHighlight>
+
         </View>
-      );
-    }
+      </View>
+    );
   }
 }
 
 export default connect(mapStateToProps)(MapScreen);
 
 const styles = StyleSheet.create({
-  map: {
+  container: {
+    width: '100%',
+    height: 300,
     flex: 1,
+    padding: 1,
+    alignItems: 'center',
+  },
+  descriptionText: {
+    marginTop: 10,
+    marginBottom: 20,
   },
 });
