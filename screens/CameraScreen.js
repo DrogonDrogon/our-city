@@ -19,7 +19,7 @@ const awsOptions = {
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
-    isPosting: state.isPosting,
+    isLoading: state.isLoading,
   };
 };
 
@@ -156,7 +156,7 @@ class CameraScreen extends React.Component {
           ref={input => (this.descriptionInput = input)}
         />
         <Button title="Upload my post" onPress={this._saveImg} />
-        {this.props.isPosting && <ActivityIndicator animated={this.props.isPosting} size="large" />}
+        {this.props.isLoading && <ActivityIndicator animated={this.props.isLoading} size="large" />}
       </KeyboardAwareScrollView>
     );
   }

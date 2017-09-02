@@ -59,7 +59,7 @@ class MapScreen extends React.Component {
 
     getLocationAsync();
   }
-  
+
   setLocation(location) {
     let tempRegion = {
       latitude: location.coords.latitude,

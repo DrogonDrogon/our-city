@@ -1,5 +1,15 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, Button, View, Image, Modal, TextInput } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  Button,
+  View,
+  Image,
+  Modal,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import NavigationBar from 'react-native-navbar';
 import { NavigationActions } from 'react-navigation';
@@ -25,6 +35,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
     user: state.user,
+    isLoading: state.isLoading,
   };
 };
 
@@ -32,6 +43,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   // Define the function that will be passed as prop
   return {
     getAllPhototags: () => {
+      dispatch(Actions.updateLoadingStatus(true));
       dispatch(Actions.fetchPhototags);
     },
     submitUserUpdate: userInfo => {
@@ -229,6 +241,11 @@ class HomeScreen extends React.Component {
                 goToPhototags={this.goToPhototags.bind(this, item)}
               />
             ))}
+          {this.props.isLoading && (
+            <View style={styles.loading}>
+              <ActivityIndicator animated={this.props.isLoading} size="large" />
+            </View>
+          )}
         </ScrollView>
       );
     } else {
@@ -276,6 +293,16 @@ const styles = StyleSheet.create({
   },
   smallButton: {
     fontSize: 12,
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
   },
 });
 

@@ -20,6 +20,7 @@ export const fetchPhototags = dispatch => {
         phototagArray.push(obj);
       }
       dispatch(receivePhototags(phototagArray));
+      dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR fetch', error));
 };
@@ -38,9 +39,9 @@ export const postPhototagRequested = phototag => dispatch => {
     .child('phototags/' + newPostKey)
     .update(phototag)
     .then(() => {
-      dispatch(updateLoadingStatus(false));
       // Fire another fetch to get all updated phototags
       dispatch(fetchPhototags);
+      dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR post', error));
 };
