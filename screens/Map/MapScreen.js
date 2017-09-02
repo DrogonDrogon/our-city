@@ -5,6 +5,7 @@ import { Button, Text, Image, StyleSheet, View, ScrollView } from 'react-native'
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
+import FilterScreen from './FilterScreen';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -22,6 +23,7 @@ class MapScreen extends React.Component {
     },
     markers: {},
     isMapToggled: true,
+    modalVisible: false,
   };
 
   componentWillMount() {
@@ -105,40 +107,47 @@ class MapScreen extends React.Component {
       console.log('markers', this.state.markers);
     });
   }
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
 
   render() {
     if (this.state.isMapToggled === true) {
       return (
-        <MapView
-          showsUserLocation
-          followsUserLocation
-          toolbarEnabled
-          provider={MapView.PROVIDER_GOOGLE}
-          style={styles.map}
-          region={this.state.region}>
-          <Button onPress={this.toggleView} title="Switch to List" />
+        <View style={{height: '100%'}}>  
+          <FilterScreen />
+          <MapView
+            showsUserLocation
+            followsUserLocation
+            toolbarEnabled
+            provider={MapView.PROVIDER_GOOGLE}
+            style={styles.map}
+            region={this.state.region}>
+            <Button onPress={this.toggleView} title="Switch to List" />
 
-          {this.props.phototags &&
-            this.props.phototags
-              .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
-              .map((markerMapped, i) => (
-                <MapView.Marker
-                  key={i}
-                  coordinate={{
-                    latitude: markerMapped.locationLat,
-                    longitude: markerMapped.locationLong,
-                  }}
-                  title={markerMapped.description}>
-                  <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, markerMapped)}>
-                    <MarkerTag phototag={markerMapped} />
-                  </MapView.Callout>
-                </MapView.Marker>
-              ))}
-        </MapView>
+            {this.props.phototags &&
+              this.props.phototags
+                .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
+                .map((markerMapped, i) => (
+                  <MapView.Marker
+                    key={i}
+                    coordinate={{
+                      latitude: markerMapped.locationLat,
+                      longitude: markerMapped.locationLong,
+                    }}
+                    title={markerMapped.description}>
+                    <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, markerMapped)}>
+                      <MarkerTag phototag={markerMapped} />
+                    </MapView.Callout>
+                  </MapView.Marker>
+                ))}
+          </MapView> 
+        </View>
       );
     } else {
       return (
-        <View>
+        <View style={{height: '100%'}}>
+          <FilterScreen />
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView phototags={this.props.phototags} />
         </View>
