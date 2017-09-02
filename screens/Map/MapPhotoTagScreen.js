@@ -1,16 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Button,
-  ListView,
-  TouchableHighlight,
-} from 'react-native';
+import { StyleSheet, Text, TextInput, Button, TouchableHighlight } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import PhototDisplay from '../../components/PhotoDisplay';
@@ -26,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    submitOnePhototag: (phototag, user) => {
+    updatePhototagAndUser: (phototag, user) => {
       dispatch(Actions.postPhototagRequested(phototag));
       dispatch(Actions.updateUser(user));
     },
@@ -66,7 +57,7 @@ class MapScreen extends React.Component {
 
   addFavourite() {
     if (!this.state.isFavourite) {
-      this.props.user.favs[this.state.phototag.id] = this.state.phototag;
+      this.props.user.favs[this.state.phototag.id] = true;
       this.setState({ favouriteBtn: 'red' });
       this.setState({ isFavourite: true });
     } else {
@@ -100,7 +91,7 @@ class MapScreen extends React.Component {
     phototag.upvotes = this.state.votes;
     phototag.comments = this.state.comments;
     let user = this.props.user;
-    this.props.submitOnePhototag(phototag, user);
+    this.props.updatePhototagAndUser(phototag, user);
   }
 
   render() {

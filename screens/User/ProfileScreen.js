@@ -1,5 +1,15 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, Button, View, Image, Modal, TextInput } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  Button,
+  View,
+  Image,
+  Modal,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import NavigationBar from 'react-native-navbar';
 import { NavigationActions } from 'react-navigation';
@@ -9,7 +19,8 @@ import { RNS3 } from 'react-native-aws3';
 import firebase from 'firebase';
 import config from '../../config/config';
 import * as Actions from '../../actions';
-import PhototagItem from '../../components/PhototagItem';
+import Favourites from './Favourites';
+import Posts from './Posts';
 
 const awsOptions = {
   keyPrefix: 'users/',
@@ -25,6 +36,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
     user: state.user,
+    isLoading: state.isLoading,
   };
 };
 
@@ -32,6 +44,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   // Define the function that will be passed as prop
   return {
     getAllPhototags: () => {
+      dispatch(Actions.updateLoadingStatus(true));
       dispatch(Actions.fetchPhototags);
     },
     submitUserUpdate: userInfo => {
@@ -112,7 +125,7 @@ class HomeScreen extends React.Component {
   };
 
   goToPhototags = item => {
-    this.props.navigation.navigate('phototagFromUser', item);
+    this.props.navigation.navigate('PhototagFromUser', item);
   };
 
   _handleClickEdit = () => {
@@ -175,8 +188,40 @@ class HomeScreen extends React.Component {
     this.setState({ modalVisibility: bool });
   };
 
+  renderForm = index => {
+    switch (index) {
+      case 0:
+        return (
+          <Posts
+            user={this.props.user}
+            phototags={this.props.phototags}
+            goToPhototags={this.goToPhototags}
+          />
+        );
+      case 1:
+        return (
+          <Favourites
+            user={this.props.user}
+            phototags={this.props.phototags}
+            goToPhototags={this.goToPhototags}
+            navigation={this.props.navigation}
+          />
+        );
+      case 2:
+        return (
+          <View>
+            <Text style={styles.titleText}>My Comments</Text>
+            <Text>Replace with real component later</Text>
+          </View>
+        );
+      default:
+        return <View />;
+    }
+  };
+
   render() {
     if (this.props.phototags && this.props.user) {
+      // In case user signed up using email/password, displayName doesn't exist unless updated by user, so use email as displayName
       let displayName =
         this.props.user.displayName === '' ? this.props.user.email : this.props.user.displayName;
 
@@ -187,7 +232,13 @@ class HomeScreen extends React.Component {
             <Text>{displayName}</Text>
             <Button title="Edit Profile" onPress={this._handleClickEdit} />
           </View>
-          <Modal animationType={'slide'} transparent={false} visible={this.state.modalVisibility}>
+          <Modal
+            animationType={'slide'}
+            transparent={false}
+            visible={this.state.modalVisibility}
+            onRequestClose={() => {
+              console.log('Modal closed');
+            }}>
             <NavigationBar
               title={this.state.navBarTitle}
               rightButton={this.state.rightButton}
@@ -219,16 +270,12 @@ class HomeScreen extends React.Component {
             selectedIndex={this.state.selectedIndex}
             onTabPress={this._handleIndexChange}
           />
-          <Text style={styles.titleText}>Tagged Photos</Text>
-          {this.props.phototags
-            .filter(item => item.userId === this.props.user.id)
-            .map((item, i) => (
-              <PhototagItem
-                phototag={item}
-                key={item.id}
-                goToPhototags={this.goToPhototags.bind(this, item)}
-              />
-            ))}
+          {this.renderForm(this.state.selectedIndex)}
+          {this.props.isLoading && (
+            <View style={styles.loading}>
+              <ActivityIndicator animated={this.props.isLoading} size="large" />
+            </View>
+          )}
         </ScrollView>
       );
     } else {
@@ -276,6 +323,16 @@ const styles = StyleSheet.create({
   },
   smallButton: {
     fontSize: 12,
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
   },
 });
 

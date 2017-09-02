@@ -1,26 +1,13 @@
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Button,
-  ListView,
-  TouchableHighlight,
-} from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Ionicons } from '@expo/vector-icons';
-import PhototDisplay from '../../components/PhotoDisplay';
+import { StyleSheet, Text, View } from 'react-native';
 import PhototagItem from '../../components/PhototagItem';
-import Comment from '../../components/comment';
 import * as Actions from '../../actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
+    userFavs: state.userFavs,
   };
 };
 
@@ -29,24 +16,43 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     submitOnePhototag: user => {
       dispatch(Actions.updateUser(user));
     },
+    getUserFavorites: user => {
+      dispatch(Actions.fetchFavoritesByUser(user));
+    }
   };
 };
+
 class Favourites extends React.Component {
-  goToPhototags = item => {
-    this.props.navigation.navigate('phototagFromUser', item);
+  componentDidMount() {
+    this.props.getUserFavorites(this.props.user);
+  }
+
+  goToPhototagsDetail = item => {
+    this.props.navigation.navigate('PhototagFromMap', item);
   };
+
   render() {
     return (
-      <ScrollView>
-        {Object.entries(this.props.favs).map(fav => (
-          <PhototagItem
-            key={fav[0]}
-            phototag={fav[1]}
-            goToPhototags={this.goToPhototags.bind(this, fav)}
-          />
-        ))}
-      </ScrollView>
+      <View>
+        <Text style={styles.titleText}>My Favourites</Text>
+        {this.props.userFavs &&
+          this.props.userFavs.map(fav => (
+            <PhototagItem
+              key={fav.id}
+              phototag={fav}
+              goToPhototags={this.goToPhototagsDetail.bind(this, fav)}
+            />
+          ))}
+      </View>
     );
   }
 }
+const styles = StyleSheet.create({
+  titleText: {
+    textAlign: 'center',
+    fontSize: 20,
+    margin: 10,
+  },
+});
+
 export default connect(mapStateToProps, mapDispatchToProps)(Favourites);

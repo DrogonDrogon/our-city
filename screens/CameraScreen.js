@@ -19,7 +19,7 @@ const awsOptions = {
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
-    isPosting: state.isPosting,
+    isLoading: state.isLoading,
   };
 };
 
@@ -28,6 +28,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     submitOnePhototag: phototag => {
       dispatch(Actions.postPhototagRequested(phototag));
       dispatch(Actions.updateLoadingStatus(true));
+    },
+    submitUserUpdate: user => {
+      dispatch(Actions.updateUser(user));
     },
   };
 };
@@ -127,8 +130,9 @@ class CameraScreen extends React.Component {
           // TODO: handle error through alert
         } else {
           console.log('[s3 upload] Success!');
-          // Dispatch saving user to firebase
+          // Dispatch saving to firebase
           this.props.submitOnePhototag(phototag);
+          // this.props.submitUserUpdate({ id: this.props.user.id, phototags: {phototag.id}})
 
           // Reset image and description
           this.setState({ imageUri: null });
@@ -156,7 +160,6 @@ class CameraScreen extends React.Component {
           ref={input => (this.descriptionInput = input)}
         />
         <Button title="Upload my post" onPress={this._saveImg} />
-        {this.props.isPosting && <ActivityIndicator animated={this.props.isPosting} size="large" />}
       </KeyboardAwareScrollView>
     );
   }
