@@ -5,21 +5,10 @@ class PhototagItem extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image
-          style={{ width: 10, height: 10, marginTop: 5, marginBottom: 5 }}
-          source={{
-            uri:
-              this.props.phototag.photoUrl ||
-              'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png',
-          }}
-        />
         <TouchableHighlight
           onPress={this.props.goToPhototags}
           style={{ width: '100%', height: 200 }}>
-          <Image
-            style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-            source={{ uri: this.props.phototag.imageUrl }}
-          />
+          <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
         </TouchableHighlight>
         <Text onPress={this.props.goToPhototags} style={styles.descriptionText}>
           {this.props.phototag.description}
@@ -31,17 +20,25 @@ class PhototagItem extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: '75%',
-    height: 300,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 30,
+    paddingRight: 30,
     marginTop: 0,
-    marginBottom: 5,
+    marginBottom: 15,
     alignItems: 'center',
-    borderColor: '#000000',
-    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderRadius: 20,
   },
   descriptionText: {
     marginTop: 10,
-    marginBottom: 10,
+    width: 200,
+  },
+  imageStyle: {
+    flex: 1,
+    width: 200,
+    height: 200,
+    resizeMode: Image.resizeMode.contain,
   },
 });
 

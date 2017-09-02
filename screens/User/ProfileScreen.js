@@ -134,11 +134,10 @@ class HomeScreen extends React.Component {
   };
 
   _handleSaveProfile = () => {
-    console.log('Click save profile');
-
     let didNameChange = this.state.editDisplayNameText !== this.props.user.displayName;
     let didPhotoChange = this.state.image !== this.props.user.photoUrl;
-    // check to see if fields are different, if it's different than make the database call to update user
+
+    // Only make the database update if there was a change in name or picture
     if (didNameChange || didPhotoChange) {
       // Set up an updated user object
       let updatedUser = this.props.user;
@@ -147,7 +146,7 @@ class HomeScreen extends React.Component {
       }
       if (didPhotoChange) {
         updatedUser.photoUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${this
-        .props.user.id}.jpg`;
+          .props.user.id}.jpg`;
       }
 
       // Set up file uri to save to AWS
@@ -226,7 +225,7 @@ class HomeScreen extends React.Component {
             .map((item, i) => (
               <PhototagItem
                 phototag={item}
-                key={i}
+                key={item.id}
                 goToPhototags={this.goToPhototags.bind(this, item)}
               />
             ))}
@@ -277,12 +276,6 @@ const styles = StyleSheet.create({
   },
   smallButton: {
     fontSize: 12,
-  },
-  content: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

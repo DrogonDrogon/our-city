@@ -13,10 +13,6 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 class MapScreen extends React.Component {
-  static navigationOptions = { header: null };
-  // static navigationOptions = ({ navigation }) => {
-  // }
-
   state = {
     region: {
       latitude: 40.750355960509054,
@@ -25,7 +21,7 @@ class MapScreen extends React.Component {
       longitudeDelta: 0.0421,
     },
     markers: {},
-    isMapToggled: false,
+    isMapToggled: true,
   };
 
   componentWillMount() {
@@ -63,6 +59,7 @@ class MapScreen extends React.Component {
 
     getLocationAsync();
   }
+  
   setLocation(location) {
     let tempRegion = {
       latitude: location.coords.latitude,
@@ -119,7 +116,7 @@ class MapScreen extends React.Component {
           provider={MapView.PROVIDER_GOOGLE}
           style={styles.map}
           region={this.state.region}>
-          <Button style={styles.toggleButton} onPress={this.toggleView} title="Switch to List" />
+          <Button onPress={this.toggleView} title="Switch to List" />
 
           {this.props.phototags &&
             this.props.phototags
@@ -141,9 +138,9 @@ class MapScreen extends React.Component {
       );
     } else {
       return (
-        <View style={styles.container}>
-        <Button style={styles.toggleButton} onPress={this.toggleView} title="Switch to Map" />
-        <ListView />
+        <View>
+          <Button onPress={this.toggleView} title="Switch to Map" />
+          <ListView phototags={this.props.phototags} />
         </View>
       );
     }
@@ -153,18 +150,7 @@ class MapScreen extends React.Component {
 export default connect(mapStateToProps)(MapScreen);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 25,
-    alignItems: 'center',
-  },
   map: {
     flex: 1,
-    marginTop: 25,
-  },
-  toggleButton: {},
-  descriptionText: {
-    marginTop: 10,
-    marginBottom: 20,
   },
 });
