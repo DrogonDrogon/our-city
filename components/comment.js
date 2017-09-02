@@ -8,7 +8,7 @@ export default class Comment extends React.Component {
   };
   render() {
     return (
-      <View>
+      <View style={styles.commentContainer}>
         <Text style={styles.titleText}>{this.props.userName}</Text>
         <Text style={styles.titleText}>{this.props.comment.text}</Text>
         <Text style={styles.titleText}>{this.state.timeStamp}</Text>
@@ -18,6 +18,11 @@ export default class Comment extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  commentContainer: {
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    width: '80%',
+  },
   titleText: {
     textAlign: 'center',
     fontSize: 20,
