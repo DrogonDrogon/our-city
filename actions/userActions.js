@@ -28,29 +28,48 @@ export const updateUser = user => dispatch => {
     });
 };
 
-// export const updateUserPhototags = (user, phototagId) => dispatch => {
-//   db
-//   .child('users/' + user.id + '/phototags/')
-//   .update({ phototagId: true })
-//   .then(() => {
-//     dispatch(getUserInfoCompleted(user));
-//   })
-//   .catch(error => console.log('ERROR writing to /users', error));
-// }
+export const updatePhototagsUnderUserId = (userId, phototagIdData) => dispatch => {
+  db
+    .child('users/' + userId + '/phototags/')
+    .update(phototagIdData)
+    .then(() => {
+      dispatch(queryUsersById(userId));
+    })
+    .catch(error => console.log('ERROR writing to /users', error));
+};
 
 // For fetching user by userId
 export const getUserByIdBegin = user => dispatch => {
-  db.child('users/' + user.uid).once('value').then(snapshot => {
-    let userData = snapshot.val();
-    if (userData) {
-      // if the data exists, then we return the data
-      dispatch(getUserInfoCompleted(userData));
-      dispatch(checkUserLoginComplete(true));
-    } else {
-      // if the data doesn't exist, we create a new user to save
-      dispatch(postNewUserBegin(user));
-    }
-  });
+  db
+    .child('users/' + user.uid)
+    .once('value')
+    .then(snapshot => {
+      let userData = snapshot.val();
+      if (userData) {
+        // if the data exists, then we return the data
+        dispatch(getUserInfoCompleted(userData));
+        dispatch(checkUserLoginComplete(true));
+      } else {
+        // if the data doesn't exist, we create a new user to save
+        dispatch(postNewUserBegin(user));
+      }
+    });
+};
+
+export const queryUsersById = userId => dispatch => {
+  db
+    .child('users/' + userId)
+    .once('value')
+    .then(snapshot => {
+      let userData = snapshot.val();
+      if (userData) {
+        // if the data exists, then we return the data
+        dispatch(getUserInfoCompleted(userData));
+      } else {
+        console.log('ERROR getting user by id:', userId);
+        // handle if user not found
+      }
+    });
 };
 
 // For posting new user

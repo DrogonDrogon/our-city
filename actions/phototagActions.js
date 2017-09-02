@@ -36,12 +36,17 @@ export const postPhototagRequested = phototag => dispatch => {
     postKey = phototag.id;
   }
 
-  let userToUpdate = {};
-  userToUpdate.id = phototag.userId;
-  userToUpdate.phototags = {};
-  userToUpdate.phototags[`${phototag.id}`] = true;
-  console.log('user TO update', userToUpdate);
-  dispatch(Actions.updateUser(userToUpdate));
+  // let userToUpdate = {};
+  // userToUpdate.id = phototag.userId;
+  // userToUpdate['phototags'][`${phototag.id}`] = true;
+  // console.log('user TO update', userToUpdate);
+  // dispatch(Actions.updateUser(userToUpdate));
+
+  var phototagRecord = {};
+  var key = phototag.id;
+  phototagRecord[key] = true;
+
+  dispatch(Actions.updatePhototagsUnderUserId(phototag.userId, phototagRecord));
 
   db
     .child('phototags/' + postKey)
