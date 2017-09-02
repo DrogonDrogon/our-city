@@ -24,7 +24,16 @@ class MapScreen extends React.Component {
     markers: {},
     isMapToggled: true,
     modalVisible: false,
-    filters: {},
+    filters: {
+      selectedTags: [],
+      numResults: 25,
+      radius: .50,
+      favorites: false,
+      tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
+      modalVisible: false,
+      sortBy: 'Date',
+      FavIsSelected: false,
+    },
   };
 
   componentWillMount() {
@@ -80,11 +89,11 @@ class MapScreen extends React.Component {
 
 
   checkDistance(
+    distance = 10,
     lat1,
     lon1,
     lat2 = this.state.region.latitude,
     lon2 = this.state.region.longitude,
-    distance = 10
   ) {
     const deg2rad = deg => {
       return deg * (Math.PI / 180);
@@ -135,7 +144,7 @@ class MapScreen extends React.Component {
 
             {this.props.phototags &&
               this.props.phototags
-                .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
+                .filter(marker => this.checkDistance(this.state.filters.radius, marker.locationLat, marker.locationLong))
                 .map((markerMapped, i) => (
                   <MapView.Marker
                     key={i}
