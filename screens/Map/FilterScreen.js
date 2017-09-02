@@ -46,13 +46,13 @@ class FilterScreen extends Component {
       <View style={{ marginTop: 22}}>
         <Modal
           animationType={"slide"}
-          transparent={false}
+          transparent={true}
           visible={this.state.modalVisible}
           onRequestClose={() => {alert("Filters has been closed.")}}
           >
-          <View style={{ marginTop: 22 }}>
+          <View style={{ marginTop: 75, backgroundColor: 'white', }}>
             <View>
-              <TouchableHighlight onPress={() => {
+              <TouchableHighlight style={{ marginTop: 11}} onPress={() => {
                this.setModalVisible(!this.state.modalVisible)
               }}>
                 <Text>Hide Filters</Text>
