@@ -134,17 +134,20 @@ class HomeScreen extends React.Component {
   };
 
   _handleSaveProfile = () => {
-    console.log('Click save profile');
-    // check to see if the name is different, if it's different than make the database call
-    if (
-      this.state.editDisplayNameText !== this.props.user.displayName ||
-      this.state.image !== this.props.user.photoUrl
-    ) {
+    let didNameChange = this.state.editDisplayNameText !== this.props.user.displayName;
+    let didPhotoChange = this.state.image !== this.props.user.photoUrl;
 
+    // Only make the database update if there was a change in name or picture
+    if (didNameChange || didPhotoChange) {
       // Set up an updated user object
       let updatedUser = this.props.user;
-      updatedUser.displayName = this.state.editDisplayNameText;
-      updatedUser.photoUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${this.props.user.id}.jpg`;
+      if (didNameChange) {
+        updatedUser.displayName = this.state.editDisplayNameText;
+      }
+      if (didPhotoChange) {
+        updatedUser.photoUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${this
+          .props.user.id}.jpg`;
+      }
 
       // Set up file uri to save to AWS
       let file = {
@@ -222,7 +225,7 @@ class HomeScreen extends React.Component {
             .map((item, i) => (
               <PhototagItem
                 phototag={item}
-                key={i}
+                key={item.id}
                 goToPhototags={this.goToPhototags.bind(this, item)}
               />
             ))}
@@ -273,12 +276,6 @@ const styles = StyleSheet.create({
   },
   smallButton: {
     fontSize: 12,
-  },
-  content: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 
