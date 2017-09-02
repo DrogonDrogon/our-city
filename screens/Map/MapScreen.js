@@ -114,7 +114,8 @@ class MapScreen extends React.Component {
   render() {
     if (this.state.isMapToggled === true) {
       return (
-        <View style={{height: '90%'}}>  
+        <View style={{height: '100%'}}>  
+          <FilterScreen />
           <MapView
             showsUserLocation
             followsUserLocation
@@ -140,16 +141,15 @@ class MapScreen extends React.Component {
                     </MapView.Callout>
                   </MapView.Marker>
                 ))}
-          </MapView>
-          <FilterScreen />
+          </MapView> 
         </View>
       );
     } else {
       return (
-        <View style={{height: '90%'}}>
+        <View style={{height: '100%'}}>
+          <FilterScreen />
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView phototags={this.props.phototags} />
-          <FilterScreen />
         </View>
       );
     }

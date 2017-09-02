@@ -87,7 +87,7 @@ class FilterScreen extends Component {
           </View>
         </Modal>
 
-        <TouchableHighlight style={{ zIndex: 2, marginBottom:50, backgroundColor: 'black' }} onPress={() => {
+        <TouchableHighlight style={{ zIndex: 2}} onPress={() => {
             this.setModalVisible(true)
           }}>
           <Text>Show Modal</Text>
