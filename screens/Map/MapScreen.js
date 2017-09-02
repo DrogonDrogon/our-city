@@ -27,18 +27,21 @@ class MapScreen extends React.Component {
     filters: {
       selectedTags: [],
       numResults: 25,
-      radius: .50,
+      radius: 5,
       favorites: false,
       tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       modalVisible: false,
       sortBy: 'Date',
       FavIsSelected: false,
+      user: null,
     },
   };
 
   componentWillMount() {
     this.getLocation();
-    this.setState({ markers: this.props.phototags });
+    this.setState({ 
+      markers: this.props.phototags,
+     });
     //this.setMarkersByDistance();
     Location.watchPositionAsync(location => {
       this.setLocation(location);
@@ -84,9 +87,44 @@ class MapScreen extends React.Component {
   }
 
   getFilters(filters){
-    this.setState({filters: filters})
+    this.setState({
+      filters: filters,
+    });
   };
 
+  filterPhotoTags(photoTags){
+    let filters = this.state.filters;
+    let filteredTags = [];
+    //when filtering for tags, need to make sure that photo has all of the tags in the array
+
+
+    return filteredTags;
+  };
+
+  sortPhotoTags(photoTags){
+    let sortBy = this.state.filters.sortBy;
+    if (sortBy === 'Date') {
+      return photoTags.sort((a, b) => {
+        return Date.parse(a.timestamp) - Date.parse(b.timestamp);
+      });
+    } 
+    if (sortBy === 'Popular') {
+      return photoTags.sort((a, b) => {
+        return Date.parse(a.timestamp) - Date.parse(b.timestamp);
+      });
+    }
+    if (sortBy === 'Votes') {
+      return photoTags.sort((a, b) => {
+        return a.upvotes - b.upvotes;
+      });
+    }
+    if(sortBy === 'Favorites') {
+      return photoTags.sort((a, b) => {
+        return a.upvotes - b.upvotes;
+      });
+    }
+    return photoTags;
+  }
 
   checkDistance(
     distance = 10,
@@ -166,7 +204,7 @@ class MapScreen extends React.Component {
         <View style={{height: '100%'}}>
           <FilterScreen getFilters={this.getFilters.bind(this)}/>
           <Button onPress={this.toggleView} title="Switch to Map" />
-          <ListView phototags={this.props.phototags} />
+          <ListView phototags={this.sortPhotoTags(this.props.phototags)} />
         </View>
       );
     }
