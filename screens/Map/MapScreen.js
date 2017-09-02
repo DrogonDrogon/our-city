@@ -183,6 +183,7 @@ class MapScreen extends React.Component {
             {this.props.phototags &&
               this.props.phototags
                 .filter(marker => this.checkDistance(this.state.filters.radius, marker.locationLat, marker.locationLong))
+                .slice(0, this.state.filters.numResults)
                 .map((markerMapped, i) => (
                   <MapView.Marker
                     key={i}
@@ -204,7 +205,7 @@ class MapScreen extends React.Component {
         <View style={{height: '100%'}}>
           <FilterScreen getFilters={this.getFilters.bind(this)}/>
           <Button onPress={this.toggleView} title="Switch to Map" />
-          <ListView phototags={this.sortPhotoTags(this.props.phototags)} />
+          <ListView phototags={this.sortPhotoTags(this.props.phototags).slice(0, this.state.filters.numResults)} />
         </View>
       );
     }
