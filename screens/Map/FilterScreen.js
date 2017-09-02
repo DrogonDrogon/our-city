@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, StyleSheet, Text, TextInput, View, Button , Slider, TouchableHighlight, Modal} from 'react-native';
+import { ScrollView, StyleSheet, Text, Picker, View, Switch, Slider, TouchableHighlight, Modal} from 'react-native';
 import * as Actions from '../../actions';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -25,13 +25,19 @@ class FilterScreen extends Component {
       favories: false,
       tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       modalVisible: false,
-      };
+      sortBy: 'date',
+      FavIsSelected: false,
+    };
   }
   getVal(val){
   
   }
-
- setModalVisible(visible) {
+  getInitialState() {
+    return {
+      FavIsSelected: false,
+    };
+  }
+  setModalVisible(visible) {
     this.setState({modalVisible: visible});
   }
 
@@ -47,7 +53,7 @@ class FilterScreen extends Component {
           <View style={{ marginTop: 22 }}>
             <View>
               <TouchableHighlight onPress={() => {
-                this.setModalVisible(!this.state.modalVisible)
+               this.setModalVisible(!this.state.modalVisible)
               }}>
                 <Text>Hide Filters</Text>
               </TouchableHighlight>
@@ -59,17 +65,25 @@ class FilterScreen extends Component {
                       ))}
                   </View>
                 </ScrollView>
-                <View>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
                   <Slider
                     style={{ width: 300 }}
                     step={0.10}
                     minimumValue={0.10}
                     maximumValue={10.0}
                     value={this.state.radius}
-                    onValueChange={val => this.setState({ radius: val.toPrecision(2) })}
+                    onValueChange={val => this.setState({ radius: Number(val.toPrecision(2)) })}
                     onSlidingComplete={ val => this.getVal(val)}
                   />
-                  <Text>Distance(miles): {this.state.radius}</Text>
+                  <Text>
+                    Distance (miles): {this.state.radius}
+                  </Text>
                   <Slider
                     style={{ width: 300 }}
                     step={1}
@@ -81,8 +95,23 @@ class FilterScreen extends Component {
                   />
                   <Text>Results: {this.state.numResults}</Text>
                 </View>
-                <View>
-
+                <View style={{flex: 1, flexDirection: 'row', alignItems: 'center',}}>
+                  <Picker
+                    style={{width: '50%'}}
+                    selectedValue={this.state.sortBy}
+                    onValueChange={(method) => this.setState({sortBy: method})}>
+                    <Picker.Item label="Most Recent" value="Date" />
+                    <Picker.Item label="Most Popular" value="Popular" />
+                    <Picker.Item label="Most Voted" value="Votes" />
+                    <Picker.Item label="Most Favorited" value="Favorite" />
+                  </Picker>
+                  <View style={{width: '50%', flex: 1, flexDirection: 'column', alignItems: 'center',}}>
+                    <Text>Only Show Favorites</Text>
+                    <Switch
+                      onValueChange={(value) => this.setState({FavIsSelected: value})}
+                      style={{ marginBottom: 10 }}
+                      value={this.state.FavIsSelected}/>
+                  </View>
                 </View>
               </ScrollView>
             </View>
