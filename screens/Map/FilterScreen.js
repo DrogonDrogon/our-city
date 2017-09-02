@@ -21,11 +21,11 @@ class FilterScreen extends Component {
     this.state = {
       selectedTags: [],
       numResults: 25,
-      radius: .50,
-      favories: false,
+      radius: 5.0,
+      favorites: false,
       tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       modalVisible: false,
-      sortBy: 'date',
+      sortBy: 'Date',
       FavIsSelected: false,
     };
   }
@@ -53,6 +53,7 @@ class FilterScreen extends Component {
           <View style={{ marginTop: 75, backgroundColor: 'white', }}>
             <View>
               <TouchableHighlight style={{ marginTop: 11}} onPress={() => {
+               this.props.getFilters(this.state)
                this.setModalVisible(!this.state.modalVisible)
               }}>
                 <Text>Hide Filters</Text>
@@ -82,7 +83,7 @@ class FilterScreen extends Component {
                     onSlidingComplete={ val => this.getVal(val)}
                   />
                   <Text>
-                    Distance (miles): {this.state.radius}
+                    Distance (km): {this.state.radius}
                   </Text>
                   <Slider
                     style={{ width: 300 }}
@@ -103,7 +104,7 @@ class FilterScreen extends Component {
                     <Picker.Item label="Most Recent" value="Date" />
                     <Picker.Item label="Most Popular" value="Popular" />
                     <Picker.Item label="Most Voted" value="Votes" />
-                    <Picker.Item label="Most Favorited" value="Favorite" />
+                    <Picker.Item label="Most Favorited" value="Favorites" />
                   </Picker>
                   <View style={{width: '50%', flex: 1, flexDirection: 'column', alignItems: 'center',}}>
                     <Text>Only Show Favorites</Text>
