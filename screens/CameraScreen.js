@@ -156,7 +156,6 @@ class CameraScreen extends React.Component {
           ref={input => (this.descriptionInput = input)}
         />
         <Button title="Upload my post" onPress={this._saveImg} />
-        {this.props.isLoading && <ActivityIndicator animated={this.props.isLoading} size="large" />}
       </KeyboardAwareScrollView>
     );
   }
