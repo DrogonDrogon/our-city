@@ -24,6 +24,7 @@ class MapScreen extends React.Component {
     markers: {},
     isMapToggled: true,
     modalVisible: false,
+    filters: {},
   };
 
   componentWillMount() {
@@ -73,6 +74,11 @@ class MapScreen extends React.Component {
     this.setState({ region: tempRegion });
   }
 
+  getFilters(filters){
+    this.setState({filters: filters})
+  };
+
+
   checkDistance(
     lat1,
     lon1,
@@ -96,6 +102,8 @@ class MapScreen extends React.Component {
     return true;
   }
 
+  
+
   setMarkersByDistance() {
     var tempMarkers = [];
     this.state.markers.forEach(marker => {
@@ -115,7 +123,7 @@ class MapScreen extends React.Component {
     if (this.state.isMapToggled === true) {
       return (
         <View style={{height: '100%'}}>  
-          <FilterScreen />
+          <FilterScreen getFilters={this.getFilters.bind(this)}/>
           <MapView
             showsUserLocation
             followsUserLocation
@@ -147,7 +155,7 @@ class MapScreen extends React.Component {
     } else {
       return (
         <View style={{height: '100%'}}>
-          <FilterScreen />
+          <FilterScreen getFilters={this.getFilters.bind(this)}/>
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView phototags={this.props.phototags} />
         </View>

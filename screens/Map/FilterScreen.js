@@ -22,10 +22,10 @@ class FilterScreen extends Component {
       selectedTags: [],
       numResults: 25,
       radius: .50,
-      favories: false,
+      favorites: false,
       tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       modalVisible: false,
-      sortBy: 'date',
+      sortBy: 'Date',
       FavIsSelected: false,
     };
   }
@@ -53,6 +53,7 @@ class FilterScreen extends Component {
           <View style={{ marginTop: 75, backgroundColor: 'white', }}>
             <View>
               <TouchableHighlight style={{ marginTop: 11}} onPress={() => {
+               this.props.getFilters(this.state)
                this.setModalVisible(!this.state.modalVisible)
               }}>
                 <Text>Hide Filters</Text>
