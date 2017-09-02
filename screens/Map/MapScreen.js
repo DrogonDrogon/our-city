@@ -1,9 +1,10 @@
 import React from 'react';
 import { MapView, Location, Permissions } from 'expo';
 import { connect } from 'react-redux';
-import { Text, Image, StyleSheet } from 'react-native';
+import { Button, Text, Image, StyleSheet, View, ScrollView } from 'react-native';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
+import ListView from './ListView.js';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -20,6 +21,7 @@ class MapScreen extends React.Component {
       longitudeDelta: 0.0421,
     },
     markers: {},
+    isMapToggled: true,
   };
 
   componentWillMount() {
@@ -31,6 +33,13 @@ class MapScreen extends React.Component {
       //this.setMarkersByDistance();
     });
   }
+
+  toggleView = () => {
+    let reverse = !this.state.isMapToggled;
+    this.setState({ isMapToggled: reverse }, () => {
+      console.log('toggled', this.state.isMapToggled);
+    });
+  };
 
   goToPhototags(marker) {
     this.props.navigation.navigate('phototagFromMap', marker);
@@ -50,6 +59,7 @@ class MapScreen extends React.Component {
 
     getLocationAsync();
   }
+  
   setLocation(location) {
     let tempRegion = {
       latitude: location.coords.latitude,
@@ -97,47 +107,50 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    return (
-      <MapView
-        showsUserLocation
-        followsUserLocation
-        toolbarEnabled
-        provider={MapView.PROVIDER_GOOGLE}
-        style={{ flex: 1 }}
-        region={this.state.region}>
-        {this.props.phototags &&
-          this.props.phototags
-            .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
-            .map((markerMapped, i) => (
-              <MapView.Marker
-                key={i}
-                coordinate={{
-                  latitude: markerMapped.locationLat,
-                  longitude: markerMapped.locationLong,
-                }}
-                title={markerMapped.description}>
-                <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, markerMapped)}>
-                  <MarkerTag phototag={markerMapped} />
-                </MapView.Callout>
-              </MapView.Marker>
-            ))}
-      </MapView>
-    );
+    if (this.state.isMapToggled === true) {
+      return (
+        <MapView
+          showsUserLocation
+          followsUserLocation
+          toolbarEnabled
+          provider={MapView.PROVIDER_GOOGLE}
+          style={styles.map}
+          region={this.state.region}>
+          <Button onPress={this.toggleView} title="Switch to List" />
+
+          {this.props.phototags &&
+            this.props.phototags
+              .filter(marker => this.checkDistance(marker.locationLat, marker.locationLong))
+              .map((markerMapped, i) => (
+                <MapView.Marker
+                  key={i}
+                  coordinate={{
+                    latitude: markerMapped.locationLat,
+                    longitude: markerMapped.locationLong,
+                  }}
+                  title={markerMapped.description}>
+                  <MapView.Callout tooltip onPress={this.goToPhototags.bind(this, markerMapped)}>
+                    <MarkerTag phototag={markerMapped} />
+                  </MapView.Callout>
+                </MapView.Marker>
+              ))}
+        </MapView>
+      );
+    } else {
+      return (
+        <View>
+          <Button onPress={this.toggleView} title="Switch to Map" />
+          <ListView phototags={this.props.phototags} />
+        </View>
+      );
+    }
   }
 }
 
 export default connect(mapStateToProps)(MapScreen);
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: 300,
+  map: {
     flex: 1,
-    padding: 1,
-    alignItems: 'center',
-  },
-  descriptionText: {
-    marginTop: 10,
-    marginBottom: 20,
   },
 });

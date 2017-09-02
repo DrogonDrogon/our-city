@@ -8,10 +8,7 @@ class PhototagItem extends React.Component {
         <TouchableHighlight
           onPress={this.props.goToPhototags}
           style={{ width: '100%', height: 200 }}>
-          <Image
-            style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-            source={{ uri: this.props.phototag.imageUrl }}
-          />
+          <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
         </TouchableHighlight>
         <Text onPress={this.props.goToPhototags} style={styles.descriptionText}>
           {this.props.phototag.description}
@@ -23,18 +20,25 @@ class PhototagItem extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: '75%',
-    height: 300,
-    padding: 5,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 30,
+    paddingRight: 30,
     marginTop: 0,
-    marginBottom: 5,
+    marginBottom: 15,
     alignItems: 'center',
-    borderColor: '#000000',
-    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderRadius: 20,
   },
   descriptionText: {
     marginTop: 10,
-    marginBottom: 10,
+    width: 200,
+  },
+  imageStyle: {
+    flex: 1,
+    width: 200,
+    height: 200,
+    resizeMode: Image.resizeMode.contain,
   },
 });
 
