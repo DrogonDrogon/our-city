@@ -37,6 +37,7 @@ const mapStateToProps = (state, ownProps) => {
     phototags: state.phototags,
     user: state.user,
     isLoading: state.isLoading,
+    location: state.location,
   };
 };
 
@@ -49,6 +50,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     submitUserUpdate: userInfo => {
       dispatch(Actions.updateUser(userInfo));
+    },
+    getLocation: () => {
+      dispatch(Actions.getLocationAsync());
     },
   };
 };
@@ -107,6 +111,7 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.props.getAllPhototags();
+    this.props.getLocation();
   }
 
   _handleIndexChange = index => {
