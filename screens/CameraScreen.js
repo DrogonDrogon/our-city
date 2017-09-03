@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Image, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { Button, Image, TextInput, ActivityIndicator, Alert, CameraRoll } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePicker, Location, Permissions } from 'expo';
 import { RNS3 } from 'react-native-aws3';
@@ -75,6 +75,7 @@ class CameraScreen extends React.Component {
     });
 
     if (!result.cancelled) {
+      CameraRoll.saveToCameraRoll(result.uri);
       this.setState({ imageUri: result.uri });
     }
   };
