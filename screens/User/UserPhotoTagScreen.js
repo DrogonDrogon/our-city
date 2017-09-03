@@ -14,7 +14,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     submitOnePhototag: phototag => {
-      dispatch(Actions.postPhototagRequested(phototag));
+      dispatch(Actions.updatePhototag(phototag));
     },
   };
 };

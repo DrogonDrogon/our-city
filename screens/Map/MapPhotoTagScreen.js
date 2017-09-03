@@ -17,10 +17,24 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePhototagAndUser: (phototag, user) => {
-      dispatch(Actions.postPhototagRequested(phototag));
-      dispatch(Actions.updateUser(user));
+    updatePhototagAndUser: (phototag, userId) => {
+      dispatch(Actions.updateFavsOrVotesOfPhototag(phototag, userId));
+      // dispatch(Actions.updateUser(user));
     },
+    addFavUnderUserId: (userId, phototagId) => {
+      let phototagRecord = {};
+      let key = phototagId;
+      phototagRecord[key] = true;
+      dispatch(Actions.addFavUnderUserId(userId, phototagRecord));
+    },
+    deleteFavUnderUserId: (userId, phototagId) => {
+      dispatch(Actions.deleteFavUnderUserId(userId, phototagId));
+    },
+    // saveComment: (phototag, userId) => {
+    //   // creates a new comment under 'comments'
+    //   // adds the commentId under the user's 'comments'
+    //   // adds the commentId under the phototag's 'comments'
+    // },
   };
 };
 
@@ -31,8 +45,6 @@ class MapScreen extends React.Component {
     phototag: this.props.navigation.state.params,
     edited: false,
     comments: this.props.navigation.state.params.comments,
-    favouriteBtn: this.props.user.favs[this.props.navigation.state.params.id] ? 'red' : 'black',
-    isFavourite: 'false',
   };
 
   upvote() {
@@ -55,15 +67,11 @@ class MapScreen extends React.Component {
     }
   }
 
-  addFavourite() {
-    if (!this.state.isFavourite) {
-      this.props.user.favs[this.state.phototag.id] = true;
-      this.setState({ favouriteBtn: 'red' });
-      this.setState({ isFavourite: true });
+  handleClickFav() {
+    if (!this.props.user.favs[this.state.phototag.id]) {
+      this.props.addFavUnderUserId(this.props.user.id, this.state.phototag.id);
     } else {
-      delete this.props.user.favs[this.state.phototag.id];
-      this.setState({ favouriteBtn: 'black' });
-      this.setState({ isFavourite: false });
+      this.props.deleteFavUnderUserId(this.props.user.id, this.state.phototag.id);
     }
   }
 
@@ -72,14 +80,15 @@ class MapScreen extends React.Component {
   }
   addTocomments() {
     if (this.state.comment !== '') {
-      console.log('logged');
+      console.log('this.state.comments', this.state.comments);
       let tempComments = this.state.comments;
       let commentObject = {
-        userName: this.props.user.displayName,
+        userId: this.props.user.id,
         text: this.state.comment,
-        timeStamp: new Date(),
+        timestamp: new Date(),
       };
       tempComments.push(commentObject);
+      console.log('[addToComments]', commentObject);
       this.setState({ comments: tempComments });
       this.setState({ comment: '' });
     }
@@ -90,16 +99,19 @@ class MapScreen extends React.Component {
     let phototag = this.state.phototag;
     phototag.upvotes = this.state.votes;
     phototag.comments = this.state.comments;
-    let user = this.props.user;
-    this.props.updatePhototagAndUser(phototag, user);
+    this.props.updatePhototagAndUser(phototag, this.props.user.id);
   }
 
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={{ alignItems: 'center' }}>
         <PhototDisplay phototag={this.state.phototag} />
-        <TouchableHighlight onPress={this.addFavourite.bind(this)}>
-          <Ionicons name="md-heart" size={32} color={this.state.favouriteBtn} />
+        <TouchableHighlight onPress={this.handleClickFav.bind(this)}>
+          <Ionicons
+            name="md-heart"
+            size={32}
+            color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
+          />
         </TouchableHighlight>
         <TouchableHighlight onPress={this.upvote.bind(this)}>
           <Ionicons name="md-arrow-up" size={32} color="blue" />
