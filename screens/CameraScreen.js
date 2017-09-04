@@ -20,6 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
     isLoading: state.isLoading,
+    location: state.location,
   };
 };
 
@@ -49,22 +50,6 @@ class CameraScreen extends React.Component {
     allImageData: {},
     description: '',
   };
-
-  componentWillMount() {
-    const getLocationAsync = async () => {
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
-      if (status !== 'granted') {
-        this.setState({
-          errorMessage: 'Permission to access location was denied',
-        });
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      console.log('[CameraScreen] location gotten', location);
-      this.setState({ location });
-    };
-    getLocationAsync();
-  }
 
   _takePic = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -109,14 +94,14 @@ class CameraScreen extends React.Component {
       phototag.userId = this.props.user.id;
       phototag.userName = this.props.user.displayName;
       phototag.description = this.state.description;
-      phototag.locationLat = this.state.location.coords.latitude;
-      phototag.locationLong = this.state.location.coords.longitude;
+      phototag.locationLat = this.props.location.latitude;
+      phototag.locationLong = this.props.location.longitude;
       phototag.imageUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
       phototag.upvotes = 0;
       phototag.downvotes = 0;
       phototag.comments = ['like', 'dislike'];
       phototag.userProfileUrl = this.props.user.photoUrl;
-
+      console.log('phototag', phototag);
       // Set up file uri to save to AWS
       let file = {
         uri: this.state.imageUri,

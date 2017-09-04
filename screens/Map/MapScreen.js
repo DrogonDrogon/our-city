@@ -10,18 +10,20 @@ import FilterScreen from './FilterScreen';
 const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
+    location: state.location,
   };
 };
 
 class MapScreen extends React.Component {
   state = {
+    // the intial location must be set because props take time to init it could be anything
     region: {
-      latitude: 40.750355960509054,
+      latitude: 20.750355960509054,
       longitude: -73.97669815393424,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
-    markers: {},
+    markers: [],
     isMapToggled: true,
     modalVisible: false,
     filters: {
@@ -37,16 +39,8 @@ class MapScreen extends React.Component {
     },
   };
 
-  componentWillMount() {
-    this.getLocation();
-    this.setState({ 
-      markers: this.props.phototags,
-     });
-    //this.setMarkersByDistance();
-    Location.watchPositionAsync(location => {
-      this.setLocation(location);
-      //this.setMarkersByDistance();
-    });
+  componentWillReceiveProps(nextProps) {
+    this.setLocation(nextProps.location);
   }
 
   toggleView = () => {
@@ -60,25 +54,11 @@ class MapScreen extends React.Component {
     this.props.navigation.navigate('PhototagFromMap', marker);
   }
 
-  getLocation() {
-    const getLocationAsync = async () => {
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
-      if (status !== 'granted') {
-        this.setState({
-          errorMessage: 'Permission to access location was denied',
-        });
-      }
-      let location = await Location.getCurrentPositionAsync({});
-      this.setLocation(location);
-    };
-
-    getLocationAsync();
-  }
-
   setLocation(location) {
+    console.log('Yay', location);
     let tempRegion = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
+      latitude: location.latitude,
+      longitude: location.longitude,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     };
@@ -86,28 +66,27 @@ class MapScreen extends React.Component {
     this.setState({ region: tempRegion });
   }
 
-  getFilters(filters){
+  getFilters(filters) {
     this.setState({
-      filters: filters,
+      filters,
     });
-  };
+  }
 
-  filterPhotoTags(photoTags){
+  filterPhotoTags(photoTags) {
     let filters = this.state.filters;
     let filteredTags = [];
     //when filtering for tags, need to make sure that photo has all of the tags in the array
 
-
     return filteredTags;
-  };
+  }
 
-  sortPhotoTags(photoTags){
+  sortPhotoTags(photoTags) {
     let sortBy = this.state.filters.sortBy;
     if (sortBy === 'Date') {
       return photoTags.sort((a, b) => {
         return Date.parse(a.timestamp) - Date.parse(b.timestamp);
       });
-    } 
+    }
     if (sortBy === 'Popular') {
       return photoTags.sort((a, b) => {
         return Date.parse(a.timestamp) - Date.parse(b.timestamp);
@@ -118,7 +97,7 @@ class MapScreen extends React.Component {
         return a.upvotes - b.upvotes;
       });
     }
-    if(sortBy === 'Favorites') {
+    if (sortBy === 'Favorites') {
       return photoTags.sort((a, b) => {
         return a.upvotes - b.upvotes;
       });
@@ -131,7 +110,7 @@ class MapScreen extends React.Component {
     lat1,
     lon1,
     lat2 = this.state.region.latitude,
-    lon2 = this.state.region.longitude,
+    lon2 = this.state.region.longitude
   ) {
     const deg2rad = deg => {
       return deg * (Math.PI / 180);
@@ -149,8 +128,6 @@ class MapScreen extends React.Component {
     return true;
   }
 
-  
-
   setMarkersByDistance() {
     var tempMarkers = [];
     this.state.markers.forEach(marker => {
@@ -163,14 +140,14 @@ class MapScreen extends React.Component {
     });
   }
   setModalVisible(visible) {
-    this.setState({modalVisible: visible});
+    this.setState({ modalVisible: visible });
   }
 
   render() {
     if (this.state.isMapToggled === true) {
       return (
-        <View style={{height: '100%'}}>  
-          <FilterScreen getFilters={this.getFilters.bind(this)}/>
+        <View style={{ height: '100%' }}>
+          <FilterScreen getFilters={this.getFilters.bind(this)} />
           <MapView
             showsUserLocation
             followsUserLocation
@@ -182,7 +159,13 @@ class MapScreen extends React.Component {
 
             {this.props.phototags &&
               this.props.phototags
-                .filter(marker => this.checkDistance(this.state.filters.radius, marker.locationLat, marker.locationLong))
+                .filter(marker =>
+                  this.checkDistance(
+                    this.state.filters.radius,
+                    marker.locationLat,
+                    marker.locationLong
+                  )
+                )
                 .slice(0, this.state.filters.numResults)
                 .map((markerMapped, i) => (
                   <MapView.Marker
@@ -197,15 +180,20 @@ class MapScreen extends React.Component {
                     </MapView.Callout>
                   </MapView.Marker>
                 ))}
-          </MapView> 
+          </MapView>
         </View>
       );
     } else {
       return (
-        <View style={{height: '100%'}}>
-          <FilterScreen getFilters={this.getFilters.bind(this)}/>
+        <View style={{ height: '100%' }}>
+          <FilterScreen getFilters={this.getFilters.bind(this)} />
           <Button onPress={this.toggleView} title="Switch to Map" />
-          <ListView phototags={this.sortPhotoTags(this.props.phototags).slice(0, this.state.filters.numResults)} />
+          <ListView
+            phototags={this.sortPhotoTags(this.props.phototags).slice(
+              0,
+              this.state.filters.numResults
+            )}
+          />
         </View>
       );
     }

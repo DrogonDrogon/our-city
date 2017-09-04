@@ -115,6 +115,7 @@ class HomeScreen extends React.Component {
     Location.watchPositionAsync(location => {
       this.props.getLocation(location);
     });
+    console.log('location', this.props.location);
   }
 
   _handleIndexChange = index => {
