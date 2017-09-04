@@ -1,7 +1,16 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Image, Text, TextInput, Button, TouchableHighlight } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TextInput,
+  Button,
+  TouchableHighlight,
+  Alert,
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import Comment from '../../components/comment';
@@ -17,8 +26,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePhototagAndUser: (phototag, userId) => {
-      dispatch(Actions.updateFavsOrVotesOfPhototag(phototag, userId));
+    updatePhototag: phototag => {
+      dispatch(Actions.updatePhototag(phototag));
     },
     addFavUnderUserId: (userId, phototagId) => {
       let phototagRecord = {};
@@ -35,7 +44,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       newCommentRecord[key] = true;
       dispatch(Actions.addCommentUnderPhototag(phototagId, newCommentRecord));
     },
-    updateUserWithComment: userData => {
+    updateUser: userData => {
       dispatch(Actions.updateUser(userData));
     },
   };
@@ -104,33 +113,50 @@ class MapScreen extends React.Component {
       });
   }
 
-  upvote() {
+  handleUpvote = () => {
     if (
       !this.props.user.votes.hasOwnProperty(this.state.phototag.id) ||
       this.props.user.votes[this.state.phototag.id] === 0
     ) {
-      this.setState({ votes: this.state.votes + 1 });
-      this.props.user.votes[this.state.phototag.id] = 1;
-    }
-  }
+      this.setState({ votes: this.state.votes + 1 }, () => {
+        // Update user
+        let userData = this.props.user;
+        userData.votes[this.state.phototag.id] = 1;
+        console.log('trying to use userData', userData);
+        this.props.updateUser(userData);
 
-  unvote() {
+        // Update phototag
+        let phototagData = this.state.phototag;
+        phototagData.upvotes = this.state.votes;
+        this.props.updatePhototag(phototagData);
+      });
+    } else {
+      Alert.alert(
+        'Note',
+        'You have already submitted 1 vote for this! If you want to remove your vote, click the down button'
+      );
+    }
+  };
+
+  handleUndoUpvote = () => {
     if (
       this.props.user.votes.hasOwnProperty(this.state.phototag.id) &&
       this.props.user.votes[this.state.phototag.id] === 1
     ) {
-      this.props.user.votes[this.state.phototag.id] = 0;
-      this.setState({ votes: this.state.votes - 1 });
-    }
-  }
+      this.setState({ votes: this.state.votes - 1 }, () => {
+        // Update user
+        let userData = this.props.user;
+        userData.votes[this.state.phototag.id] = 0;
+        console.log('trying to use userData', userData);
+        this.props.updateUser(userData);
 
-  submitVotes() {
-    console.log('submit votes');
-    let phototag = this.state.phototag;
-    phototag.upvotes = this.state.votes;
-    phototag.comments = this.state.comments;
-    this.props.updatePhototagAndUser(phototag, this.props.user.id);
-  }
+        // Update phototag
+        let phototagData = this.state.phototag;
+        phototagData.upvotes = this.state.votes;
+        this.props.updatePhototag(phototagData);
+      });
+    }
+  };
 
   handleClickFav = () => {
     if (!this.props.user.favs[this.state.phototag.id]) {
@@ -187,7 +213,7 @@ class MapScreen extends React.Component {
     // 2. Adds the commentId under the user's 'comments' node
     let updatedUser = this.props.user;
     updatedUser.comments[commentId] = true;
-    this.props.updateUserWithComment(updatedUser);
+    this.props.updateUser(updatedUser);
 
     // 3. Adds the commentId under the phototag 'comments' node
     this.props.updatePhototagWithComment(phototagId, commentId);
@@ -223,14 +249,13 @@ class MapScreen extends React.Component {
             color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
           />
         </TouchableHighlight>
-        <TouchableHighlight onPress={this.upvote.bind(this)}>
+        <TouchableHighlight onPress={this.handleUpvote}>
           <Ionicons name="md-arrow-up" size={32} color="blue" />
         </TouchableHighlight>
         <Text style={styles.titleText}>{this.state.votes}</Text>
-        <TouchableHighlight onPress={this.unvote.bind(this)}>
+        <TouchableHighlight onPress={this.handleUndoUpvote}>
           <Ionicons name="md-arrow-down" size={32} color="blue" />
         </TouchableHighlight>
-        <Button title="Submit votes" onPress={this.submitVotes.bind(this)} />
         <Text style={styles.titleText}>Comments</Text>
         {this.state.comments.map((comment, i) => <Comment key={comment.id} comment={comment} />)}
         <TextInput
