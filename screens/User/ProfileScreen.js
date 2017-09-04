@@ -228,7 +228,7 @@ class HomeScreen extends React.Component {
       return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
-            <Image style={styles.profileImage} source={{ uri: this.state.imageUri }} />
+            <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
             <Text>{displayName}</Text>
             <Button title="Edit Profile" onPress={this._handleClickEdit} />
           </View>

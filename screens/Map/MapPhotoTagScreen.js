@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, TextInput, Button, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Image, Text, TextInput, Button, TouchableHighlight } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import PhotoDisplay from '../../components/PhotoDisplay';
@@ -57,7 +57,7 @@ class MapScreen extends React.Component {
 
   getCommentsForCurrentPhototag() {
     // console.log('THIS COMMENTS -->', this.props.navigation.state.params.comments); // this is an object containing commentIds
-    // run the firebase query for comments here.
+    // Run the firebase query for comments here.
     let commentKeys = Object.keys(this.props.navigation.state.params.comments);
     const commentPromises = commentKeys.map(id => {
       return db
@@ -68,7 +68,7 @@ class MapScreen extends React.Component {
           return snapshot.val();
         })
         .catch(err => {
-          console.log('err getting comments promise', err);
+          console.log('Err getting comments promise', err);
         });
     });
     Promise.all(commentPromises)
@@ -79,7 +79,6 @@ class MapScreen extends React.Component {
             validComments.push(item);
           }
         });
-        console.log('got all comments--->', validComments);
         this.setState({ comments: validComments });
       })
       .catch(err => {
@@ -107,20 +106,20 @@ class MapScreen extends React.Component {
     }
   }
 
-  handleClickFav() {
+  handleClickFav = () => {
     if (!this.props.user.favs[this.state.phototag.id]) {
       this.props.addFavUnderUserId(this.props.user.id, this.state.phototag.id);
     } else {
       this.props.deleteFavUnderUserId(this.props.user.id, this.state.phototag.id);
     }
-  }
+  };
 
   editComment(text) {
     this.setState({ comment: text });
   }
-  addToComments() {
+
+  handleSubmitComment = () => {
     if (this.state.comment !== '') {
-      console.log('this.state.comments', this.state.comments);
       let tempComments = this.state.comments;
       let commentObject = {
         userId: this.props.user.id,
@@ -135,11 +134,10 @@ class MapScreen extends React.Component {
 
       this.saveNewComment(this.state.phototag.id, this.props.user, this.state.comment);
     }
-  }
+  };
 
-  saveNewComment(phototagId, user, commentText) {
-    // do firebase update to comments
-    // creates a new comment under 'comments' ---> this doesn't require redux????
+  saveNewComment = (phototagId, user, commentText) => {
+    // 1. Creates a new comment under 'comments' in Firebase
     let commentId = db.child('comments').push().key;
     let commentRecord = {};
     commentRecord.id = commentId;
@@ -149,24 +147,24 @@ class MapScreen extends React.Component {
     commentRecord.userImage = user.photoUrl;
     commentRecord.timestamp = new Date();
     commentRecord.phototagId = phototagId;
-    console.log('commentRecord', commentRecord);
+    // console.log('commentRecord', commentRecord);
 
     db
       .child('comments/' + commentId)
       .update(commentRecord)
       .then(() => {
-        console.log('comment posted!');
+        console.log('Comment posted!');
       })
-      .catch(error => console.log('ERROR writing to comments', error));
+      .catch(error => console.log('Error writing to comments', error));
 
-    // adds the commentId under the user's 'comments' node
+    // 2. Adds the commentId under the user's 'comments' node
     let updatedUser = this.props.user;
     updatedUser.comments[commentId] = true;
     this.props.updateUserWithComment(updatedUser);
 
-    // adds the commentId under the phototag 'comments' node
+    // 3. Adds the commentId under the phototag 'comments' node
     this.props.updatePhototagWithComment(phototagId, commentId);
-  }
+  };
 
   submitVotes() {
     console.log('submit votes');
@@ -179,8 +177,25 @@ class MapScreen extends React.Component {
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <PhotoDisplay phototag={this.state.phototag} />
-        <TouchableHighlight onPress={this.handleClickFav.bind(this)}>
+        <View style={styles.photoDisplayContainer}>
+          <Image
+            style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
+            source={{ uri: this.state.phototag.imageUrl }}
+          />
+          <Text>{this.state.phototag.description}</Text>
+        </View>
+        <Text style={styles.authorContainer}>
+          <Image
+            style={styles.imageSetting}
+            source={{
+              uri:
+                this.state.phototag.userProfileUrl ||
+                'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png',
+            }}
+          />
+          <Text>Posted by temp-name-here, {moment(this.state.phototag.timestamp).fromNow()}</Text>
+        </Text>
+        <TouchableHighlight onPress={this.handleClickFav}>
           <Ionicons
             name="md-heart"
             size={32}
@@ -196,9 +211,7 @@ class MapScreen extends React.Component {
         </TouchableHighlight>
         <Button title="Submit votes" onPress={this.submitVotes.bind(this)} />
         <Text style={styles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => (
-          <Comment key={i} comment={comment} />
-        ))}
+        {this.state.comments.map((comment, i) => <Comment key={i} comment={comment} />)}
         <TextInput
           value={this.state.comment}
           placeholder="Enter a new comment"
@@ -206,7 +219,7 @@ class MapScreen extends React.Component {
           clearButtonMode={'always'}
           style={styles.commentInput}
         />
-        <Button title="Submit comment" onPress={this.addToComments.bind(this)} />
+        <Button title="Submit comment" onPress={this.handleSubmitComment} />
       </KeyboardAwareScrollView>
     );
   }
@@ -226,6 +239,24 @@ const styles = StyleSheet.create({
     width: '80%',
     backgroundColor: '#fff',
     padding: 10,
+  },
+  photoDisplayContainer: {
+    width: 250,
+    height: 250,
+    marginBottom: 20,
+  },
+  authorContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    marginBottom: 10,
+    width: '80%',
+  },
+  imageSetting: {
+    height: 40,
+    width: 40,
+    marginRight: 10,
+    borderRadius: 20,
   },
 });
 

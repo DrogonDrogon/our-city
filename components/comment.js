@@ -1,5 +1,5 @@
 import React from 'React';
-import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import moment from 'moment';
 
 export default class Comment extends React.Component {
@@ -7,7 +7,7 @@ export default class Comment extends React.Component {
     return (
       <View style={styles.commentContainer}>
         <Image source={{ uri: this.props.comment.userImage }} style={styles.imageSetting} />
-        <View style={{ flex: 1, flexDirection: 'column', flexWrap: 'wrap' }}>
+        <View style={styles.textOnlyContainer}>
           <Text style={styles.nameText}>{this.props.comment.userName}</Text>
           <Text style={styles.dateText}>{moment(this.props.comment.timestamp).fromNow()}</Text>
           <Text style={styles.commentText}>{this.props.comment.text}</Text>
@@ -25,6 +25,11 @@ const styles = StyleSheet.create({
     width: '80%',
     padding: 10,
     justifyContent: 'center',
+  },
+  textOnlyContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    flexWrap: 'wrap',
   },
   nameText: {
     fontSize: 16,

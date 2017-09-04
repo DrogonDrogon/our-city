@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, Image, View, TextInput, Button } from 'react-native';
 import * as Actions from '../../actions';
 import PhotoDisplay from '../../components/PhotoDisplay';
 
@@ -42,8 +42,11 @@ class UserScreen extends React.Component {
     return (
       <ScrollView>
         <Text style={styles.titleText} />
-        <PhotoDisplay phototag={this.state.phototag} />
-
+        <Image
+          style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
+          source={{ uri: this.state.phototag.imageUrl }}
+        />
+        <Text>{this.state.phototag.description}</Text>
         <Text style={styles.titleText} />
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
