@@ -1,8 +1,9 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 import * as Actions from '../actions';
+import AppStyles from '../styles/AppStyles';
 
 const mapStateToProps = state => {
   return {
@@ -42,7 +43,11 @@ class SplashScreen extends React.Component {
   }
 
   render() {
-    return <View />;
+    return (
+      <View style={AppStyles.splash}>
+        <Image source={require('../assets/images/pexels-photo-408951crop2.png')} resizeMode="contain" />
+      </View>
+    );
   }
 }
 
