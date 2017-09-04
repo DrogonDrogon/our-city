@@ -193,6 +193,7 @@ class MapScreen extends React.Component {
               0,
               this.state.filters.numResults
             )}
+            navigation={this.props.navigation}
           />
         </View>
       );
