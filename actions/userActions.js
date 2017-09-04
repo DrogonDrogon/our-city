@@ -112,7 +112,8 @@ export const postNewUserBegin = user => dispatch => {
     userInfo.email = user.email;
     userInfo.photoUrl =
       'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png';
-    userInfo.displayName = '';
+    let getUsername = user.email.split('@');
+    userInfo.displayName = getUsername[0];
   }
 
   // If auth through fb, can save displayName and photoUrl
