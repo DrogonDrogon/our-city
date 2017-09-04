@@ -57,6 +57,17 @@ export const updatePhototag = phototag => dispatch => {
     .catch(error => console.log('ERROR writing to /posts', error));
 };
 
+// For adding a new comment under 'comments' node
+export const addCommentUnderPhototag = (phototagId, commentData) => dispatch => {
+  db
+    .child('phototags/' + phototagId + '/comments/')
+    .update(commentData)
+    .then(() => {
+      dispatch(fetchPhototags);
+    })
+    .catch(error => console.log('ERROR writing to /phototags/comments', error));
+};
+
 // For fetching favorite-phototags by userObject
 export const fetchFavoritesByUser = userInfo => dispatch => {
   // fetch favorites

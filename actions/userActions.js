@@ -17,7 +17,6 @@ export const checkUserLogin = () => dispatch => {
 };
 
 export const updateUser = user => dispatch => {
-  console.log('[ACTIONS] updateUser is firing with user', user);
   db
     .child('users/' + user.id)
     .update(user)

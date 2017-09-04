@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, TextInput, Button, TouchableHighlight } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
-import PhototDisplay from '../../components/PhotoDisplay';
+import PhotoDisplay from '../../components/PhotoDisplay';
 import Comment from '../../components/comment';
 import * as Actions from '../../actions';
+import db from '../../db';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -19,7 +20,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePhototagAndUser: (phototag, userId) => {
       dispatch(Actions.updateFavsOrVotesOfPhototag(phototag, userId));
-      // dispatch(Actions.updateUser(user));
     },
     addFavUnderUserId: (userId, phototagId) => {
       let phototagRecord = {};
@@ -30,11 +30,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     deleteFavUnderUserId: (userId, phototagId) => {
       dispatch(Actions.deleteFavUnderUserId(userId, phototagId));
     },
-    // saveComment: (phototag, userId) => {
-    //   // creates a new comment under 'comments'
-    //   // adds the commentId under the user's 'comments'
-    //   // adds the commentId under the phototag's 'comments'
-    // },
+    updatePhototagWithComment: (phototagId, commentId) => {
+      let newCommentRecord = {};
+      let key = commentId;
+      newCommentRecord[key] = true;
+      dispatch(Actions.addCommentUnderPhototag(phototagId, newCommentRecord));
+    },
+    updateUserWithComment: userData => {
+      dispatch(Actions.updateUser(userData));
+    },
   };
 };
 
@@ -44,8 +48,44 @@ class MapScreen extends React.Component {
     votes: this.props.navigation.state.params.upvotes,
     phototag: this.props.navigation.state.params,
     edited: false,
-    comments: this.props.navigation.state.params.comments,
+    comments: [],
   };
+
+  componentDidMount() {
+    this.getCommentsForCurrentPhototag();
+  }
+
+  getCommentsForCurrentPhototag() {
+    // console.log('THIS COMMENTS -->', this.props.navigation.state.params.comments); // this is an object containing commentIds
+    // run the firebase query for comments here.
+    let commentKeys = Object.keys(this.props.navigation.state.params.comments);
+    const commentPromises = commentKeys.map(id => {
+      return db
+        .child('comments')
+        .child(id)
+        .once('value')
+        .then(snapshot => {
+          return snapshot.val();
+        })
+        .catch(err => {
+          console.log('err getting comments promise', err);
+        });
+    });
+    Promise.all(commentPromises)
+      .then(comments => {
+        let validComments = [];
+        comments.forEach(item => {
+          if (item) {
+            validComments.push(item);
+          }
+        });
+        console.log('got all comments--->', validComments);
+        this.setState({ comments: validComments });
+      })
+      .catch(err => {
+        console.log('Err getting comments', err);
+      });
+  }
 
   upvote() {
     if (
@@ -78,24 +118,58 @@ class MapScreen extends React.Component {
   editComment(text) {
     this.setState({ comment: text });
   }
-  addTocomments() {
+  addToComments() {
     if (this.state.comment !== '') {
       console.log('this.state.comments', this.state.comments);
       let tempComments = this.state.comments;
       let commentObject = {
         userId: this.props.user.id,
+        userName: this.props.user.displayName,
+        userImage: this.props.user.photoUrl,
         text: this.state.comment,
         timestamp: new Date(),
       };
       tempComments.push(commentObject);
-      console.log('[addToComments]', commentObject);
       this.setState({ comments: tempComments });
       this.setState({ comment: '' });
+
+      this.saveNewComment(this.state.phototag.id, this.props.user, this.state.comment);
     }
   }
 
-  saveChanges() {
-    console.log('save');
+  saveNewComment(phototagId, user, commentText) {
+    // do firebase update to comments
+    // creates a new comment under 'comments' ---> this doesn't require redux????
+    let commentId = db.child('comments').push().key;
+    let commentRecord = {};
+    commentRecord.id = commentId;
+    commentRecord.text = commentText;
+    commentRecord.userId = user.id;
+    commentRecord.userName = user.displayName;
+    commentRecord.userImage = user.photoUrl;
+    commentRecord.timestamp = new Date();
+    commentRecord.phototagId = phototagId;
+    console.log('commentRecord', commentRecord);
+
+    db
+      .child('comments/' + commentId)
+      .update(commentRecord)
+      .then(() => {
+        console.log('comment posted!');
+      })
+      .catch(error => console.log('ERROR writing to comments', error));
+
+    // adds the commentId under the user's 'comments' node
+    let updatedUser = this.props.user;
+    updatedUser.comments[commentId] = true;
+    this.props.updateUserWithComment(updatedUser);
+
+    // adds the commentId under the phototag 'comments' node
+    this.props.updatePhototagWithComment(phototagId, commentId);
+  }
+
+  submitVotes() {
+    console.log('submit votes');
     let phototag = this.state.phototag;
     phototag.upvotes = this.state.votes;
     phototag.comments = this.state.comments;
@@ -104,8 +178,8 @@ class MapScreen extends React.Component {
 
   render() {
     return (
-      <KeyboardAwareScrollView contentContainerStyle={{ alignItems: 'center' }}>
-        <PhototDisplay phototag={this.state.phototag} />
+      <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <PhotoDisplay phototag={this.state.phototag} />
         <TouchableHighlight onPress={this.handleClickFav.bind(this)}>
           <Ionicons
             name="md-heart"
@@ -120,29 +194,38 @@ class MapScreen extends React.Component {
         <TouchableHighlight onPress={this.unvote.bind(this)}>
           <Ionicons name="md-arrow-down" size={32} color="blue" />
         </TouchableHighlight>
+        <Button title="Submit votes" onPress={this.submitVotes.bind(this)} />
+        <Text style={styles.titleText}>Comments</Text>
+        {this.state.comments.map((comment, i) => (
+          <Comment key={i} comment={comment} />
+        ))}
         <TextInput
           value={this.state.comment}
-          placeholder="Enter comment"
+          placeholder="Enter a new comment"
           onChangeText={text => this.editComment(text)}
           clearButtonMode={'always'}
+          style={styles.commentInput}
         />
-        <Button title="submit comment" onPress={this.addTocomments.bind(this)} />
-        <Button title="save changes" onPress={this.saveChanges.bind(this)} />
-        <Text style={styles.titleText}>Comments</Text>
-
-        {this.state.comments.map((comment, i) => (
-          <Comment key={i} userName={this.state.phototag.userName} comment={comment} />
-        ))}
+        <Button title="Submit comment" onPress={this.addToComments.bind(this)} />
       </KeyboardAwareScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  scrollViewContainer: {
+    alignItems: 'center',
+    paddingBottom: 50,
+  },
   titleText: {
     textAlign: 'center',
     fontSize: 20,
     alignItems: 'center',
+  },
+  commentInput: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 10,
   },
 });
 
