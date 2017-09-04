@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Expo from 'expo';
@@ -83,6 +83,7 @@ class Login extends Component {
       console.log('Logged In!');
     } catch (error) {
       console.log('Error logging in with email:', error.toString());
+      Alert.alert('Error', error.message, [{ text: 'OK', onPress: () => {} }]);
     }
   }
 
