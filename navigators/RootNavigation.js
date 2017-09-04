@@ -3,8 +3,8 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import LoginScreen from '../screens/Login/LoginScreen';
-import selectedPhototagMap from '../screens/Map/MapPhotoTagScreen';
-import selectedPhototagUser from '../screens/User/UserPhotoTagScreen';
+import MapPhotoTagScreen from '../screens/Map/MapPhotoTagScreen';
+import UserPhotoTagScreen from '../screens/User/UserPhotoTagScreen';
 import SplashScreen from '../screens/SplashScreen';
 import SignupScreen from '../screens//Login/SignupScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
@@ -21,11 +21,11 @@ const RootStackNavigator = StackNavigator(
     Main: {
       screen: MainTabNavigator,
     },
-    phototagFromMap: {
-      screen: selectedPhototagMap,
+    PhototagFromMap: {
+      screen: MapPhotoTagScreen,
     },
-    phototagFromUser: {
-      screen: selectedPhototagUser,
+    PhototagFromUser: {
+      screen: UserPhotoTagScreen,
     },
     Signup: {
       screen: SignupScreen,

@@ -6,9 +6,9 @@ import { SET_USER, IS_LOGGED_IN } from './constants';
 export const checkUserLogin = () => dispatch => {
   firebase.auth().onAuthStateChanged(user => {
     if (user != null) {
-      console.log('We are authenticated now! User is', user);
+      console.log('We are authenticated now! User is', user.uid);
       // check if new user
-      dispatch(getUserByIdBegin(user));
+      dispatch(checkUserLoginBegin(user));
     } else {
       dispatch(checkUserLoginComplete(false));
     }
@@ -16,6 +16,7 @@ export const checkUserLogin = () => dispatch => {
 };
 
 export const updateUser = user => dispatch => {
+  console.log('[ACTIONS] updateUser is firing with user', user);
   db
     .child('users/' + user.id)
     .update(user)
@@ -27,19 +28,49 @@ export const updateUser = user => dispatch => {
     });
 };
 
+export const updatePhototagsUnderUserId = (userId, phototagIdData) => dispatch => {
+  db
+    .child('users/' + userId + '/phototags/')
+    .update(phototagIdData)
+    .then(() => {
+      dispatch(queryUsersById(userId));
+    })
+    .catch(error => console.log('ERROR writing to /users', error));
+};
+
+// For determining whether or not user exists already upon Login
+export const checkUserLoginBegin = user => dispatch => {
+  db
+    .child('users/' + user.uid)
+    .once('value')
+    .then(snapshot => {
+      let userData = snapshot.val();
+      if (userData) {
+        // if the data exists, then we return the data
+        dispatch(getUserInfoCompleted(userData));
+        dispatch(checkUserLoginComplete(true));
+      } else {
+        // if the data doesn't exist, we create a new user to save
+        dispatch(postNewUserBegin(user));
+      }
+    });
+};
+
 // For fetching user by userId
-export const getUserByIdBegin = user => dispatch => {
-  db.child('users/' + user.uid).once('value').then(snapshot => {
-    let userData = snapshot.val();
-    if (userData) {
-      // if the data exists, then we return the data
-      dispatch(getUserInfoCompleted(userData));
-      dispatch(checkUserLoginComplete(true));
-    } else {
-      // if the data doesn't exist, we create a new user to save
-      dispatch(postNewUserBegin(user));
-    }
-  });
+export const queryUsersById = userId => dispatch => {
+  db
+    .child('users/' + userId)
+    .once('value')
+    .then(snapshot => {
+      let userData = snapshot.val();
+      if (userData) {
+        // if the data exists, then we return the data
+        dispatch(getUserInfoCompleted(userData));
+      } else {
+        console.log('ERROR getting user by id:', userId);
+        // handle if user not found
+      }
+    });
 };
 
 // For posting new user

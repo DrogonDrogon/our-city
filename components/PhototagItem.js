@@ -3,19 +3,14 @@ import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native'
 
 class PhototagItem extends React.Component {
   render() {
-    let imageUri = `data:image/png;base64,${this.props.phototag.imageDataIn64}`;
-
     return (
       <View style={styles.container}>
         <TouchableHighlight
-          onPress={this.props.goTophototags}
+          onPress={this.props.goToPhototags}
           style={{ width: '100%', height: 200 }}>
-          <Image
-            style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-            source={{ uri: imageUri }}
-          />
+          <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
         </TouchableHighlight>
-        <Text onPress={this.props.goTophototags} style={styles.descriptionText}>
+        <Text onPress={this.props.goToPhototags} style={styles.descriptionText}>
           {this.props.phototag.description}
         </Text>
       </View>
@@ -25,15 +20,25 @@ class PhototagItem extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: 300,
-    flex: 1,
-    padding: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 30,
+    paddingRight: 30,
+    marginTop: 0,
+    marginBottom: 15,
     alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
   },
   descriptionText: {
     marginTop: 10,
-    marginBottom: 20,
+    width: 200,
+  },
+  imageStyle: {
+    flex: 1,
+    width: 200,
+    height: 200,
+    resizeMode: Image.resizeMode.contain,
   },
 });
 
