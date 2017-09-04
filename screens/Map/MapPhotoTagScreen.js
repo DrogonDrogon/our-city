@@ -51,13 +51,15 @@ class MapScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.getCommentsForCurrentPhototag();
+    let currentPhototag = this.props.navigation.state.params;
+    this.getCommentsForCurrentPhototag(currentPhototag);
+    this.getAuthorForCurrentPhototag(currentPhototag.userId);
   }
 
-  getCommentsForCurrentPhototag() {
+  getCommentsForCurrentPhototag(currentPhototag) {
     // console.log('THIS COMMENTS -->', this.props.navigation.state.params.comments); // this is an object containing commentIds
     // Run the firebase query for comments here.
-    let commentKeys = Object.keys(this.props.navigation.state.params.comments);
+    let commentKeys = Object.keys(currentPhototag.comments);
     const commentPromises = commentKeys.map(id => {
       return db
         .child('comments')
@@ -85,6 +87,28 @@ class MapScreen extends React.Component {
       });
   }
 
+  getAuthorForCurrentPhototag(userId) {
+    db
+      .child('users/' + userId)
+      .once('value')
+      .then(snapshot => {
+        let authorPhoto = snapshot.val().photoUrl;
+        let authorName = snapshot.val().displayName;
+        this.setState(
+          {
+            authorPhoto,
+            authorName,
+          },
+          () => {
+            console.log('GOT AUTHOR', this.state);
+          }
+        );
+      })
+      .catch(err => {
+        console.log('Err getting author of current phototag', err);
+      });
+  }
+
   upvote() {
     if (
       !this.props.user.votes.hasOwnProperty(this.state.phototag.id) ||
@@ -103,6 +127,14 @@ class MapScreen extends React.Component {
       this.props.user.votes[this.state.phototag.id] = 0;
       this.setState({ votes: this.state.votes - 1 });
     }
+  }
+
+  submitVotes() {
+    console.log('submit votes');
+    let phototag = this.state.phototag;
+    phototag.upvotes = this.state.votes;
+    phototag.comments = this.state.comments;
+    this.props.updatePhototagAndUser(phototag, this.props.user.id);
   }
 
   handleClickFav = () => {
@@ -138,14 +170,15 @@ class MapScreen extends React.Component {
   saveNewComment = (phototagId, user, commentText) => {
     // 1. Creates a new comment under 'comments' in Firebase
     let commentId = db.child('comments').push().key;
-    let commentRecord = {};
-    commentRecord.id = commentId;
-    commentRecord.text = commentText;
-    commentRecord.userId = user.id;
-    commentRecord.userName = user.displayName;
-    commentRecord.userImage = user.photoUrl;
-    commentRecord.timestamp = new Date();
-    commentRecord.phototagId = phototagId;
+    let commentRecord = {
+      id: commentId,
+      text: commentText,
+      userId: user.id,
+      userName: user.displayName,
+      userImage: user.photoUrl,
+      timestamp: new Date(),
+      phototagId,
+    };
     // console.log('commentRecord', commentRecord);
 
     db
@@ -165,14 +198,6 @@ class MapScreen extends React.Component {
     this.props.updatePhototagWithComment(phototagId, commentId);
   };
 
-  submitVotes() {
-    console.log('submit votes');
-    let phototag = this.state.phototag;
-    phototag.upvotes = this.state.votes;
-    phototag.comments = this.state.comments;
-    this.props.updatePhototagAndUser(phototag, this.props.user.id);
-  }
-
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -188,11 +213,13 @@ class MapScreen extends React.Component {
             style={styles.imageSetting}
             source={{
               uri:
-                this.state.phototag.userProfileUrl ||
+                this.state.authorPhoto ||
                 'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png',
             }}
           />
-          <Text>Posted by temp-name-here, {moment(this.state.phototag.timestamp).fromNow()}</Text>
+          <Text>
+            Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
+          </Text>
         </Text>
         <TouchableHighlight onPress={this.handleClickFav}>
           <Ionicons
@@ -210,7 +237,7 @@ class MapScreen extends React.Component {
         </TouchableHighlight>
         <Button title="Submit votes" onPress={this.submitVotes.bind(this)} />
         <Text style={styles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => <Comment key={i} comment={comment} />)}
+        {this.state.comments.map((comment, i) => <Comment key={comment.id} comment={comment} />)}
         <TextInput
           value={this.state.comment}
           placeholder="Enter a new comment"
