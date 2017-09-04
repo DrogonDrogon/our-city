@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { StyleSheet, View, Image, Text, TextInput, Button, TouchableHighlight } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
-import PhotoDisplay from '../../components/PhotoDisplay';
 import Comment from '../../components/comment';
 import * as Actions from '../../actions';
 import db from '../../db';

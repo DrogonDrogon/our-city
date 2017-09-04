@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ScrollView, StyleSheet, Text, Image, View, TextInput, Button } from 'react-native';
 import * as Actions from '../../actions';
-import PhotoDisplay from '../../components/PhotoDisplay';
 
 const mapStateToProps = (state, ownProps) => {
   return {
