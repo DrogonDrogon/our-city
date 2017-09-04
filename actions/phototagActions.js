@@ -23,20 +23,13 @@ export const fetchPhototags = dispatch => {
     .catch(error => console.log('ERROR fetch', error));
 };
 
-// For posting one phototag
-export const postPhototagRequested = phototag => dispatch => {
-  let postKey;
-  if (!phototag.id) {
-    postKey = db.child('photoTags').push().key;
-    phototag.id = postKey;
-  } else {
-    postKey = phototag.id;
-  }
+// For posting one phototag that the LOGGED IN USER owns
+export const postNewPhototag = phototag => dispatch => {
+  let postKey = db.child('photoTags').push().key;
 
-  var phototagRecord = {};
-  var key = phototag.id;
-  phototagRecord[key] = true;
-
+  // Saves phototag ID under users/userId/phototags
+  let phototagRecord = {};
+  phototagRecord[postKey] = true;
   dispatch(Actions.updatePhototagsUnderUserId(phototag.userId, phototagRecord));
 
   db
@@ -48,6 +41,31 @@ export const postPhototagRequested = phototag => dispatch => {
       dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR writing to /posts', error));
+};
+
+// For updating an existing phototag
+export const updatePhototag = phototag => dispatch => {
+  let postKey = phototag.id;
+  db
+    .child('phototags/' + postKey)
+    .update(phototag)
+    .then(() => {
+      // Fire another fetch to get all updated phototags
+      dispatch(fetchPhototags);
+      dispatch(updateLoadingStatus(false));
+    })
+    .catch(error => console.log('ERROR writing to /posts', error));
+};
+
+// For adding a new comment under 'comments' node
+export const addCommentUnderPhototag = (phototagId, commentData) => dispatch => {
+  db
+    .child('phototags/' + phototagId + '/comments/')
+    .update(commentData)
+    .then(() => {
+      dispatch(fetchPhototags);
+    })
+    .catch(error => console.log('ERROR writing to /phototags/comments', error));
 };
 
 // For fetching favorite-phototags by userObject

@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import db from '../db';
 import { SET_USER, IS_LOGGED_IN } from './constants';
+import * as Actions from './phototagActions';
 
 // For checking if user is logged in
 export const checkUserLogin = () => dispatch => {
@@ -16,7 +17,6 @@ export const checkUserLogin = () => dispatch => {
 };
 
 export const updateUser = user => dispatch => {
-  console.log('[ACTIONS] updateUser is firing with user', user);
   db
     .child('users/' + user.id)
     .update(user)
@@ -28,6 +28,26 @@ export const updateUser = user => dispatch => {
     });
 };
 
+export const addFavUnderUserId = (userId, phototagIdData) => dispatch => {
+  db
+    .child('users/' + userId + '/favs/')
+    .update(phototagIdData)
+    .then(() => {
+      dispatch(queryUsersById(userId));
+    })
+    .catch(error => console.log('ERROR adding fav. /users/userId/favs', error));
+};
+
+export const deleteFavUnderUserId = (userId, phototagId) => dispatch => {
+  db
+    .child('users/' + userId + '/favs/' + phototagId)
+    .remove()
+    .then(() => {
+      dispatch(queryUsersById(userId));
+    })
+    .catch(error => console.log('ERROR deleting fav. /users/userId/favs', error));
+};
+
 export const updatePhototagsUnderUserId = (userId, phototagIdData) => dispatch => {
   db
     .child('users/' + userId + '/phototags/')
@@ -35,7 +55,7 @@ export const updatePhototagsUnderUserId = (userId, phototagIdData) => dispatch =
     .then(() => {
       dispatch(queryUsersById(userId));
     })
-    .catch(error => console.log('ERROR writing to /users', error));
+    .catch(error => console.log('ERROR writing to /users/userId/phototags', error));
 };
 
 // For determining whether or not user exists already upon Login
@@ -66,6 +86,8 @@ export const queryUsersById = userId => dispatch => {
       if (userData) {
         // if the data exists, then we return the data
         dispatch(getUserInfoCompleted(userData));
+        // update favorites
+        dispatch(Actions.fetchFavoritesByUser(userData));
       } else {
         console.log('ERROR getting user by id:', userId);
         // handle if user not found
@@ -90,7 +112,8 @@ export const postNewUserBegin = user => dispatch => {
     userInfo.email = user.email;
     userInfo.photoUrl =
       'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png';
-    userInfo.displayName = '';
+    let getUsername = user.email.split('@');
+    userInfo.displayName = getUsername[0];
   }
 
   // If auth through fb, can save displayName and photoUrl

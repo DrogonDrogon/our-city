@@ -169,7 +169,7 @@ class MapScreen extends React.Component {
                 .slice(0, this.state.filters.numResults)
                 .map((markerMapped, i) => (
                   <MapView.Marker
-                    key={i}
+                    key={markerMapped.id}
                     coordinate={{
                       latitude: markerMapped.locationLat,
                       longitude: markerMapped.locationLong,
