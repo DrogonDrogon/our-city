@@ -14,7 +14,7 @@ import SegmentedControlTab from 'react-native-segmented-control-tab';
 import NavigationBar from 'react-native-navbar';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import { ImagePicker } from 'expo';
+import { ImagePicker, Location } from 'expo';
 import { RNS3 } from 'react-native-aws3';
 import firebase from 'firebase';
 import config from '../../config/config';
@@ -37,6 +37,7 @@ const mapStateToProps = (state, ownProps) => {
     phototags: state.phototags,
     user: state.user,
     isLoading: state.isLoading,
+    location: state.location,
   };
 };
 
@@ -49,6 +50,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     submitUserUpdate: userInfo => {
       dispatch(Actions.updateUser(userInfo));
+    },
+    getLocation: () => {
+      dispatch(Actions.getLocationAsync());
     },
   };
 };
@@ -107,6 +111,11 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.props.getAllPhototags();
+    this.props.getLocation();
+    Location.watchPositionAsync({ distanceInterval: 20 }, location => {
+      this.props.getLocation(location);
+    });
+    console.log('location', this.props.location);
   }
 
   _handleIndexChange = index => {

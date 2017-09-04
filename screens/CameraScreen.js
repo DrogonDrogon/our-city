@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Image, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { Button, Image, TextInput, ActivityIndicator, Alert, CameraRoll } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePicker, Location, Permissions } from 'expo';
 import { RNS3 } from 'react-native-aws3';
@@ -20,6 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
     isLoading: state.isLoading,
+    location: state.location,
   };
 };
 
@@ -50,22 +51,6 @@ class CameraScreen extends React.Component {
     description: '',
   };
 
-  componentWillMount() {
-    const getLocationAsync = async () => {
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
-      if (status !== 'granted') {
-        this.setState({
-          errorMessage: 'Permission to access location was denied',
-        });
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      console.log('[CameraScreen] location gotten', location);
-      this.setState({ location });
-    };
-    getLocationAsync();
-  }
-
   _takePic = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
@@ -75,6 +60,7 @@ class CameraScreen extends React.Component {
     });
 
     if (!result.cancelled) {
+      CameraRoll.saveToCameraRoll(result.uri);
       this.setState({ imageUri: result.uri });
     }
   };
@@ -108,14 +94,14 @@ class CameraScreen extends React.Component {
       phototag.userId = this.props.user.id;
       phototag.userName = this.props.user.displayName;
       phototag.description = this.state.description;
-      phototag.locationLat = this.state.location.coords.latitude;
-      phototag.locationLong = this.state.location.coords.longitude;
+      phototag.locationLat = this.props.location.latitude;
+      phototag.locationLong = this.props.location.longitude;
       phototag.imageUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
       phototag.upvotes = 0;
       phototag.downvotes = 0;
       phototag.comments = ['like', 'dislike'];
       phototag.userProfileUrl = this.props.user.photoUrl;
-
+      console.log('phototag', phototag);
       // Set up file uri to save to AWS
       let file = {
         uri: this.state.imageUri,
