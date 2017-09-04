@@ -94,15 +94,10 @@ class MapScreen extends React.Component {
       .then(snapshot => {
         let authorPhoto = snapshot.val().photoUrl;
         let authorName = snapshot.val().displayName;
-        this.setState(
-          {
-            authorPhoto,
-            authorName,
-          },
-          () => {
-            console.log('GOT AUTHOR', this.state);
-          }
-        );
+        this.setState({
+          authorPhoto,
+          authorName,
+        });
       })
       .catch(err => {
         console.log('Err getting author of current phototag', err);
