@@ -41,6 +41,7 @@ export const fetchList = (path)=> dispatch =>{
 	  });
 
 	})
+
 }
 
 export const fetchFavoritesByUser = userInfo => dispatch => {
