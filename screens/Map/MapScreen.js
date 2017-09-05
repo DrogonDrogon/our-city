@@ -49,6 +49,13 @@ class MapScreen extends React.Component {
     },
   };
 
+  componentDidMount() {
+    this.props.getLocation();
+    Location.watchPositionAsync({ distanceInterval: 20 }, location => {
+      this.props.getLocation(location);
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setLocation(nextProps.location);
   }

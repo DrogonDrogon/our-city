@@ -111,11 +111,6 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.props.getAllPhototags();
-    this.props.getLocation();
-    Location.watchPositionAsync({ distanceInterval: 20 }, location => {
-      this.props.getLocation(location);
-    });
-    console.log('location', this.props.location);
   }
 
   _handleIndexChange = index => {
