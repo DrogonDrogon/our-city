@@ -2,49 +2,32 @@
 // fetch a list of Mary's groups
 export const fetchFilteredPhotoTags = (user, favs = 0, radius, numResults, tags = [])=> dispatch => {
   //need to use tags to retrieve photos ref.child("tags/")
+  let output = [];
   //should iterate over the tags section doing a request for each tag
   //then take a subset of the tags that match all tags
-  	for (var i = 0; i < tags.length; i++) {
+  	tags.forEach()
   		db.child(`/tags/${tags[i]}`).on('child_added', function(snapshot) {
-		    // for each group, fetch the name and print it
-		    String photoKey = snapshot.key();
+		    // for each photo, grab the photo and push to array. problems with asycnchronicity
+		    let photoKey = snapshot.key();
 		    ref.child("phototags/" + photoKey).once('value', function(snapshot) {
-		      System.out.println("Mary is a member of this group: " + snapshot.val());
+           if(!output.includes(snapshot.val())){output.push(snapshot.val())};
 		    });
 		  })
-  	}
+
   //should then run it through radius
   //should then run it through favorites if selected
   //should then limit to numResults
 
-  db.child("users/").on('child_added', function(snapshot) {
-    // for each group, fetch the name and print it
-    String groupKey = snapshot.key();
-    ref.child("groups/" + groupKey + "/name").once('value', function(snapshot) {
-      System.out.println("Mary is a member of this group: " + snapshot.val());
-    });
-  })
+  // db.child("users/").on('child_added', function(snapshot) {
+  //   // for each group, fetch the name and print it
+  //   String groupKey = snapshot.key();
+  //   ref.child("groups/" + groupKey + "/name").once('value', function(snapshot) {
+  //     System.out.println("Mary is a member of this group: " + snapshot.val());
+  //   });
+  // })
 }
 
-export const fetchPhototags = dispatch => {
-  // console.log('[ACTIONS] fetchPhototags fired');
-  db
-    .child('phototags')
-    .once('value')
-    .then(snapshot => {
-      let data = snapshot.val();
-      let phototagArray = [];
 
-      for (var key in data) {
-        let obj = {};
-        obj = data[key];
-        obj.id = key;
-        phototagArray.push(obj);
-      }
-      dispatch(receivePhototags(phototagArray));
-    })
-    .catch(error => console.log('ERROR fetch', error));
-};
 
 
 // call a property and use the results to call another property
@@ -59,3 +42,35 @@ export const fetchList = (path)=> dispatch =>{
 
 	})
 }
+
+export const fetchFavoritesByUser = userInfo => dispatch => {
+  // fetch favorites
+  let favKeys = Object.keys(userInfo.favs);
+  const favPromises = favKeys.map(id => {
+    return db
+      .child('phototags')
+      .child(id)
+      .once('value')
+      .then(snapshot => {
+        return snapshot.val();
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
+  });
+  // return an array of phototags (userFavs)
+  Promise.all(favPromises)
+    .then(userFavs => {
+      // check to filter out placeholders
+      let validEntries = [];
+      userFavs.forEach(item => {
+        if (item) {
+          validEntries.push(item);
+        }
+      });
+      dispatch(receiveFavoritesByUser(validEntries));
+    })
+    .catch(err => {
+      console.log('ERR getting userFavs', err);
+    });
+};
