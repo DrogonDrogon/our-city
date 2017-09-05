@@ -123,7 +123,7 @@ class MapScreen extends React.Component {
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
-    console.log(d);
+    // console.log(d);
     if (d > distance) return false;
     return true;
   }
