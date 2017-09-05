@@ -45,7 +45,7 @@ class SplashScreen extends React.Component {
   render() {
     return (
       <View style={AppStyles.splash}>
-        <Image style={{height: '100%', width: '100%'}} source={require('../assets/images/pexels-photo-408951.png')} resizeMode="cover" />
+        <Image style={{height: '100%', width: '100%'}} source={require('../assets/images/mesh-1430108_1280.png')} resizeMode="cover" />
       </View>
     );
   }
