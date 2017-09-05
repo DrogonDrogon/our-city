@@ -21,6 +21,7 @@ import config from '../../config/config';
 import * as Actions from '../../actions';
 import Favourites from './Favourites';
 import Posts from './Posts';
+import Comments from './Comments';
 
 const awsOptions = {
   keyPrefix: 'users/',
@@ -203,21 +204,9 @@ class HomeScreen extends React.Component {
           />
         );
       case 1:
-        return (
-          <Favourites
-            user={this.props.user}
-            phototags={this.props.phototags}
-            goToPhototags={this.goToPhototags}
-            navigation={this.props.navigation}
-          />
-        );
+        return <Favourites navigation={this.props.navigation} />;
       case 2:
-        return (
-          <View>
-            <Text style={styles.titleText}>My Comments</Text>
-            <Text>Replace with real component later</Text>
-          </View>
-        );
+        return <Comments navigation={this.props.navigation} />;
       default:
         return <View />;
     }
@@ -270,7 +259,7 @@ class HomeScreen extends React.Component {
             </ScrollView>
           </Modal>
           <SegmentedControlTab
-            values={['Posts', 'Starred', 'Comments']}
+            values={['Posts', 'Favs', 'Comments']}
             selectedIndex={this.state.selectedIndex}
             onTabPress={this._handleIndexChange}
           />
@@ -336,7 +325,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF88',
   },
 });
 
