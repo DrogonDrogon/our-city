@@ -57,6 +57,7 @@ class MapScreen extends React.Component {
     phototag: this.props.navigation.state.params,
     edited: false,
     comments: [],
+    tempCommentId: 0,
   };
 
   componentDidMount() {
@@ -179,10 +180,13 @@ class MapScreen extends React.Component {
         userImage: this.props.user.photoUrl,
         text: this.state.comment,
         timestamp: new Date(),
+        // needs an id so that key for Comment doesn't complain
+        id: this.state.tempCommentId,
       };
       tempComments.push(commentObject);
       this.setState({ comments: tempComments });
       this.setState({ comment: '' });
+      this.setState({ tempCommentId: this.state.tempCommentId + 1 });
 
       this.saveNewComment(this.state.phototag.id, this.props.user, this.state.comment);
     }
