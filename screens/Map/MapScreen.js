@@ -6,11 +6,21 @@ import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
 import FilterScreen from './FilterScreen';
+import * as Actions from '../../actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
     location: state.location,
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  // Define the function that will be passed as prop
+  return {
+    getLocation: () => {
+      dispatch(Actions.getLocationAsync());
+    },
   };
 };
 
@@ -38,6 +48,13 @@ class MapScreen extends React.Component {
       user: null,
     },
   };
+
+  componentDidMount() {
+    this.props.getLocation();
+    Location.watchPositionAsync({ distanceInterval: 20 }, location => {
+      this.props.getLocation(location);
+    });
+  }
 
   componentWillReceiveProps(nextProps) {
     this.setLocation(nextProps.location);
@@ -201,7 +218,7 @@ class MapScreen extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(MapScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
 
 const styles = StyleSheet.create({
   map: {
