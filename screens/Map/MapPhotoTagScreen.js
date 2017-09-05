@@ -10,6 +10,7 @@ import {
   Button,
   TouchableHighlight,
   Alert,
+  Share,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
@@ -219,6 +220,14 @@ class MapScreen extends React.Component {
     this.props.updatePhototagWithComment(phototagId, commentId);
   };
 
+  share() {
+    Share.share({
+      title: this.state.phototag.description,
+      message: this.state.phototag.description,
+      url: this.state.phototag.imageUrl,
+    });
+  }
+
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -255,6 +264,9 @@ class MapScreen extends React.Component {
         <Text style={styles.titleText}>{this.state.votes}</Text>
         <TouchableHighlight onPress={this.handleUndoUpvote}>
           <Ionicons name="md-arrow-down" size={32} color="blue" />
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this.share.bind(this)}>
+          <Ionicons name="md-share-alt" size={32} color="blue" />
         </TouchableHighlight>
         <Text style={styles.titleText}>Comments</Text>
         {this.state.comments.map((comment, i) => <Comment key={comment.id} comment={comment} />)}
