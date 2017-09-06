@@ -12,7 +12,7 @@ const initialState = {};
 const store = createStore(
   rootReducer,
   initialState,
-  applyMiddleware(loggerMiddleware, thunkMiddleware, asyncAwait)
+  applyMiddleware(thunkMiddleware, asyncAwait)
 );
 
 export default () => (

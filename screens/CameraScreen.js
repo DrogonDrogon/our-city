@@ -49,6 +49,7 @@ class CameraScreen extends React.Component {
     image: null,
     allImageData: {},
     description: '',
+    tags: [],
   };
 
   _takePic = async () => {
@@ -85,7 +86,11 @@ class CameraScreen extends React.Component {
         { text: 'OK', onPress: () => {} },
       ]);
     } else {
+
       // Set up the format for phototag item to be saved in Firebase
+      let reg = /^\#|(?<=\s)\#\w+/g;
+      let hashtags = reg.exec(this.state.description);
+      console.log('HASHTAGS:', hashtags);
       let phototag = {};
       let photoIdName = generateRandomID();
       let timestamp = new Date();
@@ -173,9 +178,10 @@ class CameraScreen extends React.Component {
           onChangeText={text => this.setState({ description: text })}
           keyboardType={'default'}
           multiline
-          ref={input => (this.descriptionInput = input)}
-        />
-        <Text>{parts}</Text>
+          ref={input => (this.descriptionInput = input)}>
+          <Text>{parts}</Text>
+        </TextInput>
+
         <Button title="Upload my post" onPress={this._saveImg} />
       </KeyboardAwareScrollView>
     );
