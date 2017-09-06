@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapView, Location, Permissions } from 'expo';
 import { connect } from 'react-redux';
-import { Button, Text, Image, StyleSheet, View, ScrollView } from 'react-native';
+import { Button, Text, Image, StyleSheet, View, ScrollView, Alert } from 'react-native';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
@@ -50,9 +50,30 @@ class MapScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.props.getLocation();
-    Location.watchPositionAsync({ timeInterval: 120000, distanceInterval: 50 }, location => {
-      this.props.getLocation(location);
+    let locationOptions = {
+      enableHighAccuracy: true,
+      distanceFilter: 10,
+      maximumAge: 1000,
+      timeout: 20000,
+    };
+    Location.watchPositionAsync(locationOptions, location => {
+      if (
+        this.state.region.latitude !== location.coords.latitude &&
+        this.state.region.longitude !== location.coords.longitude
+      ) {
+        console.log(
+          `[watchPosition] old loc ${this.state.region.latitude} ${this.state.region
+            .longitude} --> new loc ${location.coords.latitude} ${location.coords.longitude}`
+        );
+        // Only call getLocation if the location changed
+        this.props.getLocation();
+      }
+    }).catch(err => {
+      console.log('[watchPosition]', err);
+      Alert.alert(
+        'Unable to get location',
+        'Please ensure location permissions are enabled for this app.'
+      );
     });
   }
 
@@ -60,6 +81,11 @@ class MapScreen extends React.Component {
     // Ensure the props received are the location props and that they are not empty, before updating location state
     if (!!nextProps.location.latitude && !!nextProps.location.longitude) {
       this.setLocation(nextProps.location);
+    }
+
+    // If location permissions are not enabled, alert with error
+    if (nextProps.location && nextProps.location.error) {
+      Alert.alert('Error', nextProps.location.error);
     }
   }
 
