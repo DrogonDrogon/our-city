@@ -88,14 +88,18 @@ class CameraScreen extends React.Component {
     } else {
 
       // Set up the format for phototag item to be saved in Firebase
-      
-      let hashtags = this.state.description.match(/#[^\s]*/g).map(str => str.slice(1));
+
+
       console.log('HASHTAGS:', hashtags);
       let phototag = {};
       let photoIdName = generateRandomID();
       let timestamp = new Date();
       timestamp = timestamp.toUTCString();
       phototag.timestamp = timestamp;
+      let hashtags = this.state.description.match(/#[^\s]*/g).map(str => str.slice(1));
+      phototag.tags={};
+      hashtags.forEach(str => (phototag.tags[str] = true));
+      console.log('phototag tags', phototag.tags);
       phototag.userId = this.props.user.id;
       phototag.userName = this.props.user.displayName;
       phototag.description = this.state.description;
