@@ -9,11 +9,7 @@ import asyncAwait from 'redux-async-await';
 
 // Create the redux store
 const initialState = {};
-const store = createStore(
-  rootReducer,
-  initialState,
-  applyMiddleware(loggerMiddleware, thunkMiddleware, asyncAwait)
-);
+const store = createStore(rootReducer, initialState, applyMiddleware(thunkMiddleware, asyncAwait));
 
 export default () => (
   <Provider store={store}>
