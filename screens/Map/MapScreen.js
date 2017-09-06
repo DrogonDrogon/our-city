@@ -6,11 +6,21 @@ import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
 import FilterScreen from './FilterScreen';
+import * as Actions from '../../actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
     location: state.location,
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  // Define the function that will be passed as prop
+  return {
+    getLocation: () => {
+      dispatch(Actions.getLocationAsync());
+    },
   };
 };
 
@@ -38,6 +48,13 @@ class MapScreen extends React.Component {
       user: null,
     },
   };
+
+  componentDidMount() {
+    this.props.getLocation();
+    Location.watchPositionAsync({ timeInterval: 120000, distanceInterval: 50 }, location => {
+      this.props.getLocation(location);
+    });
+  }
 
   componentWillReceiveProps(nextProps) {
     this.setLocation(nextProps.location);
@@ -123,7 +140,7 @@ class MapScreen extends React.Component {
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
-    console.log(d);
+    // console.log(d);
     if (d > distance) return false;
     return true;
   }
@@ -169,7 +186,7 @@ class MapScreen extends React.Component {
                 .slice(0, this.state.filters.numResults)
                 .map((markerMapped, i) => (
                   <MapView.Marker
-                    key={i}
+                    key={markerMapped.id}
                     coordinate={{
                       latitude: markerMapped.locationLat,
                       longitude: markerMapped.locationLong,
@@ -193,6 +210,7 @@ class MapScreen extends React.Component {
               0,
               this.state.filters.numResults
             )}
+            navigation={this.props.navigation}
           />
         </View>
       );
@@ -200,7 +218,7 @@ class MapScreen extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(MapScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
 
 const styles = StyleSheet.create({
   map: {

@@ -1,8 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  Image,
+  View,
+  TextInput,
+  Button,
+  TouchableHighlight,
+  Share,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import * as Actions from '../../actions';
-import PhotoDisplay from '../../components/PhotoDisplay';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -14,7 +24,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     submitOnePhototag: phototag => {
-      dispatch(Actions.postPhototagRequested(phototag));
+      dispatch(Actions.updatePhototag(phototag));
     },
   };
 };
@@ -38,12 +48,23 @@ class UserScreen extends React.Component {
     console.log('changed descriptionText');
     this.props.submitOnePhototag(this.state.phototag);
   }
+
+  share() {
+    Share.share({
+      title: this.state.phototag.description,
+      message: this.state.phototag.description,
+      url: this.state.phototag.imageUrl,
+    });
+  }
   render() {
     return (
       <ScrollView>
         <Text style={styles.titleText} />
-        <PhotoDisplay phototag={this.state.phototag} />
-
+        <Image
+          style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
+          source={{ uri: this.state.phototag.imageUrl }}
+        />
+        <Text>{this.state.phototag.description}</Text>
         <Text style={styles.titleText} />
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
@@ -54,6 +75,9 @@ class UserScreen extends React.Component {
         />
         <Button title="submit" onPress={this.setDescription.bind(this)} />
         <Button title="saves changes" onPress={this.saveChanges.bind(this)} />
+        <TouchableHighlight onPress={this.share.bind(this)}>
+          <Ionicons name="md-share-alt" size={32} color="blue" />
+        </TouchableHighlight>
       </ScrollView>
     );
   }
