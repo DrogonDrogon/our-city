@@ -88,8 +88,8 @@ class CameraScreen extends React.Component {
     } else {
 
       // Set up the format for phototag item to be saved in Firebase
-      let reg = /^\#|(?<=\s)\#\w+/g;
-      let hashtags = reg.exec(this.state.description);
+      
+      let hashtags = this.state.description.match(/#[^\s]*/g).map(str => str.slice(1));
       console.log('HASHTAGS:', hashtags);
       let phototag = {};
       let photoIdName = generateRandomID();
