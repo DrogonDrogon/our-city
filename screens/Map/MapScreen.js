@@ -57,7 +57,10 @@ class MapScreen extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setLocation(nextProps.location);
+    // Ensure the props received are the location props and that they are not empty, before updating location state
+    if (!!nextProps.location.latitude && !!nextProps.location.longitude) {
+      this.setLocation(nextProps.location);
+    }
   }
 
   toggleView = () => {
@@ -72,14 +75,12 @@ class MapScreen extends React.Component {
   }
 
   setLocation(location) {
-    console.log('Yay', location);
     let tempRegion = {
       latitude: location.latitude,
       longitude: location.longitude,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     };
-    console.log(tempRegion);
     this.setState({ region: tempRegion });
   }
 
