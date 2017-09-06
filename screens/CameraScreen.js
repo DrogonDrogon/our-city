@@ -131,10 +131,15 @@ class CameraScreen extends React.Component {
       let timestamp = new Date();
       timestamp = timestamp.toUTCString();
       phototag.timestamp = timestamp;
-
-      let hashtags = this.state.description.match(/#[^\s]*/g).map(str => str.slice(1));
+      
       phototag.tags = {};
-      hashtags.forEach(str => (phototag.tags[str] = true));
+      let desc = this.state.description;
+      if (desc.match(/#[^\s]*/g)){
+        var hashtags = desc.match(/#[^\s]*/g).map(str => str.slice(1));
+        hashtags.forEach(str => (phototag.tags[str] = true));
+      }
+      console.log('phototag.tags: ', phototag.tags);
+     
 
       phototag.userId = this.props.user.id;
       phototag.userName = this.props.user.displayName;
