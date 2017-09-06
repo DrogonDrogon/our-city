@@ -6,6 +6,7 @@ import { ImagePicker, Location, Permissions } from 'expo';
 import { RNS3 } from 'react-native-aws3';
 import * as Actions from '../actions';
 import config from '../config/config';
+import axios from 'axios';
 
 const awsOptions = {
   keyPrefix: 'phototags/',
@@ -50,6 +51,7 @@ class CameraScreen extends React.Component {
     allImageData: {},
     description: '',
     tags: [],
+    reps: {},
   };
 
   _takePic = async () => {
@@ -63,6 +65,7 @@ class CameraScreen extends React.Component {
     if (!result.cancelled) {
       CameraRoll.saveToCameraRoll(result.uri);
       this.setState({ imageUri: result.uri });
+      this.getReps();
     }
   };
 
@@ -76,31 +79,63 @@ class CameraScreen extends React.Component {
 
     if (!result.cancelled) {
       this.setState({ imageUri: result.uri });
+      this.getReps();
     }
   };
 
-  _saveImg = () => {
+  getReps() {
+    Location.reverseGeocodeAsync({
+      latitude: this.props.location.latitude,
+      longitude: this.props.location.longitude,
+    }).then(address => {
+      console.log(
+        'addres',
+        address,
+        `${address[0].name} ${address[0].city} ${address[0].region} ${address[0].postalCode}`
+      );
+      axios
+        .get('https://www.googleapis.com/civicinfo/v2/representatives', {
+          params: {
+            'Content-Type': 'application/json',
+            key: config.google.key,
+            address: `${address[0].name} ${address[0].city} ${address[0].region} ${address[0]
+              .postalCode}`,
+          },
+        })
+        .then(data => {
+          //data = JSON.stringify(data).replace('\\', '');
+          this.setState(
+            { reps: { officials: data.data.officials, offices: data.data.offices } },
+            () => {
+              //console.log('reps', this.state.reps);
+            }
+          );
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    });
+  }
+
+  _saveImg = async () => {
     // Check to see if all fields filled in
     if (this.state.imageUri === null || this.state.description === '') {
       Alert.alert('Error', 'Please select a photo and fill in description', [
         { text: 'OK', onPress: () => {} },
       ]);
     } else {
-
       // Set up the format for phototag item to be saved in Firebase
 
-
-    
       let phototag = {};
       let photoIdName = generateRandomID();
       let timestamp = new Date();
       timestamp = timestamp.toUTCString();
       phototag.timestamp = timestamp;
-      
+
       let hashtags = this.state.description.match(/#[^\s]*/g).map(str => str.slice(1));
-      phototag.tags={};
+      phototag.tags = {};
       hashtags.forEach(str => (phototag.tags[str] = true));
-      
+
       phototag.userId = this.props.user.id;
       phototag.userName = this.props.user.displayName;
       phototag.description = this.state.description;
@@ -111,7 +146,13 @@ class CameraScreen extends React.Component {
       phototag.downvotes = 0;
       phototag.comments = ['like', 'dislike'];
       phototag.userProfileUrl = this.props.user.photoUrl;
-      console.log('phototag', phototag);
+      phototag.address = await Location.reverseGeocodeAsync({
+        latitude: this.props.location.latitude,
+        longitude: this.props.location.longitude,
+      });
+      phototag.reps = this.state.reps;
+
+      console.log('phototag', phototag.reps);
       // Set up file uri to save to AWS
       let file = {
         uri: this.state.imageUri,
@@ -145,7 +186,9 @@ class CameraScreen extends React.Component {
 
     //split string
     let _text = this.state.description;
-    let token, index, parts = [];
+    let token,
+      index,
+      parts = [];
     while (_text) {
       delimiter.lastIndex = 0;
       token = delimiter.exec(_text);
@@ -164,9 +207,13 @@ class CameraScreen extends React.Component {
     parts.push(_text);
 
     //highlight hashtags
-    parts = parts.map((text) => {
+    parts = parts.map(text => {
       if (/^#/.test(text)) {
-        return <Text key={text} style={styles.hashtag}>{text}</Text>;
+        return (
+          <Text key={text} style={styles.hashtag}>
+            {text}
+          </Text>
+        );
       } else {
         return text;
       }
