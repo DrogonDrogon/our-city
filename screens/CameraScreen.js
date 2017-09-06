@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Image, TextInput, ActivityIndicator, Alert, CameraRoll } from 'react-native';
+import { Button, Image, TextInput, Text, ActivityIndicator, Alert, CameraRoll } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePicker, Location, Permissions } from 'expo';
 import { RNS3 } from 'react-native-aws3';
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const generateRandomID = () => {
   return 'xxxxx-xx4xxxy-xxxxxx'.replace(/[xy]/g, function(c) {
     var r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8;
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
@@ -130,6 +130,37 @@ class CameraScreen extends React.Component {
 
   render() {
     let { imageUri } = this.state;
+    //define delimiter
+    let delimiter = /\s+/;
+
+    //split string
+    let _text = this.state.description;
+    let token, index, parts = [];
+    while (_text) {
+      delimiter.lastIndex = 0;
+      token = delimiter.exec(_text);
+      if (token === null) {
+        break;
+      }
+      index = token.index;
+      if (token[0].length === 0) {
+        index = 1;
+      }
+      parts.push(_text.substr(0, index));
+      parts.push(token[0]);
+      index = index + token[0].length;
+      _text = _text.slice(index);
+    }
+    parts.push(_text);
+
+    //highlight hashtags
+    parts = parts.map((text) => {
+      if (/^#/.test(text)) {
+        return <Text key={text} style={styles.hashtag}>{text}</Text>;
+      } else {
+        return text;
+      }
+    });
 
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.center} behavior="padding">
@@ -144,6 +175,7 @@ class CameraScreen extends React.Component {
           multiline
           ref={input => (this.descriptionInput = input)}
         />
+        <Text>{parts}</Text>
         <Button title="Upload my post" onPress={this._saveImg} />
       </KeyboardAwareScrollView>
     );
@@ -166,6 +198,10 @@ const styles = {
   },
   center: {
     alignItems: 'center',
+  },
+  hashtag: {
+    color: 'blue',
+    fontWeight: 'bold',
   },
 };
 
