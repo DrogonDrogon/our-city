@@ -2,24 +2,26 @@ import React, { Component } from 'react';
 
 import { StyleSheet, Text, TouchableHighlight } from 'react-native';
 
-const Button = props => {
-  function getContent() {
-    if (props.children) {
-      return props.children;
-    }
-    return (
-      <Text style={props.styles.label}>
-        {props.label}
-      </Text>
-    );
+function getContent(props) {
+  if (props.children) {
+    return props.children;
   }
+  return (
+    <Text style={props.styles.label}>
+      {props.label}
+    </Text>
+  );
+}
+
+const Button = props => {
+  
 
   return (
     <TouchableHighlight
       underlayColor="#ccc"
       onPress={props.onPress}
       style={[props.noDefaultStyles ? '' : styles.button, props.styles ? props.styles.button : '']}>
-      {getContent()}
+      {getContent(props)}
     </TouchableHighlight>
   );
 };

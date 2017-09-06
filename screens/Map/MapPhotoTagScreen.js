@@ -255,23 +255,25 @@ class MapScreen extends React.Component {
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
           </Text>
         </Text>
-        <TouchableHighlight onPress={this.handleClickFav}>
-          <Ionicons
-            name="md-heart"
-            size={32}
-            color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
-          />
-        </TouchableHighlight>
-        <TouchableHighlight onPress={this.handleUpvote}>
-          <Ionicons name="md-arrow-up" size={32} color="blue" />
-        </TouchableHighlight>
-        <Text style={styles.titleText}>{this.state.votes}</Text>
-        <TouchableHighlight onPress={this.handleUndoUpvote}>
-          <Ionicons name="md-arrow-down" size={32} color="blue" />
-        </TouchableHighlight>
-        <TouchableHighlight onPress={this.share.bind(this)}>
-          <Ionicons name="md-share-alt" size={32} color="blue" />
-        </TouchableHighlight>
+        <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
+          <TouchableHighlight onPress={this.handleClickFav}>
+            <Ionicons
+              name="md-heart"
+              size={32}
+              color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
+            />  
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.handleUpvote}>
+            <Ionicons name="md-arrow-up" size={32} color="blue" />
+          </TouchableHighlight>
+          <Text style={styles.titleText}>{this.state.votes}</Text>
+          <TouchableHighlight onPress={this.handleUndoUpvote}>
+            <Ionicons name="md-arrow-down" size={32} color="blue" />
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.share.bind(this)}>
+            <Ionicons name="md-share-alt" size={32} color="blue" />
+          </TouchableHighlight>
+        </View>
         <Text style={styles.titleText}>Comments</Text>
         {this.state.comments.map((comment, i) => <Comment key={comment.id} comment={comment} />)}
         <TextInput
