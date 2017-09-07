@@ -14,7 +14,7 @@ import SegmentedControlTab from 'react-native-segmented-control-tab';
 import NavigationBar from 'react-native-navbar';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import { ImagePicker, Location } from 'expo';
+import { ImagePicker } from 'expo';
 import { RNS3 } from 'react-native-aws3';
 import firebase from 'firebase';
 import config from '../../config/config';

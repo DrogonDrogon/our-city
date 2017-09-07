@@ -135,7 +135,7 @@ class MapScreen extends React.Component {
     } else {
       Alert.alert(
         'Note',
-        'You have already submitted 1 vote for this! If you want to remove your vote, click the down button'
+        'You have already submitted 1 vote for this! To remove your vote, click the down button'
       );
     }
   };
@@ -149,7 +149,6 @@ class MapScreen extends React.Component {
         // Update user
         let userData = this.props.user;
         userData.votes[this.state.phototag.id] = 0;
-        console.log('trying to use userData', userData);
         this.props.updateUser(userData);
 
         // Update phototag
@@ -161,10 +160,17 @@ class MapScreen extends React.Component {
   };
 
   handleClickFav = () => {
+    let updatedPhototag = this.state.phototag;
+    // If user does not have this favorite, add
     if (!this.props.user.favs[this.state.phototag.id]) {
       this.props.addFavUnderUserId(this.props.user.id, this.state.phototag.id);
+      updatedPhototag.favTotal += 1;
+      this.props.updatePhototag(this.state.phototag);
     } else {
+    // If user does already have this favorite, remove
       this.props.deleteFavUnderUserId(this.props.user.id, this.state.phototag.id);
+      updatedPhototag.favTotal -= 1;
+      this.props.updatePhototag(this.state.phototag);
     }
   };
 
