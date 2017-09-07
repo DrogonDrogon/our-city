@@ -68,7 +68,7 @@ class FilterScreen extends Component {
                 <ScrollView>
                   <View> 
                     {this.props.tags.map((tag, i) => (
-                      <FilterTag key={i} tag={tag} selectTag={this.selectTag.bind(this)}/>
+                      <FilterTag key={i} tag={tag} selectTag={this.selectTag.bind(this)} selectedTags={this.state.selectedTags}/>
                     ))}
                   </View>
                 </ScrollView>
@@ -127,7 +127,6 @@ class FilterScreen extends Component {
 
         <TouchableHighlight style={{ zIndex: 2}} onPress={() => {
             this.props.genFilterTags();
-
             this.setModalVisible(true);
           }}>
           <Text>Filters</Text>
