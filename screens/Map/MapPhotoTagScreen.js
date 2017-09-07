@@ -281,7 +281,7 @@ class MapScreen extends React.Component {
           </TouchableHighlight>
         </View>
         <Text style={styles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => <Comment key={comment.id} comment={comment} />)}
+        {this.state.comments.map((comment, i) => <Comment key={comment.id} comment={comment} userId={this.props.user.id}/>)}
         <TextInput
           value={this.state.comment}
           placeholder="Enter a new comment"
