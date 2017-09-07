@@ -4,10 +4,19 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import PhototagItem from '../../components/PhototagItem';
 import UserOwnComment from '../../components/UserOwnComment';
 import db from '../../db';
+import * as Actions from '../../actions';
 
 const mapStateToProps = state => {
   return {
     user: state.user,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    updateLoadingStatus: bool => {
+      dispatch(Actions.updateLoadingStatus(bool));
+    },
   };
 };
 
@@ -28,6 +37,7 @@ class Comments extends React.Component {
   };
 
   getCommentsForUser = () => {
+    this.props.updateLoadingStatus(true);
     let commentKeys = Object.keys(this.props.user.comments);
     // Use comment Id to query comments,
     const commentPromises = commentKeys.map(id => {
@@ -56,11 +66,18 @@ class Comments extends React.Component {
             .once('value')
             .then(snapshot => {
               comment.phototagData = snapshot.val();
-              this.setState({ comments: validComments });
             });
         });
+        return validComments;
       })
-      .catch(err => console.log('Err getting phototags', err));
+      .then(validComments => {
+        this.setState({ comments: validComments });
+        this.props.updateLoadingStatus(false);
+      })
+      .catch(err => {
+        console.log('Err getting phototags', err);
+        this.props.updateLoadingStatus(false);
+      });
   };
 
   render() {
@@ -69,7 +86,12 @@ class Comments extends React.Component {
         <Text style={styles.titleText}>My Comments</Text>
         <FlatList
           data={this.state.comments}
-          renderItem={({ item }) => <UserOwnComment comment={item} goToPhototags={this.goToPhototagsDetail.bind(this, item.phototagData)} />}
+          renderItem={({ item }) => (
+            <UserOwnComment
+              comment={item}
+              goToPhototags={this.goToPhototagsDetail.bind(this, item.phototagData)}
+            />
+          )}
           keyExtractor={this._keyExtractor}
         />
       </View>
@@ -85,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(Comments);
+export default connect(mapStateToProps, mapDispatchToProps)(Comments);
