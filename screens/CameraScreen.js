@@ -104,12 +104,12 @@ class CameraScreen extends React.Component {
         })
         .then(data => {
           //data = JSON.stringify(data).replace('\\', '');
-          this.setState(
-            { reps: { officials: data.data.officials, offices: data.data.offices } },
-            () => {
-              //console.log('reps', this.state.reps);
-            }
-          );
+          let offices = data.data.offices;
+          offices.splice(3, 0, { name: 'United States Senate 2' });
+
+          this.setState({ reps: { officials: data.data.officials, offices } }, () => {
+            //console.log('reps', this.state.reps);
+          });
         })
         .catch(error => {
           console.log(error);
