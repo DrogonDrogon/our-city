@@ -23,7 +23,6 @@ class FilterScreen extends Component {
       numResults: 25,
       radius: 2.0,
       favorites: false,
-      tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       modalVisible: false,
       sortBy: 'Date',
       FavIsSelected: false,
@@ -68,9 +67,9 @@ class FilterScreen extends Component {
               <ScrollView>
                 <ScrollView>
                   <View> 
-                    {this.state.tags.map((tag, i) => (
-                        <FilterTag key={i} tag={tag} selectTag={this.selectTag.bind(this)}/>
-                      ))}
+                    {this.props.tags.map((tag, i) => (
+                      <FilterTag key={i} tag={tag} selectTag={this.selectTag.bind(this)} selectedTags={this.state.selectedTags}/>
+                    ))}
                   </View>
                 </ScrollView>
                 <View
@@ -127,12 +126,13 @@ class FilterScreen extends Component {
         </Modal>
 
         <TouchableHighlight style={{ zIndex: 2}} onPress={() => {
-            this.setModalVisible(true)
+            this.props.genFilterTags();
+            this.setModalVisible(true);
           }}>
           <Text>Filters</Text>
         </TouchableHighlight>
-        </View>
-      )
+      </View>
+    );
   }
 }
 
