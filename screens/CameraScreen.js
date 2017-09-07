@@ -52,6 +52,8 @@ class CameraScreen extends React.Component {
     description: '',
     tags: [],
     reps: {},
+    latitude: '',
+    longitude: '',
   };
 
   _takePic = async () => {
@@ -78,15 +80,23 @@ class CameraScreen extends React.Component {
     });
 
     if (!result.cancelled) {
+      console.log(result.exif);
       this.setState({ imageUri: result.uri });
-      this.getReps();
+      let latitude =
+        result.exif.GPSLatitudeRef === 'N' ? result.exif.GPSLatitude : result.exif.GPSLatitude * -1;
+      let longitude =
+        result.exif.GPSLongitudeRef === 'E'
+          ? result.exif.GPSLongitude
+          : result.exif.GPSLongitude * -1;
+      console.log('locaccc', latitude, longitude);
+      this.getReps(latitude, longitude);
     }
   };
 
-  getReps() {
+  getReps(latitude, longitude) {
     Location.reverseGeocodeAsync({
-      latitude: this.props.location.latitude,
-      longitude: this.props.location.longitude,
+      latitude: latitude || this.props.location.latitude,
+      longitude: longitude || this.props.location.longitude,
     }).then(address => {
       console.log(
         'addres',
