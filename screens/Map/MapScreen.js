@@ -227,6 +227,7 @@ class MapScreen extends React.Component {
       return (
         <View style={{ height: '100%' }}>
           <FilterScreen tags={this.state.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
+          <Button onPress={this.toggleView} title="Switch to List" />
           <MapView
             showsUserLocation
             followsUserLocation
@@ -234,7 +235,7 @@ class MapScreen extends React.Component {
             provider={MapView.PROVIDER_GOOGLE}
             style={styles.map}
             region={this.state.region}>
-            <Button onPress={this.toggleView} title="Switch to List" />
+
 
             {this.props.phototags &&
               this.filterPhotoTags(this.props.phototags)
