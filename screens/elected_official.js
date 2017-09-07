@@ -26,10 +26,13 @@ export default class electedOfficails extends React.Component {
     modalVisibility: false,
   };
   share() {
+    let twitterhandle = '';
+    this.state.official.channels.forEach(channel => {
+      if (channel.type === 'Twitter') twitterhandle = channel.id;
+    });
     Share.share({
       title: this.props.navigation.state.params.description,
-      message: ` ${this.props.navigation.state.params.description} @${this.state.official
-        .channels[2].id}`,
+      message: ` ${this.props.navigation.state.params.description} @${twitterhandle}`,
       url: this.props.navigation.state.params.imageUrl,
     });
   }
