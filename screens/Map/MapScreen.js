@@ -39,7 +39,7 @@ class MapScreen extends React.Component {
     filters: {
       selectedTags: [],
       numResults: 25,
-      radius: 5,
+      radius: 2,
       favorites: false,
       tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       modalVisible: false,

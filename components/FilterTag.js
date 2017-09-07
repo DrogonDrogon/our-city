@@ -13,7 +13,10 @@ class FilterTag extends React.Component {
   render(){
     return(
       <Button
-        onPress={e => this.setState({pressed: true})}
+        onPress={(e) => {
+          this.setState({pressed: true});
+          this.props.selectTag(this.props.tag);
+        }}
         title={this.props.tag}
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
