@@ -131,15 +131,14 @@ class CameraScreen extends React.Component {
       let timestamp = new Date();
       timestamp = timestamp.toUTCString();
       phototag.timestamp = timestamp;
-      
+
       phototag.tags = {};
       let desc = this.state.description;
-      if (desc.match(/#[^\s]*/g)){
+      if (desc.match(/#[^\s]*/g)) {
         var hashtags = desc.match(/#[^\s]*/g).map(str => str.slice(1));
         hashtags.forEach(str => (phototag.tags[str] = true));
       }
       console.log('phototag.tags: ', phototag.tags);
-     
 
       phototag.userId = this.props.user.id;
       phototag.userName = this.props.user.displayName;
@@ -149,6 +148,7 @@ class CameraScreen extends React.Component {
       phototag.imageUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
       phototag.upvotes = 0;
       phototag.downvotes = 0;
+      phototag.favTotal = 0;
       phototag.comments = ['like', 'dislike'];
       phototag.userProfileUrl = this.props.user.photoUrl;
       phototag.address = await Location.reverseGeocodeAsync({
