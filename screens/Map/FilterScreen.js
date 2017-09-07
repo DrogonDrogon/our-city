@@ -23,7 +23,6 @@ class FilterScreen extends Component {
       numResults: 25,
       radius: 2.0,
       favorites: false,
-      tags: this.props.tags,
       modalVisible: false,
       sortBy: 'Date',
       FavIsSelected: false,
@@ -68,7 +67,7 @@ class FilterScreen extends Component {
               <ScrollView>
                 <ScrollView>
                   <View> 
-                    {this.state.tags.map((tag, i) => (
+                    {this.props.tags.map((tag, i) => (
                       <FilterTag key={i} tag={tag} selectTag={this.selectTag.bind(this)}/>
                     ))}
                   </View>
@@ -133,8 +132,8 @@ class FilterScreen extends Component {
           }}>
           <Text>Filters</Text>
         </TouchableHighlight>
-        </View>
-      )
+      </View>
+    );
   }
 }
 

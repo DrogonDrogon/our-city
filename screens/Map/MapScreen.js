@@ -37,12 +37,12 @@ class MapScreen extends React.Component {
     markers: [],
     isMapToggled: true,
     modalVisible: false,
+    tags: [],
     filters: {
       selectedTags: [],
       numResults: 25,
       radius: 2,
       favorites: false,
-      tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       modalVisible: false,
       sortBy: 'Date',
       FavIsSelected: false,
@@ -146,8 +146,8 @@ class MapScreen extends React.Component {
     let tags = [];
     this.props.phototags.forEach(pTag => {
       console.log('pTag.tags', pTag.tags)
-      if (pTag.tags && pTag.tags.keys()) {
-        let keys = pTag.tags.keys();
+      if (pTag.tags && Object.keys(pTag.tags)) {
+        let keys = Object.keys(pTag.tags);
         for (let i = 0; i < keys.length; i++) {
           if (!tags.includes(keys[i])) {
             tags.push(keys[i]);
@@ -155,10 +155,8 @@ class MapScreen extends React.Component {
         }
       }
     });
-    let filters = this.state.filters;
-    filters.tags = tags;
-    this.setState({ filters });
-    console.log('new tags', filters.tags);
+    this.setState({ tags });
+    console.log('new tags', tags);
   }
 
   sortPhotoTags(photoTags) {
@@ -230,7 +228,7 @@ class MapScreen extends React.Component {
     if (this.state.isMapToggled === true) {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen tags={this.state.filters.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
+          <FilterScreen tags={this.state.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
           <MapView
             showsUserLocation
             followsUserLocation
@@ -269,7 +267,7 @@ class MapScreen extends React.Component {
     } else {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen tags={this.state.filters.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
+          <FilterScreen tags={this.state.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView
             phototags={this.sortPhotoTags(
