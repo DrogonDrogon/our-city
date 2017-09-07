@@ -145,10 +145,12 @@ class MapScreen extends React.Component {
   genFilterTags() {
     let tags = [];
     this.props.phototags.forEach(pTag => {
-      if (pTag.tags && pTag.tags.keys) {
-        for (let i = 0; i < pTag.tags.keys.length; i++) {
-          if (!tags.includes(pTag.tags.keys[i])) {
-            tags.push(pTag.tags.keys[i]);
+      console.log('pTag.tags', pTag.tags)
+      if (pTag.tags && pTag.tags.keys()) {
+        let keys = pTag.tags.keys();
+        for (let i = 0; i < keys.length; i++) {
+          if (!tags.includes(keys[i])) {
+            tags.push(keys[i]);
           }
         }
       }
