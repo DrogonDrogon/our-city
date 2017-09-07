@@ -137,11 +137,6 @@ class MapScreen extends React.Component {
         return this.props.user.favs.hasOwnProperty(pTag.id);
       });
     }
-    // if(filters.FavIsSelected){
-    //   fTags = fTags.filter((pTag)=>{
-    //     this.props.user.favs.hasOwnProperty(pTag.id);
-    //   })
-    // }
     //when filtering for tags, need to make sure that photo has all of the tags in the array
 
     return filtered;
