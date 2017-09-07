@@ -143,9 +143,8 @@ class MapScreen extends React.Component {
   }
 
   genFilterTags() {
-    let tags = [];
+    let tags = this.state.tags;
     this.props.phototags.forEach(pTag => {
-      console.log('pTag.tags', pTag.tags)
       if (pTag.tags && Object.keys(pTag.tags)) {
         let keys = Object.keys(pTag.tags);
         for (let i = 0; i < keys.length; i++) {
@@ -155,8 +154,9 @@ class MapScreen extends React.Component {
         }
       }
     });
-    this.setState({ tags });
-    console.log('new tags', tags);
+    if (tags.length !== this.state.tags.length) {
+      this.setState({ tags });
+    }  
   }
 
   sortPhotoTags(photoTags) {
@@ -223,8 +223,6 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    if (this.props.phototags) {
-    }
     if (this.state.isMapToggled === true) {
       return (
         <View style={{ height: '100%' }}>
