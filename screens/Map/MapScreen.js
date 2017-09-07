@@ -118,10 +118,22 @@ class MapScreen extends React.Component {
 
   filterPhotoTags(photoTags) {
     let filters = this.state.filters;
-    let filteredTags = [];
+    let filtered = [];
+    let fTags = filters.selectedTags;
+    if (fTags.length) {
+      for (let i = 0; i < fTags.length; i++) {
+        for (let j = 0; j < photoTags.length; j++) {
+          if (photoTags[j].tags && photoTags[j].tags.hasOwnProperty(fTags[i])) {
+            filtered.push(photoTags[j]);
+          }
+        }
+      }
+    } else {
+      return photoTags;
+    }
     //when filtering for tags, need to make sure that photo has all of the tags in the array
 
-    return filteredTags;
+    return filtered;
   }
 
   sortPhotoTags(photoTags) {
@@ -202,7 +214,7 @@ class MapScreen extends React.Component {
             <Button onPress={this.toggleView} title="Switch to List" />
 
             {this.props.phototags &&
-              this.props.phototags
+              this.filterPhotoTags(this.props.phototags)
                 .filter(marker =>
                   this.checkDistance(
                     this.state.filters.radius,
@@ -233,10 +245,10 @@ class MapScreen extends React.Component {
           <FilterScreen getFilters={this.getFilters.bind(this)} />
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView
-            phototags={this.sortPhotoTags(this.props.phototags).slice(
-              0,
-              this.state.filters.numResults
-            )}
+            phototags={this.sortPhotoTags(
+              this.filterPhotoTags(this.props.phototags))
+              .slice(0, this.state.filters.numResults)
+            }
             navigation={this.props.navigation}
           />
         </View>
