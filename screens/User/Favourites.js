@@ -38,7 +38,7 @@ class Favourites extends React.Component {
         {this.props.userFavs &&
           this.props.userFavs.map(fav => (
             <PhototagItem
-              key={fav.id}
+              key={`${fav.id}f`}
               phototag={fav}
               goToPhototags={this.goToPhototagsDetail.bind(this, fav)}
             />
