@@ -1,11 +1,42 @@
 import React from 'React';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
+import ActionSheet from 'react-native-actionsheet';
 import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
+import db from '../db';
+
+// Settings for the ActionSheet
+const WARNING_INDEX = 0;
+const CANCEL_INDEX = 1;
+const options = ['Delete', 'Cancel'];
+const title = 'Are you sure you want to delete this comment?';
 
 export default class Comment extends React.Component {
   deleteComment = () => {
-    console.log('delete comment');
+    this.showActionSheet();
+  };
+
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  };
+
+  handleActionSheetPress = selectedIndex => {
+    if (selectedIndex === WARNING_INDEX) {
+      // Run the delete function
+      db.deleteComment(
+        this.props.comment.id,
+        this.props.userId,
+        this.props.comment.phototagId,
+        (err, data) => {
+          if (err) {
+            console.log('Err deleting', err);
+          } else {
+            console.log('Success deleting', data);
+            this.props.notifyDeleted();
+          }
+        }
+      );
+    }
   };
 
   render() {
@@ -26,6 +57,14 @@ export default class Comment extends React.Component {
             <Ionicons name="md-close" size={20} color="gray" style={{ backgroundColor: '#fff' }} />
           </TouchableHighlight>
         )}
+        <ActionSheet
+          ref={sheet => (this.ActionSheet = sheet)}
+          title={title}
+          options={options}
+          cancelButtonIndex={CANCEL_INDEX}
+          destructiveButtonIndex={WARNING_INDEX}
+          onPress={this.handleActionSheetPress}
+        />
       </View>
     );
   }

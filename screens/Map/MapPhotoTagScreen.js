@@ -51,7 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-class MapScreen extends React.Component {
+class MapPhotoTagScreen extends React.Component {
   state = {
     comment: '',
     votes: this.props.navigation.state.params.upvotes,
@@ -167,7 +167,7 @@ class MapScreen extends React.Component {
       updatedPhototag.favTotal += 1;
       this.props.updatePhototag(this.state.phototag);
     } else {
-    // If user does already have this favorite, remove
+      // If user does already have this favorite, remove
       this.props.deleteFavUnderUserId(this.props.user.id, this.state.phototag.id);
       updatedPhototag.favTotal -= 1;
       this.props.updatePhototag(this.state.phototag);
@@ -180,21 +180,6 @@ class MapScreen extends React.Component {
 
   handleSubmitComment = () => {
     if (this.state.comment !== '') {
-      let tempComments = this.state.comments;
-      let commentObject = {
-        userId: this.props.user.id,
-        userName: this.props.user.displayName,
-        userImage: this.props.user.photoUrl,
-        text: this.state.comment,
-        timestamp: new Date(),
-        // needs an id so that key for Comment doesn't complain
-        id: this.state.tempCommentId,
-      };
-      tempComments.push(commentObject);
-      this.setState({ comments: tempComments });
-      this.setState({ comment: '' });
-      this.setState({ tempCommentId: this.state.tempCommentId + 1 });
-
       this.saveNewComment(this.state.phototag.id, this.props.user, this.state.comment);
     }
   };
@@ -211,7 +196,11 @@ class MapScreen extends React.Component {
       timestamp: new Date(),
       phototagId,
     };
-    // console.log('commentRecord', commentRecord);
+
+    let tempComments = this.state.comments;
+    tempComments.push(commentRecord);
+    this.setState({ comments: tempComments });
+    this.setState({ comment: '' });
 
     db
       .child('comments/' + commentId)
@@ -238,6 +227,11 @@ class MapScreen extends React.Component {
     });
   }
 
+  notifyDeletedComment = () => {
+    // Once a comment is deleted, this component is notified and refreshes UI by getting the latest comments again
+    this.getCommentsForCurrentPhototag(this.props.navigation.state.params);
+  };
+
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -261,13 +255,14 @@ class MapScreen extends React.Component {
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
           </Text>
         </Text>
-        <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
+        <View
+          style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
           <TouchableHighlight onPress={this.handleClickFav}>
             <Ionicons
               name="md-heart"
               size={32}
               color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
-            />  
+            />
           </TouchableHighlight>
           <TouchableHighlight onPress={this.handleUpvote}>
             <Ionicons name="md-arrow-up" size={32} color="blue" />
@@ -281,7 +276,14 @@ class MapScreen extends React.Component {
           </TouchableHighlight>
         </View>
         <Text style={styles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => <Comment key={comment.id} comment={comment} userId={this.props.user.id}/>)}
+        {this.state.comments.map((comment, i) => (
+          <Comment
+            key={comment.id}
+            comment={comment}
+            userId={this.props.user.id}
+            notifyDeleted={this.notifyDeletedComment}
+          />
+        ))}
         <TextInput
           value={this.state.comment}
           placeholder="Enter a new comment"
@@ -330,4 +332,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(MapPhotoTagScreen);
