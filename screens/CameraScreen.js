@@ -104,12 +104,12 @@ class CameraScreen extends React.Component {
         })
         .then(data => {
           //data = JSON.stringify(data).replace('\\', '');
-          this.setState(
-            { reps: { officials: data.data.officials, offices: data.data.offices } },
-            () => {
-              //console.log('reps', this.state.reps);
-            }
-          );
+          let offices = data.data.offices;
+          offices.splice(3, 0, { name: 'United States Senate 2' });
+
+          this.setState({ reps: { officials: data.data.officials, offices } }, () => {
+            //console.log('reps', this.state.reps);
+          });
         })
         .catch(error => {
           console.log(error);
@@ -131,15 +131,14 @@ class CameraScreen extends React.Component {
       let timestamp = new Date();
       timestamp = timestamp.toUTCString();
       phototag.timestamp = timestamp;
-      
+
       phototag.tags = {};
       let desc = this.state.description;
-      if (desc.match(/#[^\s]*/g)){
+      if (desc.match(/#[^\s]*/g)) {
         var hashtags = desc.match(/#[^\s]*/g).map(str => str.slice(1));
         hashtags.forEach(str => (phototag.tags[str] = true));
       }
       console.log('phototag.tags: ', phototag.tags);
-     
 
       phototag.userId = this.props.user.id;
       phototag.userName = this.props.user.displayName;

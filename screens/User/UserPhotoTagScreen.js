@@ -34,6 +34,8 @@ class UserScreen extends React.Component {
   state = {
     description: '',
     phototag: this.props.navigation.state.params,
+    picker: '',
+    electedOfficailIndex: 0,
   };
 
   setDescription() {
@@ -57,6 +59,12 @@ class UserScreen extends React.Component {
       url: this.state.phototag.imageUrl,
     });
   }
+
+  goToElectedOfficials() {
+    let phototag = this.state.phototag;
+    phototag.electedOfficailIndex = this.state.electedOfficailIndex;
+    this.props.navigation.navigate('electedOfficails', phototag);
+  }
   render() {
     return (
       <ScrollView>
@@ -79,12 +87,16 @@ class UserScreen extends React.Component {
         <TouchableHighlight onPress={this.share.bind(this)}>
           <Ionicons name="md-share-alt" size={32} color="blue" />
         </TouchableHighlight>
-        <Picker>
+        <Picker
+          selectedValue={this.state.picker}
+          onValueChange={(itemValue, itemIndex) =>
+            this.setState({ picker: itemValue, electedOfficailIndex: itemIndex })}>
           {this.state.phototag.reps &&
             this.state.phototag.reps.offices.map((office, i) => (
-              <Picker.Item key={i} label={office.name} value={this.state.phototag} />
+              <Picker.Item key={i} label={office.name} value={office.name} />
             ))}
         </Picker>
+        <Button title="contact" onPress={this.goToElectedOfficials.bind(this)} />
       </ScrollView>
     );
   }

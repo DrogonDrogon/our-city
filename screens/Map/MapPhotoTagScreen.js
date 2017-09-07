@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   Alert,
   Share,
+  Picker,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
@@ -59,6 +60,8 @@ class MapScreen extends React.Component {
     edited: false,
     comments: [],
     tempCommentId: 0,
+    picker: '',
+    electedOfficailIndex: 0,
   };
 
   componentDidMount() {
@@ -231,6 +234,11 @@ class MapScreen extends React.Component {
       url: this.state.phototag.imageUrl,
     });
   }
+  goToElectedOfficials() {
+    let phototag = this.state.phototag;
+    phototag.electedOfficailIndex = this.state.electedOfficailIndex;
+    this.props.navigation.navigate('electedOfficails', phototag);
+  }
 
   render() {
     return (
@@ -255,13 +263,14 @@ class MapScreen extends React.Component {
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
           </Text>
         </Text>
-        <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
+        <View
+          style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
           <TouchableHighlight onPress={this.handleClickFav}>
             <Ionicons
               name="md-heart"
               size={32}
               color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
-            />  
+            />
           </TouchableHighlight>
           <TouchableHighlight onPress={this.handleUpvote}>
             <Ionicons name="md-arrow-up" size={32} color="blue" />
@@ -284,6 +293,16 @@ class MapScreen extends React.Component {
           style={styles.commentInput}
         />
         <Button title="Submit comment" onPress={this.handleSubmitComment} />
+        <Picker
+          selectedValue={this.state.picker}
+          onValueChange={(itemValue, itemIndex) =>
+            this.setState({ picker: itemValue, electedOfficailIndex: itemIndex })}>
+          {this.state.phototag.reps &&
+            this.state.phototag.reps.offices.map((office, i) => (
+              <Picker.Item key={i} label={office.name} value={office.name} />
+            ))}
+        </Picker>
+        <Button title="contact" onPress={this.goToElectedOfficials.bind(this)} />
       </KeyboardAwareScrollView>
     );
   }
