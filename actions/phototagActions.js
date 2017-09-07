@@ -70,6 +70,7 @@ export const addCommentUnderPhototag = (phototagId, commentData) => dispatch => 
 
 // For fetching favorite-phototags by userObject
 export const fetchFavoritesByUser = userInfo => dispatch => {
+  dispatch(updateLoadingStatus(true));
   // fetch favorites
   let favKeys = Object.keys(userInfo.favs);
   const favPromises = favKeys.map(id => {
@@ -95,6 +96,7 @@ export const fetchFavoritesByUser = userInfo => dispatch => {
         }
       });
       dispatch(receiveFavoritesByUser(validEntries));
+      dispatch(updateLoadingStatus(false));
     })
     .catch(err => {
       console.log('ERR getting userFavs', err);
