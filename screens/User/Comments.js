@@ -60,19 +60,20 @@ class Comments extends React.Component {
         let validComments = comments.filter(item => {
           return item !== null && item !== undefined;
         });
-        validComments.forEach(comment => {
-          db
+
+        const photoPromises = validComments.map(comment => {
+          return db
             .child('phototags/' + comment.phototagId)
             .once('value')
             .then(snapshot => {
               comment.phototagData = snapshot.val();
+              return snapshot.val();
             });
         });
-        return validComments;
-      })
-      .then(validComments => {
-        this.setState({ comments: validComments });
-        this.props.updateLoadingStatus(false);
+        Promise.all(photoPromises).then(phototagData => {
+          this.setState({ comments: validComments });
+          this.props.updateLoadingStatus(false);
+        });
       })
       .catch(err => {
         console.log('Err getting phototags', err);
