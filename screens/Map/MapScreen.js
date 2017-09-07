@@ -12,6 +12,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
     location: state.location,
+    user: state.user,
   };
 };
 
@@ -129,11 +130,33 @@ class MapScreen extends React.Component {
         }
       }
     } else {
-      return photoTags;
+      filtered = photoTags;
+    }
+    if (filters.FavIsSelected) {
+      filtered = filtered.filter(pTag => {
+        return this.props.user.favs.hasOwnProperty(pTag.id);
+      });
     }
     //when filtering for tags, need to make sure that photo has all of the tags in the array
 
     return filtered;
+  }
+
+  genFilterTags() {
+    let tags = [];
+    this.props.phototags.forEach(pTag => {
+      if (pTag.tags && pTag.tags.keys) {
+        for (let i = 0; i < pTag.tags.keys.length; i++) {
+          if (!tags.includes(pTag.tags.keys[i])) {
+            tags.push(pTag.tags.keys[i]);
+          }
+        }
+      }
+    });
+    let filters = this.state.filters;
+    filters.tags = tags;
+    this.setState({ filters });
+    console.log('new tags', filters.tags);
   }
 
   sortPhotoTags(photoTags) {
@@ -200,10 +223,12 @@ class MapScreen extends React.Component {
   }
 
   render() {
+    if (this.props.phototags) {
+    }
     if (this.state.isMapToggled === true) {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen getFilters={this.getFilters.bind(this)} />
+          <FilterScreen tags={this.state.filters.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
           <MapView
             showsUserLocation
             followsUserLocation
@@ -242,7 +267,7 @@ class MapScreen extends React.Component {
     } else {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen getFilters={this.getFilters.bind(this)} />
+          <FilterScreen tags={this.state.filters.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView
             phototags={this.sortPhotoTags(
