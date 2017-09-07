@@ -21,7 +21,7 @@ class FilterScreen extends Component {
     this.state = {
       selectedTags: [],
       numResults: 25,
-      radius: 5.0,
+      radius: 2.0,
       favorites: false,
       tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
       modalVisible: false,
@@ -31,6 +31,13 @@ class FilterScreen extends Component {
   }
   getVal(val){
   
+  }
+  selectTag(val){
+    let tagList = this.state.selectedTags;
+    
+    tagList.includes(val) ? tagList.splice(tagList.indexOf(val), 1) : tagList.push(val);
+    
+    this.setState({selectedTags: tagList});
   }
   getInitialState() {
     return {
@@ -53,16 +60,16 @@ class FilterScreen extends Component {
           <View style={{ marginTop: 75, backgroundColor: 'white', }}>
             <View>
               <TouchableHighlight style={{ marginTop: 11}} onPress={() => {
-               this.props.getFilters(this.state)
-               this.setModalVisible(!this.state.modalVisible)
-              }}>
+                  this.props.getFilters(this.state)
+                  this.setModalVisible(!this.state.modalVisible)
+                }}>
                 <Text>Hide Filters</Text>
               </TouchableHighlight>
               <ScrollView>
                 <ScrollView>
                   <View> 
                     {this.state.tags.map((tag, i) => (
-                        <FilterTag key={i} tag={tag} />
+                        <FilterTag key={i} tag={tag} selectTag={this.selectTag.bind(this)}/>
                       ))}
                   </View>
                 </ScrollView>
