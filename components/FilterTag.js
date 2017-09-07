@@ -7,15 +7,32 @@ class FilterTag extends React.Component {
     super(props);
     this.state = {
       pressed: false,
+      color: "#841584",
+    }
+  }
+  setColor() {
+    if (!this.state.pressed) {
+      this.setState({
+        color: '#000742',
+        pressed: !this.state.pressed,
+      });
+    } else {
+      this.setState({
+        color: '#841584',
+        pressed: !this.state.pressed,
+      });
     }
   }
 
   render(){
     return(
       <Button
-        onPress={e => this.setState({pressed: true})}
+        onPress={(e) => {
+          this.setColor();
+          this.props.selectTag(this.props.tag);
+        }}
         title={this.props.tag}
-        color="#841584"
+        color={this.state.color}
         accessibilityLabel="Learn more about this purple button"
       />
     );
