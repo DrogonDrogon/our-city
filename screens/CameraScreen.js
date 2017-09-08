@@ -54,6 +54,7 @@ class CameraScreen extends React.Component {
     reps: {},
     latitude: '',
     longitude: '',
+    imageHasLocationExif: false,
   };
 
   _takePic = async () => {
@@ -80,16 +81,30 @@ class CameraScreen extends React.Component {
     });
 
     if (!result.cancelled) {
-      console.log(result.exif);
       this.setState({ imageUri: result.uri });
-      let latitude =
-        result.exif.GPSLatitudeRef === 'N' ? result.exif.GPSLatitude : result.exif.GPSLatitude * -1;
-      let longitude =
-        result.exif.GPSLongitudeRef === 'E'
-          ? result.exif.GPSLongitude
-          : result.exif.GPSLongitude * -1;
-      console.log('locaccc', latitude, longitude);
-      this.getReps(latitude, longitude);
+      // If the image has exif location data
+      if (result.exif.GPSLatitudeRef && result.exif.GPSLongitudeRef) {
+        let latitude =
+          result.exif.GPSLatitudeRef === 'N'
+            ? result.exif.GPSLatitude
+            : result.exif.GPSLatitude * -1;
+        let longitude =
+          result.exif.GPSLongitudeRef === 'E'
+            ? result.exif.GPSLongitude
+            : result.exif.GPSLongitude * -1;
+        console.log('[pickImage] Lat/Lon from image result.exif', latitude, longitude);
+        this.setState({
+          imageHasLocationExif: true,
+          latitude,
+          longitude,
+        });
+        this.getReps(latitude, longitude);
+      } else {
+        // If image has NO exif location data, then cannot getReps using image location
+        console.log('[pickImage] NO location from image result.exif');
+        this.setState({ imageHasLocationExif: false });
+        this.getReps(this.props.location.latitude, this.props.location.longitude);
+      }
     }
   };
 
@@ -99,7 +114,7 @@ class CameraScreen extends React.Component {
       longitude: longitude || this.props.location.longitude,
     }).then(address => {
       console.log(
-        'addres',
+        '[getReps] reverseGeoCode address',
         address,
         `${address[0].name} ${address[0].city} ${address[0].region} ${address[0].postalCode}`
       );
@@ -116,13 +131,13 @@ class CameraScreen extends React.Component {
           //data = JSON.stringify(data).replace('\\', '');
           let offices = data.data.offices;
           offices.splice(3, 0, { name: 'United States Senate 2' });
-
           this.setState({ reps: { officials: data.data.officials, offices } }, () => {
             //console.log('reps', this.state.reps);
           });
         })
         .catch(error => {
-          console.log(error);
+          // If no representative data returned, then phototag will have no reps property
+          console.log('[getReps] Unable get reps -->', error);
         });
     });
   }
@@ -135,39 +150,45 @@ class CameraScreen extends React.Component {
       ]);
     } else {
       // Set up the format for phototag item to be saved in Firebase
-
       let phototag = {};
       let photoIdName = generateRandomID();
       let timestamp = new Date();
       timestamp = timestamp.toUTCString();
       phototag.timestamp = timestamp;
+      phototag.userId = this.props.user.id;
+      phototag.userName = this.props.user.displayName;
+      phototag.description = this.state.description;
 
+      // Handle tags
       phototag.tags = {};
       let desc = this.state.description;
       if (desc.match(/#[^\s]*/g)) {
         var hashtags = desc.match(/#[^\s]*/g).map(str => str.slice(1));
         hashtags.forEach(str => (phototag.tags[str] = true));
       }
-      console.log('phototag.tags: ', phototag.tags);
+      console.log('[saveImg] phototag.tags: ', phototag.tags);
 
-      phototag.userId = this.props.user.id;
-      phototag.userName = this.props.user.displayName;
-      phototag.description = this.state.description;
-      phototag.locationLat = this.props.location.latitude;
-      phototag.locationLong = this.props.location.longitude;
+      // Save image's location if available, otherwise use current location as location data
+      if (this.state.imageHasLocationExif) {
+        phototag.locationLat = this.state.latitude;
+        phototag.locationLong = this.state.longitude;
+      } else {
+        phototag.locationLat = this.props.location.latitude;
+        phototag.locationLong = this.props.location.longitude;
+      }
       phototag.imageUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
       phototag.upvotes = 0;
       phototag.downvotes = 0;
       phototag.favTotal = 0;
-      phototag.comments = ['like', 'dislike'];
+      phototag.comments = { placeholderComment: true };
       phototag.userProfileUrl = this.props.user.photoUrl;
       phototag.address = await Location.reverseGeocodeAsync({
         latitude: this.props.location.latitude,
         longitude: this.props.location.longitude,
       });
       phototag.reps = this.state.reps;
+      console.log('[saveImg] phototag.reps: ', phototag.reps);
 
-      console.log('phototag', phototag.reps);
       // Set up file uri to save to AWS
       let file = {
         uri: this.state.imageUri,
@@ -188,6 +209,13 @@ class CameraScreen extends React.Component {
           // Reset image and description
           this.setState({ imageUri: null });
           this.descriptionInput.setNativeProps({ text: '' });
+          this.setState({
+            latitude: '',
+            longitude: '',
+            imageHasLocationExif: false,
+          });
+
+          // TODO: Error handling if post not successful from firebase
           Alert.alert('Success', 'Your post was sent!', [{ text: 'OK', onPress: () => {} }]);
         }
       });

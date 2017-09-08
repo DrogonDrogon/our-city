@@ -300,7 +300,9 @@ class MapPhotoTagScreen extends React.Component {
           style={styles.commentInput}
         />
         <Button title="Submit comment" onPress={this.handleSubmitComment} />
+        <Text style={styles.titleText}>Contact an Official</Text>
         <Picker
+          style={styles.pickerStyle}
           selectedValue={this.state.picker}
           onValueChange={(itemValue, itemIndex) =>
             this.setState({ picker: itemValue, electedOfficailIndex: itemIndex })}>
@@ -309,7 +311,7 @@ class MapPhotoTagScreen extends React.Component {
               <Picker.Item key={i} label={office.name} value={office.name} />
             ))}
         </Picker>
-        <Button title="contact" onPress={this.goToElectedOfficials.bind(this)} />
+        <Button title="View contact info" onPress={this.goToElectedOfficials.bind(this)} />
       </KeyboardAwareScrollView>
     );
   }
@@ -347,6 +349,9 @@ const styles = StyleSheet.create({
     width: 40,
     marginRight: 10,
     borderRadius: 20,
+  },
+  pickerStyle: {
+    width: '95%',
   },
 });
 
