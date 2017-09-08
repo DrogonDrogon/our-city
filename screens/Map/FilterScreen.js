@@ -83,7 +83,7 @@ class FilterScreen extends Component {
                     style={{ width: 300 }}
                     step={0.10}
                     minimumValue={0.10}
-                    maximumValue={10.0}
+                    maximumValue={50.0}
                     value={this.state.radius}
                     onValueChange={val => this.setState({ radius: Number(val.toPrecision(2)) })}
                     onSlidingComplete={ val => this.getVal(val)}
