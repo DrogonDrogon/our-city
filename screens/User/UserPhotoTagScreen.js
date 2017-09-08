@@ -12,6 +12,7 @@ import {
   Share,
   Picker,
 } from 'react-native';
+import TaggedText from '../../components/TaggedText';
 import { Ionicons } from '@expo/vector-icons';
 import * as Actions from '../../actions';
 
@@ -73,7 +74,7 @@ class UserScreen extends React.Component {
           style={{ width: '100%', height: 200, resizeMode: Image.resizeMode.contain }}
           source={{ uri: this.state.phototag.imageUrl }}
         />
-        <Text>{this.state.phototag.description}</Text>
+        <TaggedText text={this.state.phototag.description}/>
         <Text style={styles.titleText} />
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
