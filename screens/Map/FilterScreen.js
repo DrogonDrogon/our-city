@@ -21,7 +21,7 @@ class FilterScreen extends Component {
     this.state = {
       selectedTags: [],
       numResults: 25,
-      radius: 2.0,
+      radius: 5.0,
       favorites: false,
       modalVisible: false,
       sortBy: 'Date',
@@ -29,7 +29,7 @@ class FilterScreen extends Component {
     };
   }
   getVal(val){
-  
+    // this.setState({ radius: 8000 });
   }
   selectTag(val){
     let tagList = this.state.selectedTags;
