@@ -16,6 +16,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import Comment from '../../components/comment';
+import TaggedText from '../../components/TaggedText';
 import * as Actions from '../../actions';
 import db from '../../db';
 
@@ -241,43 +242,43 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   render() {
-    //define delimiter
-    let delimiter = /\s+/;
+    // //define delimiter
+    // let delimiter = /\s+/;
 
-    //split string
-    let _text = this.state.phototag.description;
-    let token,
-      index,
-      parts = [];
-    while (_text) {
-      delimiter.lastIndex = 0;
-      token = delimiter.exec(_text);
-      if (token === null) {
-        break;
-      }
-      index = token.index;
-      if (token[0].length === 0) {
-        index = 1;
-      }
-      parts.push(_text.substr(0, index));
-      parts.push(token[0]);
-      index = index + token[0].length;
-      _text = _text.slice(index);
-    }
-    parts.push(_text);
+    // //split string
+    // let _text = this.state.phototag.description;
+    // let token,
+    //   index,
+    //   parts = [];
+    // while (_text) {
+    //   delimiter.lastIndex = 0;
+    //   token = delimiter.exec(_text);
+    //   if (token === null) {
+    //     break;
+    //   }
+    //   index = token.index;
+    //   if (token[0].length === 0) {
+    //     index = 1;
+    //   }
+    //   parts.push(_text.substr(0, index));
+    //   parts.push(token[0]);
+    //   index = index + token[0].length;
+    //   _text = _text.slice(index);
+    // }
+    // parts.push(_text);
 
-    //highlight hashtags
-    parts = parts.map(text => {
-      if (/^#/.test(text)) {
-        return (
-          <Text onPress={() => console.log(text)} key={text} style={styles.hashtag}>
-            {text}
-          </Text>
-        );
-      } else {
-        return text;
-      }
-    });
+    // //highlight hashtags
+    // parts = parts.map(text => {
+    //   if (/^#/.test(text)) {
+    //     return (
+    //       <Text onPress={() => console.log(text)} key={text} style={styles.hashtag}>
+    //         {text}
+    //       </Text>
+    //     );
+    //   } else {
+    //     return text;
+    //   }
+    // });
 
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -286,7 +287,7 @@ class MapPhotoTagScreen extends React.Component {
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.phototag.imageUrl }}
           />
-          <Text>{parts}</Text>
+          <TaggedText text={this.state.phototag.description}/>
         </View>
         <Text style={styles.authorContainer}>
           <Image
