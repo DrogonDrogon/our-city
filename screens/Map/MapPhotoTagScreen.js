@@ -11,7 +11,6 @@ import {
   TouchableHighlight,
   Alert,
   Share,
-  Picker,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
@@ -61,8 +60,6 @@ class MapPhotoTagScreen extends React.Component {
     edited: false,
     comments: [],
     tempCommentId: 0,
-    picker: '',
-    electedOfficailIndex: 0,
   };
 
   componentDidMount() {
@@ -128,7 +125,6 @@ class MapPhotoTagScreen extends React.Component {
         // Update user
         let userData = this.props.user;
         userData.votes[this.state.phototag.id] = 1;
-        console.log('trying to use userData', userData);
         this.props.updateUser(userData);
 
         // Update phototag
@@ -230,10 +226,10 @@ class MapPhotoTagScreen extends React.Component {
       url: this.state.phototag.imageUrl,
     });
   }
+
   goToElectedOfficials() {
-    let phototag = this.state.phototag;
-    phototag.electedOfficailIndex = this.state.electedOfficailIndex;
-    this.props.navigation.navigate('electedOfficails', phototag);
+    let phototagData = this.state.phototag;
+    this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
   }
 
   notifyDeletedComment = () => {
@@ -339,18 +335,12 @@ class MapPhotoTagScreen extends React.Component {
           style={styles.commentInput}
         />
         <Button title="Submit comment" onPress={this.handleSubmitComment} />
-        <Text style={styles.titleText}>Contact an Official</Text>
-        <Picker
-          style={styles.pickerStyle}
-          selectedValue={this.state.picker}
-          onValueChange={(itemValue, itemIndex) =>
-            this.setState({ picker: itemValue, electedOfficailIndex: itemIndex })}>
-          {this.state.phototag.reps &&
-            this.state.phototag.reps.offices.map((office, i) => (
-              <Picker.Item key={i} label={office.name} value={office.name} />
-            ))}
-        </Picker>
-        <Button title="View contact info" onPress={this.goToElectedOfficials.bind(this)} />
+        {this.state.phototag.reps && (
+          <Button
+            title="View government contact info"
+            onPress={this.goToElectedOfficials.bind(this)}
+          />
+        )}
       </KeyboardAwareScrollView>
     );
   }
@@ -388,9 +378,6 @@ const styles = StyleSheet.create({
     width: 40,
     marginRight: 10,
     borderRadius: 20,
-  },
-  pickerStyle: {
-    width: '95%',
   },
   hashtag: {
     color: 'blue',

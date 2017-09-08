@@ -4,72 +4,169 @@ import {
   StyleSheet,
   Text,
   Image,
-  View,
-  TextInput,
-  Button,
   TouchableHighlight,
   Share,
   Picker,
-  Modal,
-  WebView,
+  Linking,
+  Button,
 } from 'react-native';
+import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import Hyperlink from 'react-native-hyperlink';
 
-export default class electedOfficails extends React.Component {
-  state = {
-    phototag: this.props.navigation.state.params.phototag,
-    electedOfficailIndex: this.props.navigation.state.params.electedOfficailIndex,
-    official: this.props.navigation.state.params.reps.officials[
-      this.props.navigation.state.params.electedOfficailIndex
-    ],
-    modalVisibility: false,
+export default class electedOfficials extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Contact an Official',
+    };
   };
-  share() {
-    let twitterhandle = '';
-    this.state.official.channels.forEach(channel => {
-      if (channel.type === 'Twitter') twitterhandle = channel.id;
-    });
-    Share.share({
-      title: this.props.navigation.state.params.description,
-      message: ` ${this.props.navigation.state.params.description} @${twitterhandle}`,
-      url: this.props.navigation.state.params.imageUrl,
-    });
+
+  state = {
+    electedOfficialPositionName: '',
+    electedOfficialIndex: 0,
+    phototag: this.props.navigation.state.params.phototag,
+    twitterId: '',
+    fbId: '',
+    emailId: '',
+  };
+
+  componentDidMount() {
+    this.getSocialIds();
+    this.getEmail();
   }
+
+  getSocialIds = () => {
+    let officialInfo = this.state.phototag.reps.officials[this.state.electedOfficialIndex];
+    if (officialInfo.channels) {
+      let socialIds = {
+        fb: '',
+        twitter: '',
+      };
+      for (let i = 0; i < officialInfo.channels.length; i++) {
+        if (officialInfo.channels[i].type === 'Twitter') {
+          socialIds.twitter = `@${officialInfo.channels[i].id}`;
+        } else if (officialInfo.channels[i].type === 'Facebook') {
+          socialIds.fb = `/${officialInfo.channels[i].id}`;
+        }
+      }
+      this.setState({ twitterId: socialIds.twitter, fbId: socialIds.fb }, () => {
+        console.log('twitter', socialIds.twitter, '&& fb', socialIds.fb);
+      });
+    } else {
+      this.setState({ twitterId: '', fbId: '' });
+    }
+  };
+
+  getEmail = () => {
+    let officialInfo = this.state.phototag.reps.officials[this.state.electedOfficialIndex];
+    if (officialInfo.emails) {
+      this.setState({ emailId: officialInfo.emails[0] });
+    } else {
+      this.setState({ emailId: '' });
+    }
+  };
+
+  share = () => {
+    Share.share({
+      title: this.state.phototag.description,
+      message: `${this.state.phototag.description} ${this.state.twitterId}`,
+      url: this.state.phototag.imageUrl,
+    });
+  };
+
+  updateSelectedOfficial = (itemValue, itemIndex) => {
+    this.setState(
+      {
+        electedOfficialPositionName: itemValue,
+        electedOfficialIndex: itemIndex,
+      },
+      () => {
+        this.getSocialIds();
+        this.getEmail();
+      }
+    );
+  };
+
+  _handleOpenEmail = () => {
+    Linking.openURL(`mailto:${this.state.emailId}`);
+  }
+
+  _handleOpenWithBrowser = () => {
+    let currentSelectedOfficial = this.state.phototag.reps.officials[
+      this.state.electedOfficialIndex
+    ];
+    WebBrowser.openBrowserAsync(currentSelectedOfficial.urls[0])
+  }
+
   render() {
-    console.log('electedOfficails', this.props.navigation.state.params);
+    let currentSelectedOfficial = this.state.phototag.reps.officials[
+      this.state.electedOfficialIndex
+    ];
+
     return (
-      <View style={{ alignItems: 'center' }}>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <Picker
+          style={styles.pickerStyle}
+          selectedValue={this.state.electedOfficialPositionName}
+          onValueChange={(itemValue, itemIndex) =>
+            this.updateSelectedOfficial(itemValue, itemIndex)}>
+          {this.state.phototag.reps.offices.map((office, i) => (
+            <Picker.Item
+              key={i}
+              label={office.name}
+              value={office.name}
+              style={styles.pickerItemStyle}
+            />
+          ))}
+        </Picker>
         <Image
           style={{ width: '100%', height: 100, resizeMode: Image.resizeMode.contain }}
           source={{
-            uri: this.state.official.photoUrl,
+            uri: currentSelectedOfficial.photoUrl,
           }}
         />
-        <Hyperlink
-          onPress={() => this.setState({ modalVisibility: true })}
-          linkStyle={{ color: '#2980b9', fontSize: 20 }}>
-          <Text style={{ fontSize: 15 }}>{this.state.official.urls[0]}</Text>
-        </Hyperlink>
-        <TouchableHighlight onPress={this.share.bind(this)}>
-          <Ionicons name="logo-twitter" size={32} color="blue" />
-        </TouchableHighlight>
-        <TouchableHighlight>
-          <Ionicons name="logo-facebook" size={32} color="blue" />
-        </TouchableHighlight>
-        <Modal
-          animationType={'slide'}
-          transparent={false}
-          visible={this.state.modalVisibility}
-          onRequestClose={() => {
-            console.log('Modal closed');
-          }}>
-          <TouchableHighlight onPress={() => this.setState({ modalVisibility: false })}>
-            <Ionicons name="ios-arrow-back" size={32} color="blue" />
+        <Text>{currentSelectedOfficial.name}</Text>
+        <Button title={currentSelectedOfficial.urls[0]} onPress={this._handleOpenWithBrowser} style={styles.urlButton} />
+        {this.state.twitterId !== '' && (
+          <TouchableHighlight onPress={this.share}>
+            <Text>
+              <Ionicons name="logo-twitter" size={32} color="blue" />
+              <Text>{this.state.twitterId}</Text>
+            </Text>
           </TouchableHighlight>
-          <WebView source={{ uri: this.state.official.urls[0] }} style={{ marginTop: 20 }} />
-        </Modal>
-      </View>
+        )}
+        {this.state.fbId !== '' && (
+          <TouchableHighlight>
+            <Text>
+              <Ionicons name="logo-facebook" size={32} color="blue" />
+              <Text>{this.state.fbId}</Text>
+            </Text>
+          </TouchableHighlight>
+        )}
+        {this.state.emailId !== '' && (
+          <Text onPress={this._handleOpenEmail}>
+            <Ionicons name="md-mail" size={32} color="blue" />
+            <Text>{this.state.emailId}</Text>
+          </Text>
+        )}
+      </ScrollView>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  scrollViewContainer: {
+    alignItems: 'center',
+    paddingBottom: 50,
+  },
+  pickerStyle: {
+    width: '95%',
+    height: 200,
+  },
+  pickerItemStyle: {
+    fontSize: 10,
+  },
+  urlButton: {
+    fontSize: 12,
+  }
+});
