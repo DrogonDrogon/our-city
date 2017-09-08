@@ -238,44 +238,6 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   render() {
-    // //define delimiter
-    // let delimiter = /\s+/;
-
-    // //split string
-    // let _text = this.state.phototag.description;
-    // let token,
-    //   index,
-    //   parts = [];
-    // while (_text) {
-    //   delimiter.lastIndex = 0;
-    //   token = delimiter.exec(_text);
-    //   if (token === null) {
-    //     break;
-    //   }
-    //   index = token.index;
-    //   if (token[0].length === 0) {
-    //     index = 1;
-    //   }
-    //   parts.push(_text.substr(0, index));
-    //   parts.push(token[0]);
-    //   index = index + token[0].length;
-    //   _text = _text.slice(index);
-    // }
-    // parts.push(_text);
-
-    // //highlight hashtags
-    // parts = parts.map(text => {
-    //   if (/^#/.test(text)) {
-    //     return (
-    //       <Text onPress={() => console.log(text)} key={text} style={styles.hashtag}>
-    //         {text}
-    //       </Text>
-    //     );
-    //   } else {
-    //     return text;
-    //   }
-    // });
-
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.photoDisplayContainer}>
