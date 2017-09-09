@@ -12,7 +12,7 @@ export default TabNavigator(
     Map: {
       screen: MapScreen,
     },
-    Post: {
+    Camera: {
       screen: CameraScreen,
     },
     Profile: {
@@ -29,7 +29,7 @@ export default TabNavigator(
             iconName =
               Platform.OS === 'ios' ? `ios-person${focused ? '' : '-outline'}` : 'md-person';
             break;
-          case 'Post':
+          case 'Camera':
             iconName =
               Platform.OS === 'ios' ? `ios-camera${focused ? '' : '-outline'}` : 'md-camera';
             break;
@@ -50,5 +50,8 @@ export default TabNavigator(
     tabBarPosition: 'bottom',
     animationEnabled: false,
     swipeEnabled: false,
+    tabBarOptions: {
+      showLabel: false,
+    },
   }
 );

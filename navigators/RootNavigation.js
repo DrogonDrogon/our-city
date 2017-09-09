@@ -15,6 +15,9 @@ const RootStackNavigator = StackNavigator(
   {
     SplashScreen: {
       screen: SplashScreen,
+      navigationOptions: {
+        header: false,
+      },
     },
     Login: {
       screen: LoginScreen,
