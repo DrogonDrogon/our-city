@@ -14,7 +14,7 @@ import SegmentedControlTab from 'react-native-segmented-control-tab';
 import NavigationBar from 'react-native-navbar';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import { ImagePicker, Location } from 'expo';
+import { ImagePicker } from 'expo';
 import { RNS3 } from 'react-native-aws3';
 import firebase from 'firebase';
 import config from '../../config/config';
@@ -201,6 +201,7 @@ class HomeScreen extends React.Component {
             user={this.props.user}
             phototags={this.props.phototags}
             goToPhototags={this.goToPhototags}
+            navigation={this.props.navigation}
           />
         );
       case 1:
@@ -321,7 +322,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 0,
+    top: 295,
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',

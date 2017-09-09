@@ -111,7 +111,7 @@ export const postNewUserBegin = user => dispatch => {
     userInfo.authMethod = 'email-password';
     userInfo.email = user.email;
     userInfo.photoUrl =
-      'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png';
+      'https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433_1280.png';
     let getUsername = user.email.split('@');
     userInfo.displayName = getUsername[0];
   }

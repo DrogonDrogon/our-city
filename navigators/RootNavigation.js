@@ -7,6 +7,7 @@ import MapPhotoTagScreen from '../screens/Map/MapPhotoTagScreen';
 import UserPhotoTagScreen from '../screens/User/UserPhotoTagScreen';
 import SplashScreen from '../screens/SplashScreen';
 import SignupScreen from '../screens//Login/SignupScreen';
+import electedOfficials from '../screens/elected_official';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
@@ -29,6 +30,9 @@ const RootStackNavigator = StackNavigator(
     },
     Signup: {
       screen: SignupScreen,
+    },
+    electedOfficials: {
+      screen: electedOfficials,
     },
   },
   {

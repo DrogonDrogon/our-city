@@ -1,9 +1,49 @@
 import React from 'React';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
+import ActionSheet from 'react-native-actionsheet';
+import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
+import db from '../db';
+
+// Settings for the ActionSheet
+const WARNING_INDEX = 0;
+const CANCEL_INDEX = 1;
+const options = ['Delete', 'Cancel'];
+const title = 'Are you sure you want to delete this comment?';
 
 export default class Comment extends React.Component {
+  deleteComment = () => {
+    this.showActionSheet();
+  };
+
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  };
+
+  handleActionSheetPress = selectedIndex => {
+    if (selectedIndex === WARNING_INDEX) {
+      // Run the delete function
+      db.deleteComment(
+        this.props.comment.id,
+        this.props.userId,
+        this.props.comment.phototagId,
+        (err, data) => {
+          if (err) {
+            console.log('Err deleting', err);
+          } else {
+            console.log('Success deleting', data);
+            this.props.notifyDeleted();
+          }
+        }
+      );
+    }
+  };
+
   render() {
+    let isMyOwnComment = false;
+    if (this.props.comment.userId === this.props.userId) {
+      isMyOwnComment = true;
+    }
     return (
       <View style={styles.commentContainer}>
         <Image source={{ uri: this.props.comment.userImage }} style={styles.imageSetting} />
@@ -12,6 +52,19 @@ export default class Comment extends React.Component {
           <Text style={styles.dateText}>{moment(this.props.comment.timestamp).fromNow()}</Text>
           <Text style={styles.commentText}>{this.props.comment.text}</Text>
         </View>
+        {isMyOwnComment && (
+          <TouchableHighlight onPress={this.deleteComment} style={styles.touchableDelete}>
+            <Ionicons name="md-close" size={20} color="gray" style={{ backgroundColor: '#fff' }} />
+          </TouchableHighlight>
+        )}
+        <ActionSheet
+          ref={sheet => (this.ActionSheet = sheet)}
+          title={title}
+          options={options}
+          cancelButtonIndex={CANCEL_INDEX}
+          destructiveButtonIndex={WARNING_INDEX}
+          onPress={this.handleActionSheetPress}
+        />
       </View>
     );
   }
@@ -50,5 +103,10 @@ const styles = StyleSheet.create({
     width: 40,
     marginRight: 10,
     borderRadius: 20,
+  },
+  touchableDelete: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
 });

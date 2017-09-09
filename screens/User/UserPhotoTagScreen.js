@@ -10,7 +10,9 @@ import {
   Button,
   TouchableHighlight,
   Share,
+  Picker,
 } from 'react-native';
+import TaggedText from '../../components/TaggedText';
 import { Ionicons } from '@expo/vector-icons';
 import * as Actions from '../../actions';
 
@@ -33,6 +35,8 @@ class UserScreen extends React.Component {
   state = {
     description: '',
     phototag: this.props.navigation.state.params,
+    picker: '',
+    electedOfficailIndex: 0,
   };
 
   setDescription() {
@@ -56,15 +60,21 @@ class UserScreen extends React.Component {
       url: this.state.phototag.imageUrl,
     });
   }
+
+  goToElectedOfficials() {
+    let phototagData = this.state.phototag;
+    this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
+  }
+
   render() {
     return (
       <ScrollView>
         <Text style={styles.titleText} />
         <Image
-          style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
+          style={{ width: '100%', height: 200, resizeMode: Image.resizeMode.contain }}
           source={{ uri: this.state.phototag.imageUrl }}
         />
-        <Text>{this.state.phototag.description}</Text>
+        <TaggedText navigation={this.props.navigation} text={this.state.phototag.description}/>
         <Text style={styles.titleText} />
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
@@ -78,6 +88,12 @@ class UserScreen extends React.Component {
         <TouchableHighlight onPress={this.share.bind(this)}>
           <Ionicons name="md-share-alt" size={32} color="blue" />
         </TouchableHighlight>
+        {this.state.phototag.reps && (
+          <Button
+            title="View government contact info"
+            onPress={this.goToElectedOfficials.bind(this)}
+          />
+        )}
       </ScrollView>
     );
   }

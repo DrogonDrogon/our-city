@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapView, Location, Permissions } from 'expo';
 import { connect } from 'react-redux';
-import { Button, Text, Image, StyleSheet, View, ScrollView } from 'react-native';
+import { Button, Text, Image, StyleSheet, View, ScrollView, Alert } from 'react-native';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
@@ -12,6 +12,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
     location: state.location,
+    user: state.user,
   };
 };
 
@@ -28,21 +29,20 @@ class MapScreen extends React.Component {
   state = {
     // the intial location must be set because props take time to init it could be anything
     region: {
-      latitude: 20.750355960509054,
-      longitude: -73.97669815393424,
+      latitude: 40.75122,
+      longitude: -73.976698,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
     markers: [],
     isMapToggled: true,
     modalVisible: false,
+    tags: ['parks', 'trees', 'waterfalls'],
     filters: {
       selectedTags: [],
       numResults: 25,
       radius: 5,
       favorites: false,
-      tags: ['trees', 'potholes', 'bench', 'garden', 'sidewalk', 'transit', 'art'],
-      modalVisible: false,
       sortBy: 'Date',
       FavIsSelected: false,
       user: null,
@@ -50,14 +50,54 @@ class MapScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.props.getLocation();
-    Location.watchPositionAsync({ timeInterval: 120000, distanceInterval: 50 }, location => {
-      this.props.getLocation(location);
+    let locationOptions = {
+      enableHighAccuracy: true,
+      distanceFilter: 10,
+      maximumAge: 1000,
+      timeout: 20000,
+    };
+    Location.watchPositionAsync(locationOptions, location => {
+      if (
+        this.state.region.latitude !== location.coords.latitude &&
+        this.state.region.longitude !== location.coords.longitude
+      ) {
+        console.log(
+          `[watchPosition] old loc ${this.state.region.latitude} ${this.state.region
+            .longitude} --> new loc ${location.coords.latitude} ${location.coords.longitude}`
+        );
+        // Only call getLocation if the location changed
+        this.props.getLocation();
+      }
+    }).catch(err => {
+      console.log('[watchPosition]', err);
+      Alert.alert(
+        'Unable to get location',
+        'Please ensure location permissions are enabled for this app.'
+      );
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setLocation(nextProps.location);
+    if (nextProps.navigation.state.params) {
+      let Params = nextProps.navigation.state.params;
+      console.log('Params: ', Params);
+      if (Params.navFromLink) {
+        this.setState({
+          isMapToggled: Params.isMapToggled,
+          filters: Params.filters,
+          tags: Params.tags,
+        });
+      }
+    }
+    // Ensure the props received are the location props and that they are not empty, before updating location state
+    if (!!nextProps.location.latitude && !!nextProps.location.longitude) {
+      this.setLocation(nextProps.location);
+    }
+
+    // If location permissions are not enabled, alert with error
+    if (nextProps.location && nextProps.location.error) {
+      Alert.alert('Error', nextProps.location.error);
+    }
   }
 
   toggleView = () => {
@@ -72,14 +112,12 @@ class MapScreen extends React.Component {
   }
 
   setLocation(location) {
-    console.log('Yay', location);
     let tempRegion = {
       latitude: location.latitude,
       longitude: location.longitude,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     };
-    console.log(tempRegion);
     this.setState({ region: tempRegion });
   }
 
@@ -91,10 +129,44 @@ class MapScreen extends React.Component {
 
   filterPhotoTags(photoTags) {
     let filters = this.state.filters;
-    let filteredTags = [];
+    let filtered = [];
+    let fTags = filters.selectedTags;
+    if (fTags.length) {
+      for (let i = 0; i < fTags.length; i++) {
+        for (let j = 0; j < photoTags.length; j++) {
+          if (photoTags[j].tags && photoTags[j].tags.hasOwnProperty(fTags[i])) {
+            filtered.push(photoTags[j]);
+          }
+        }
+      }
+    } else {
+      filtered = photoTags;
+    }
+    if (filters.FavIsSelected) {
+      filtered = filtered.filter(pTag => {
+        return this.props.user.favs.hasOwnProperty(pTag.id);
+      });
+    }
     //when filtering for tags, need to make sure that photo has all of the tags in the array
 
-    return filteredTags;
+    return filtered;
+  }
+
+  genFilterTags() {
+    let tags = this.state.tags;
+    this.props.phototags.forEach(pTag => {
+      if (pTag.tags && Object.keys(pTag.tags)) {
+        let keys = Object.keys(pTag.tags);
+        for (let i = 0; i < keys.length; i++) {
+          if (!tags.includes(keys[i])) {
+            tags.push(keys[i]);
+          }
+        }
+      }
+    });
+    if (tags.length !== this.state.tags.length) {
+      this.setState({ tags });
+    }  
   }
 
   sortPhotoTags(photoTags) {
@@ -164,7 +236,13 @@ class MapScreen extends React.Component {
     if (this.state.isMapToggled === true) {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen getFilters={this.getFilters.bind(this)} />
+          <FilterScreen
+            filters={this.state.filters}
+            tags={this.state.tags}
+            getFilters={this.getFilters.bind(this)}
+            genFilterTags={this.genFilterTags.bind(this)}
+            />
+          <Button onPress={this.toggleView} title="Switch to List" />
           <MapView
             showsUserLocation
             followsUserLocation
@@ -172,10 +250,10 @@ class MapScreen extends React.Component {
             provider={MapView.PROVIDER_GOOGLE}
             style={styles.map}
             region={this.state.region}>
-            <Button onPress={this.toggleView} title="Switch to List" />
+
 
             {this.props.phototags &&
-              this.props.phototags
+              this.filterPhotoTags(this.props.phototags)
                 .filter(marker =>
                   this.checkDistance(
                     this.state.filters.radius,
@@ -203,13 +281,18 @@ class MapScreen extends React.Component {
     } else {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen getFilters={this.getFilters.bind(this)} />
+          <FilterScreen
+            filters={this.state.filters}
+            tags={this.state.tags}
+            getFilters={this.getFilters.bind(this)}
+            genFilterTags={this.genFilterTags.bind(this)}
+          />
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView
-            phototags={this.sortPhotoTags(this.props.phototags).slice(
-              0,
-              this.state.filters.numResults
-            )}
+            phototags={this.sortPhotoTags(
+              this.filterPhotoTags(this.props.phototags))
+              .slice(0, this.state.filters.numResults)
+            }
             navigation={this.props.navigation}
           />
         </View>

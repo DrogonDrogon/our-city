@@ -15,6 +15,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import Comment from '../../components/comment';
+import TaggedText from '../../components/TaggedText';
 import * as Actions from '../../actions';
 import db from '../../db';
 
@@ -51,7 +52,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-class MapScreen extends React.Component {
+class MapPhotoTagScreen extends React.Component {
   state = {
     comment: '',
     votes: this.props.navigation.state.params.upvotes,
@@ -124,7 +125,6 @@ class MapScreen extends React.Component {
         // Update user
         let userData = this.props.user;
         userData.votes[this.state.phototag.id] = 1;
-        console.log('trying to use userData', userData);
         this.props.updateUser(userData);
 
         // Update phototag
@@ -135,7 +135,7 @@ class MapScreen extends React.Component {
     } else {
       Alert.alert(
         'Note',
-        'You have already submitted 1 vote for this! If you want to remove your vote, click the down button'
+        'You have already submitted 1 vote for this! To remove your vote, click the down button'
       );
     }
   };
@@ -149,7 +149,6 @@ class MapScreen extends React.Component {
         // Update user
         let userData = this.props.user;
         userData.votes[this.state.phototag.id] = 0;
-        console.log('trying to use userData', userData);
         this.props.updateUser(userData);
 
         // Update phototag
@@ -161,10 +160,17 @@ class MapScreen extends React.Component {
   };
 
   handleClickFav = () => {
+    let updatedPhototag = this.state.phototag;
+    // If user does not have this favorite, add
     if (!this.props.user.favs[this.state.phototag.id]) {
       this.props.addFavUnderUserId(this.props.user.id, this.state.phototag.id);
+      updatedPhototag.favTotal += 1;
+      this.props.updatePhototag(this.state.phototag);
     } else {
+      // If user does already have this favorite, remove
       this.props.deleteFavUnderUserId(this.props.user.id, this.state.phototag.id);
+      updatedPhototag.favTotal -= 1;
+      this.props.updatePhototag(this.state.phototag);
     }
   };
 
@@ -174,21 +180,6 @@ class MapScreen extends React.Component {
 
   handleSubmitComment = () => {
     if (this.state.comment !== '') {
-      let tempComments = this.state.comments;
-      let commentObject = {
-        userId: this.props.user.id,
-        userName: this.props.user.displayName,
-        userImage: this.props.user.photoUrl,
-        text: this.state.comment,
-        timestamp: new Date(),
-        // needs an id so that key for Comment doesn't complain
-        id: this.state.tempCommentId,
-      };
-      tempComments.push(commentObject);
-      this.setState({ comments: tempComments });
-      this.setState({ comment: '' });
-      this.setState({ tempCommentId: this.state.tempCommentId + 1 });
-
       this.saveNewComment(this.state.phototag.id, this.props.user, this.state.comment);
     }
   };
@@ -205,7 +196,11 @@ class MapScreen extends React.Component {
       timestamp: new Date(),
       phototagId,
     };
-    // console.log('commentRecord', commentRecord);
+
+    let tempComments = this.state.comments;
+    tempComments.push(commentRecord);
+    this.setState({ comments: tempComments });
+    this.setState({ comment: '' });
 
     db
       .child('comments/' + commentId)
@@ -232,6 +227,16 @@ class MapScreen extends React.Component {
     });
   }
 
+  goToElectedOfficials() {
+    let phototagData = this.state.phototag;
+    this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
+  }
+
+  notifyDeletedComment = () => {
+    // Once a comment is deleted, this component is notified and refreshes UI by getting the latest comments again
+    this.getCommentsForCurrentPhototag(this.props.navigation.state.params);
+  };
+
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -240,7 +245,7 @@ class MapScreen extends React.Component {
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.phototag.imageUrl }}
           />
-          <Text>{this.state.phototag.description}</Text>
+          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description}/>
         </View>
         <Text style={styles.authorContainer}>
           <Image
@@ -255,25 +260,35 @@ class MapScreen extends React.Component {
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
           </Text>
         </Text>
-        <TouchableHighlight onPress={this.handleClickFav}>
-          <Ionicons
-            name="md-heart"
-            size={32}
-            color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
-          />
-        </TouchableHighlight>
-        <TouchableHighlight onPress={this.handleUpvote}>
-          <Ionicons name="md-arrow-up" size={32} color="blue" />
-        </TouchableHighlight>
-        <Text style={styles.titleText}>{this.state.votes}</Text>
-        <TouchableHighlight onPress={this.handleUndoUpvote}>
-          <Ionicons name="md-arrow-down" size={32} color="blue" />
-        </TouchableHighlight>
-        <TouchableHighlight onPress={this.share.bind(this)}>
-          <Ionicons name="md-share-alt" size={32} color="blue" />
-        </TouchableHighlight>
+        <View
+          style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
+          <TouchableHighlight onPress={this.handleClickFav}>
+            <Ionicons
+              name="md-heart"
+              size={32}
+              color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
+            />
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.handleUpvote}>
+            <Ionicons name="md-arrow-up" size={32} color="blue" />
+          </TouchableHighlight>
+          <Text style={styles.titleText}>{this.state.votes}</Text>
+          <TouchableHighlight onPress={this.handleUndoUpvote}>
+            <Ionicons name="md-arrow-down" size={32} color="blue" />
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.share.bind(this)}>
+            <Ionicons name="md-share-alt" size={32} color="blue" />
+          </TouchableHighlight>
+        </View>
         <Text style={styles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => <Comment key={comment.id} comment={comment} />)}
+        {this.state.comments.map((comment, i) => (
+          <Comment
+            key={comment.id}
+            comment={comment}
+            userId={this.props.user.id}
+            notifyDeleted={this.notifyDeletedComment}
+          />
+        ))}
         <TextInput
           value={this.state.comment}
           placeholder="Enter a new comment"
@@ -282,6 +297,12 @@ class MapScreen extends React.Component {
           style={styles.commentInput}
         />
         <Button title="Submit comment" onPress={this.handleSubmitComment} />
+        {this.state.phototag.reps && (
+          <Button
+            title="View government contact info"
+            onPress={this.goToElectedOfficials.bind(this)}
+          />
+        )}
       </KeyboardAwareScrollView>
     );
   }
@@ -320,6 +341,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 20,
   },
+  hashtag: {
+    color: 'blue',
+    fontWeight: 'bold',
+  },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(MapPhotoTagScreen);
