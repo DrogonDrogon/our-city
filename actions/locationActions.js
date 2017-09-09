@@ -9,7 +9,7 @@ export const getLocationAsync = async () => {
       location: { error: 'Location permissions not disabled. Please enable in app settings.' },
     };
   } else {
-    let location = await Location.getCurrentPositionAsync();
+    let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true});
     return {
       type: SET_LOCATION,
       location: { latitude: location.coords.latitude, longitude: location.coords.longitude },
