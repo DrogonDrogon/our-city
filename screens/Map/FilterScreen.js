@@ -78,10 +78,10 @@ class FilterScreen extends Component {
                 }}>
                 <Text>Hide Filters</Text>
               </TouchableHighlight>
-              <ScrollView>
-                <ScrollView>
+              <ScrollView style={ {height: '100%',} }>
+                <ScrollView contentContainerStyle={ {height: '50%',} }>
                   <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center',}}> 
-                    {this.props.tags.map((tag, i) => (
+                    {this.props.tags.sort((a,b) =>{return b-a}).map((tag, i) => (
                       <FilterTag key={i} tag={tag} selectTag={this.selectTag.bind(this)} selectedTags={this.state.selectedTags}/>
                     ))}
                   </View>
@@ -92,6 +92,7 @@ class FilterScreen extends Component {
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    height: '33%',
                 }}>
                   <Slider
                     style={{ width: 300 }}
