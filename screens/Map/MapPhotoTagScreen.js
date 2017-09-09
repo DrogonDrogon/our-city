@@ -11,7 +11,9 @@ import {
   TouchableHighlight,
   Alert,
   Share,
+  Modal,
 } from 'react-native';
+import NavigationBar from 'react-native-navbar';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import Comment from '../../components/comment';
@@ -57,9 +59,25 @@ class MapPhotoTagScreen extends React.Component {
     comment: '',
     votes: this.props.navigation.state.params.upvotes,
     phototag: this.props.navigation.state.params,
-    edited: false,
     comments: [],
-    tempCommentId: 0,
+    modalVisibility: false,
+    modalNavTitle: {
+      title: 'Edit Description',
+    },
+    modalNavRightButton: {
+      title: 'Save',
+      handler: () => {
+        this.saveDescription(this.state.editedDescription);
+        this.toggleModal(false);
+      },
+    },
+    modalNavLeftButton: {
+      title: 'Cancel',
+      handler: () => {
+        this.toggleModal(false);
+      },
+    },
+    editedDescription: this.props.navigation.state.params.description,
   };
 
   componentDidMount() {
@@ -219,63 +237,47 @@ class MapPhotoTagScreen extends React.Component {
     this.props.updatePhototagWithComment(phototagId, commentId);
   };
 
-  share() {
+  share = () => {
     Share.share({
       title: this.state.phototag.description,
       message: this.state.phototag.description,
       url: this.state.phototag.imageUrl,
     });
-  }
+  };
 
-  goToElectedOfficials() {
+  goToElectedOfficials = () => {
     let phototagData = this.state.phototag;
     this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
-  }
+  };
 
   notifyDeletedComment = () => {
     // Once a comment is deleted, this component is notified and refreshes UI by getting the latest comments again
     this.getCommentsForCurrentPhototag(this.props.navigation.state.params);
   };
 
+  openEditDescription = () => {
+    console.log('Editing description');
+    this.toggleModal(true);
+  };
+
+  editDescription = description => {
+    this.setState({ editedDescription: description });
+  };
+
+  saveDescription = description => {
+    let updatedData = this.state.phototag;
+    updatedData.description = description;
+    this.setState({ phototag: updatedData }, () => {
+      this.props.updatePhototag(this.state.phototag);
+      this.setState({ editedDescription: description });
+    });
+  };
+
+  toggleModal = bool => {
+    this.setState({ modalVisibility: bool });
+  };
+
   render() {
-    // //define delimiter
-    // let delimiter = /\s+/;
-
-    // //split string
-    // let _text = this.state.phototag.description;
-    // let token,
-    //   index,
-    //   parts = [];
-    // while (_text) {
-    //   delimiter.lastIndex = 0;
-    //   token = delimiter.exec(_text);
-    //   if (token === null) {
-    //     break;
-    //   }
-    //   index = token.index;
-    //   if (token[0].length === 0) {
-    //     index = 1;
-    //   }
-    //   parts.push(_text.substr(0, index));
-    //   parts.push(token[0]);
-    //   index = index + token[0].length;
-    //   _text = _text.slice(index);
-    // }
-    // parts.push(_text);
-
-    // //highlight hashtags
-    // parts = parts.map(text => {
-    //   if (/^#/.test(text)) {
-    //     return (
-    //       <Text onPress={() => console.log(text)} key={text} style={styles.hashtag}>
-    //         {text}
-    //       </Text>
-    //     );
-    //   } else {
-    //     return text;
-    //   }
-    // });
-
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.photoDisplayContainer}>
@@ -283,8 +285,39 @@ class MapPhotoTagScreen extends React.Component {
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.phototag.imageUrl }}
           />
-          <TaggedText text={this.state.phototag.description}/>
+          <TaggedText text={this.state.phototag.description} />
         </View>
+        <Modal
+          animationType={'slide'}
+          transparent={false}
+          visible={this.state.modalVisibility}
+          onRequestClose={() => {}}>
+          <NavigationBar
+            title={this.state.modalNavTitle}
+            rightButton={this.state.modalNavRightButton}
+            leftButton={this.state.modalNavLeftButton}
+          />
+          <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
+            <View style={styles.photoDisplayContainer}>
+              <Image
+                style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
+                source={{ uri: this.state.phototag.imageUrl }}
+              />
+              <TextInput
+                value={this.state.editedDescription}
+                placeholder="Enter description"
+                onChangeText={text => this.editDescription(text)}
+                clearButtonMode={'always'}
+                style={styles.descriptionInput}
+                multiline
+              />
+            </View>
+          </KeyboardAwareScrollView>
+        </Modal>
+        <TouchableHighlight onPress={this.openEditDescription}>
+
+          <Ionicons name="md-create" size={20} color="black" style={styles.iconStyle} />
+        </TouchableHighlight>
         <Text style={styles.authorContainer}>
           <Image
             style={styles.imageSetting}
@@ -314,7 +347,7 @@ class MapPhotoTagScreen extends React.Component {
           <TouchableHighlight onPress={this.handleUndoUpvote}>
             <Ionicons name="md-arrow-down" size={32} color="blue" />
           </TouchableHighlight>
-          <TouchableHighlight onPress={this.share.bind(this)}>
+          <TouchableHighlight onPress={this.share}>
             <Ionicons name="md-share-alt" size={32} color="blue" />
           </TouchableHighlight>
         </View>
@@ -336,10 +369,7 @@ class MapPhotoTagScreen extends React.Component {
         />
         <Button title="Submit comment" onPress={this.handleSubmitComment} />
         {this.state.phototag.reps && (
-          <Button
-            title="View government contact info"
-            onPress={this.goToElectedOfficials.bind(this)}
-          />
+          <Button title="View government contact info" onPress={this.goToElectedOfficials} />
         )}
       </KeyboardAwareScrollView>
     );
@@ -350,6 +380,7 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     alignItems: 'center',
     paddingBottom: 50,
+    backgroundColor: '#FBF8F5',
   },
   titleText: {
     textAlign: 'center',
@@ -382,6 +413,14 @@ const styles = StyleSheet.create({
   hashtag: {
     color: 'blue',
     fontWeight: 'bold',
+  },
+  iconStyle: {
+    backgroundColor: '#FBF8F5',
+  },
+  descriptionInput: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 10,
   },
 });
 

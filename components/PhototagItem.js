@@ -11,7 +11,7 @@ class PhototagItem extends React.Component {
           style={{ width: '100%', height: 200 }}>
           <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
         </TouchableHighlight>
-        <TaggedText text={this.props.phototag.description}/>
+        <TaggedText text={this.props.phototag.description} />
       </View>
     );
   }
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: Image.resizeMode.contain,
+    backgroundColor: '#fff',
   },
 });
 

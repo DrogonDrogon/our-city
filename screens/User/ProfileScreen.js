@@ -129,8 +129,8 @@ class HomeScreen extends React.Component {
     this.props.navigation.dispatch(actionToDispatch);
   };
 
-  goToPhototags = item => {
-    this.props.navigation.navigate('PhototagFromUser', item);
+  goToPhototags = phototag => {
+    this.props.navigation.navigate('PhototagFromMap', phototag);
   };
 
   _handleClickEdit = () => {

@@ -25,9 +25,6 @@ const RootStackNavigator = StackNavigator(
     PhototagFromMap: {
       screen: MapPhotoTagScreen,
     },
-    PhototagFromUser: {
-      screen: UserPhotoTagScreen,
-    },
     Signup: {
       screen: SignupScreen,
     },
