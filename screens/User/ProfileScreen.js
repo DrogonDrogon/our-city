@@ -83,7 +83,6 @@ class HomeScreen extends React.Component {
     };
 
     return {
-      title: 'Home',
       headerRight: <Button onPress={() => _logout()} title="Logout" />,
     };
   };

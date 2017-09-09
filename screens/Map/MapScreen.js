@@ -1,7 +1,7 @@
 import React from 'react';
-import { MapView, Location, Permissions } from 'expo';
+import { MapView, Location } from 'expo';
 import { connect } from 'react-redux';
-import { Button, Text, Image, StyleSheet, View, ScrollView, Alert } from 'react-native';
+import { Button, Text, Image, StyleSheet, View, ActivityIndicator, Alert } from 'react-native';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
@@ -13,6 +13,7 @@ const mapStateToProps = (state, ownProps) => {
     phototags: state.phototags,
     location: state.location,
     user: state.user,
+    isLoading: state.isLoading,
   };
 };
 
@@ -166,7 +167,7 @@ class MapScreen extends React.Component {
     });
     if (tags.length !== this.state.tags.length) {
       this.setState({ tags });
-    }  
+    }
   }
 
   sortPhotoTags(photoTags) {
@@ -253,7 +254,6 @@ class MapScreen extends React.Component {
             style={styles.map}
             region={this.state.region}>
 
-
             {this.props.phototags &&
               this.filterPhotoTags(this.props.phototags)
                 .filter(marker =>
@@ -297,6 +297,11 @@ class MapScreen extends React.Component {
             }
             navigation={this.props.navigation}
           />
+          {this.props.isLoading && (
+            <View style={styles.loading}>
+              <ActivityIndicator animated={this.props.isLoading} size="large" />
+            </View>
+          )}
         </View>
       );
     }
@@ -308,5 +313,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
 const styles = StyleSheet.create({
   map: {
     flex: 1,
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 50,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
   },
 });
