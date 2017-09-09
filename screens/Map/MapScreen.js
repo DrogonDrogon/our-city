@@ -37,7 +37,7 @@ class MapScreen extends React.Component {
     markers: [],
     isMapToggled: true,
     modalVisible: false,
-    tags: ['parks', 'trees', 'waterfalls'],
+    tags: [],
     filters: {
       selectedTags: [],
       numResults: 25,
