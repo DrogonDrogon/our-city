@@ -41,9 +41,8 @@ class MapScreen extends React.Component {
     filters: {
       selectedTags: [],
       numResults: 25,
-      radius: 2,
+      radius: 5,
       favorites: false,
-      modalVisible: false,
       sortBy: 'Date',
       FavIsSelected: false,
       user: null,
@@ -79,6 +78,17 @@ class MapScreen extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.navigation.state.params) {
+      let Params = nextProps.navigation.state.params;
+      console.log('Params: ', Params);
+      if (Params.navFromLink) {
+        this.setState({
+          isMapToggled: Params.isMapToggled,
+          filters: Params.filters,
+          tags: Params.tags,
+        });
+      }
+    }
     // Ensure the props received are the location props and that they are not empty, before updating location state
     if (!!nextProps.location.latitude && !!nextProps.location.longitude) {
       this.setLocation(nextProps.location);
@@ -226,7 +236,12 @@ class MapScreen extends React.Component {
     if (this.state.isMapToggled === true) {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen tags={this.state.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
+          <FilterScreen
+            filters={this.state.filters}
+            tags={this.state.tags}
+            getFilters={this.getFilters.bind(this)}
+            genFilterTags={this.genFilterTags.bind(this)}
+            />
           <Button onPress={this.toggleView} title="Switch to List" />
           <MapView
             showsUserLocation
@@ -266,7 +281,12 @@ class MapScreen extends React.Component {
     } else {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen tags={this.state.tags} getFilters={this.getFilters.bind(this)} genFilterTags={this.genFilterTags.bind(this)} />
+          <FilterScreen
+            filters={this.state.filters}
+            tags={this.state.tags}
+            getFilters={this.getFilters.bind(this)}
+            genFilterTags={this.genFilterTags.bind(this)}
+          />
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView
             phototags={this.sortPhotoTags(

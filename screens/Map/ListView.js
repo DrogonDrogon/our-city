@@ -21,7 +21,7 @@ class ListView extends React.Component {
     return (
       <FlatList
         data={this.props.phototags}
-        renderItem={({ item }) => <PhototagItem phototag={item} goToPhototags={this.goToPhototags.bind(this, item)}/>}
+        renderItem={({ item }) => <PhototagItem navigation={this.props.navigation} phototag={item} goToPhototags={this.goToPhototags.bind(this, item)}/>}
         keyExtractor={this._keyExtractor}
         contentContainerStyle={{ alignItems: 'center' }}
       />
