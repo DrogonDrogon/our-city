@@ -80,7 +80,7 @@ class FilterScreen extends Component {
               </TouchableHighlight>
               <ScrollView>
                 <ScrollView>
-                  <View> 
+                  <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center',}}> 
                     {this.props.tags.map((tag, i) => (
                       <FilterTag key={i} tag={tag} selectTag={this.selectTag.bind(this)} selectedTags={this.state.selectedTags}/>
                     ))}
