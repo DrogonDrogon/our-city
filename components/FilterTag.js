@@ -10,7 +10,11 @@ class FilterTag extends React.Component {
       color: "#841584",
     }
   }
-
+  componentWillMount(){
+    if (this.props.selectedTags.includes(this.props.tag) && !this.state.pressed) {
+      this.setColor();
+    }
+  }
   setColor() {
     if (!this.state.pressed) {
       this.setState({
@@ -26,9 +30,7 @@ class FilterTag extends React.Component {
   }
 
   render(){
-    if (this.props.selectedTags.includes(this.props.tag) && !this.state.pressed) {
-      this.setColor();
-    }
+    
     return(
       <Button
         onPress={(e) => {
