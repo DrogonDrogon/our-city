@@ -1,10 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
-import PhototagItem from '../../components/PhototagItem';
+import ActionSheet from 'react-native-actionsheet';
 import UserOwnComment from '../../components/UserOwnComment';
 import db from '../../db';
 import * as Actions from '../../actions';
+
+// Settings for the ActionSheet
+const WARNING_INDEX = 0;
+const CANCEL_INDEX = 1;
+const options = ['Delete', 'Cancel'];
+const title = 'Are you sure you want to delete this comment?';
 
 const mapStateToProps = state => {
   return {
@@ -23,12 +29,13 @@ const mapDispatchToProps = dispatch => {
 class Comments extends React.Component {
   state = {
     comments: [],
+    commentIdSelected: '',
+    phototagIdForComment: '',
   };
 
   _keyExtractor = (item, index) => item.id;
 
   componentDidMount() {
-    // do fetch here for user comments
     this.getCommentsForUser();
   }
 
@@ -81,6 +88,43 @@ class Comments extends React.Component {
       });
   };
 
+  deleteComment = (commentId, phototagId) => {
+    console.log('comment + photo ids', commentId, phototagId);
+    this.setState(
+      {
+        commentIdSelected: commentId,
+        phototagIdForComment: phototagId,
+      },
+      () => {
+        this.showActionSheet();
+      }
+    );
+  };
+
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  };
+
+  handleActionSheetPress = selectedIndex => {
+    if (selectedIndex === WARNING_INDEX) {
+      // Run the delete function
+      db.deleteComment(
+        this.state.commentIdSelected,
+        this.props.user.id,
+        this.state.phototagIdForComment,
+        (err, data) => {
+          if (err) {
+            console.log('Err deleting', err);
+            //TODO: handle error
+          } else {
+            console.log('Success deleting', data);
+            this.getCommentsForUser();
+          }
+        }
+      );
+    }
+  };
+
   render() {
     return (
       <View>
@@ -89,11 +133,21 @@ class Comments extends React.Component {
           data={this.state.comments}
           renderItem={({ item }) => (
             <UserOwnComment
+              userId={this.props.user.id}
               comment={item}
+              deleteComment={this.deleteComment}
               goToPhototags={this.goToPhototagsDetail.bind(this, item.phototagData)}
             />
           )}
           keyExtractor={this._keyExtractor}
+        />
+        <ActionSheet
+          ref={sheet => (this.ActionSheet = sheet)}
+          title={title}
+          options={options}
+          cancelButtonIndex={CANCEL_INDEX}
+          destructiveButtonIndex={WARNING_INDEX}
+          onPress={this.handleActionSheetPress}
         />
       </View>
     );

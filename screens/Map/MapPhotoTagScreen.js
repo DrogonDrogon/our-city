@@ -9,7 +9,6 @@ import {
   TextInput,
   Button,
   TouchableHighlight,
-  Alert,
   Share,
   Modal,
 } from 'react-native';
@@ -57,7 +56,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class MapPhotoTagScreen extends React.Component {
   state = {
     comment: '',
-    votes: this.props.navigation.state.params.upvotes,
+    upvotes: this.props.navigation.state.params.upvotes,
+    downvotes: this.props.navigation.state.params.downvotes,
+    voteTotal: this.props.navigation.state.params.upvotes - this.props.navigation.state.params.downvotes,
     phototag: this.props.navigation.state.params,
     comments: [],
     modalVisibility: false,
@@ -134,47 +135,138 @@ class MapPhotoTagScreen extends React.Component {
       });
   }
 
-  handleUpvote = () => {
-    if (
-      !this.props.user.votes.hasOwnProperty(this.state.phototag.id) ||
-      this.props.user.votes[this.state.phototag.id] === 0
-    ) {
-      this.setState({ votes: this.state.votes + 1 }, () => {
+  handleClickUpvote = () => {
+    let userVotes = this.props.user.votes;
+    let phototagId = this.state.phototag.id;
+
+    // if the user has not up-voted or down-voted before, or if currently 0
+    if (!userVotes.hasOwnProperty(phototagId) || userVotes[phototagId] === 0) {
+      this.setState({ upvotes: this.state.upvotes + 1 }, () => {
         // Update user
         let userData = this.props.user;
-        userData.votes[this.state.phototag.id] = 1;
+        userData.votes[phototagId] = 1;
         this.props.updateUser(userData);
 
         // Update phototag
         let phototagData = this.state.phototag;
-        phototagData.upvotes = this.state.votes;
+        phototagData.upvotes = this.state.upvotes;
         this.props.updatePhototag(phototagData);
+
+        this.updateVoteTotal();
       });
-    } else {
-      Alert.alert(
-        'Note',
-        'You have already submitted 1 vote for this! To remove your vote, click the down button'
+    } else if (userVotes[phototagId] === 1) {
+      // if the user has up-voted already, undo the upvote.
+      this.setState({ upvotes: this.state.upvotes - 1 }, () => {
+        // Update user
+        let userData = this.props.user;
+        userData.votes[phototagId] = 0;
+        this.props.updateUser(userData);
+
+        // Update phototag
+        let phototagData = this.state.phototag;
+        phototagData.upvotes = this.state.upvotes;
+        this.props.updatePhototag(phototagData);
+
+        this.updateVoteTotal();
+      });
+    } else if (userVotes[phototagId] === -1) {
+      // if the user has down-voted already, undo the downvote and add a upvote.
+      this.setState(
+        {
+          upvotes: this.state.upvotes + 1,
+          downvotes: this.state.downvotes - 1,
+        },
+        () => {
+          // Update user
+          let userData = this.props.user;
+          userData.votes[phototagId] = 1;
+          this.props.updateUser(userData);
+
+          // Update phototag upvotes and downvotes count
+          let phototagData = this.state.phototag;
+          phototagData.upvotes = this.state.upvotes;
+          phototagData.downvotes = this.state.downvotes;
+          this.props.updatePhototag(phototagData);
+
+          this.updateVoteTotal();
+        }
       );
     }
   };
 
-  handleUndoUpvote = () => {
-    if (
-      this.props.user.votes.hasOwnProperty(this.state.phototag.id) &&
-      this.props.user.votes[this.state.phototag.id] === 1
-    ) {
-      this.setState({ votes: this.state.votes - 1 }, () => {
+  handleClickDownvote = () => {
+    let userVotes = this.props.user.votes;
+    let phototagId = this.state.phototag.id;
+
+    // if the user has not up-voted or down-voted before, or if currently 0
+    if (!userVotes.hasOwnProperty(phototagId) || userVotes[phototagId] === 0) {
+      this.setState({ downvotes: this.state.downvotes + 1 }, () => {
         // Update user
         let userData = this.props.user;
-        userData.votes[this.state.phototag.id] = 0;
+        userData.votes[phototagId] = -1;
         this.props.updateUser(userData);
 
         // Update phototag
         let phototagData = this.state.phototag;
-        phototagData.upvotes = this.state.votes;
+        phototagData.downvotes = this.state.downvotes;
         this.props.updatePhototag(phototagData);
+
+        this.updateVoteTotal();
       });
+    } else if (userVotes[phototagId] === 1) {
+      // if the user has up-voted already, undo the upvote and add a downvote.
+      this.setState(
+        {
+          upvotes: this.state.upvotes - 1,
+          downvotes: this.state.downvotes + 1,
+        },
+        () => {
+          // Update user
+          let userData = this.props.user;
+          userData.votes[phototagId] = -1;
+          this.props.updateUser(userData);
+
+          // Update phototag
+          let phototagData = this.state.phototag;
+          phototagData.upvotes = this.state.upvotes;
+          phototagData.downvotes = this.state.downvotes;
+          this.props.updatePhototag(phototagData);
+
+          this.updateVoteTotal();
+        }
+      );
+    } else if (userVotes[phototagId] === -1) {
+      // if the user has down-voted already, then undo the downvote.
+      this.setState(
+        {
+          downvotes: this.state.downvotes - 1,
+        },
+        () => {
+          // Update user
+          let userData = this.props.user;
+          userData.votes[phototagId] = 0;
+          this.props.updateUser(userData);
+
+          // Update phototag upvotes and downvotes count
+          let phototagData = this.state.phototag;
+          phototagData.downvotes = this.state.downvotes;
+          this.props.updatePhototag(phototagData);
+
+          this.updateVoteTotal();
+        }
+      );
     }
+  };
+
+  updateVoteTotal = () => {
+    this.setState(
+      {
+        voteTotal: this.state.upvotes - this.state.downvotes,
+      },
+      () => {
+        console.log('the votettoal in state', this.state.voteTotal);
+      }
+    );
   };
 
   handleClickFav = () => {
@@ -278,6 +370,9 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   render() {
+    let isEditable = this.props.user.id === this.state.phototag.userId;
+    let userVoteStatus = this.props.user.votes[this.state.phototag.id];
+
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.photoDisplayContainer}>
@@ -314,43 +409,59 @@ class MapPhotoTagScreen extends React.Component {
             </View>
           </KeyboardAwareScrollView>
         </Modal>
-        <TouchableHighlight onPress={this.openEditDescription}>
-
-          <Ionicons name="md-create" size={20} color="black" style={styles.iconStyle} />
-        </TouchableHighlight>
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          <TouchableHighlight onPress={this.handleClickUpvote}>
+            <Ionicons
+              name="md-arrow-round-up"
+              size={32}
+              color={userVoteStatus === 1 ? 'orange' : 'gray'}
+            />
+          </TouchableHighlight>
+          <Text style={styles.titleText}>{this.state.voteTotal}</Text>
+          <TouchableHighlight onPress={this.handleClickDownvote}>
+            <Ionicons
+              name="md-arrow-round-down"
+              size={32}
+              color={userVoteStatus === -1 ? 'orange' : 'gray'}
+            />
+          </TouchableHighlight>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            width: '80%%',
+            alignItems: 'center',
+          }}>
+          {isEditable && (
+            <TouchableHighlight onPress={this.openEditDescription}>
+              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+            </TouchableHighlight>
+          )}
+          <TouchableHighlight onPress={this.share}>
+            <Ionicons name="md-share" size={32} color="gray" />
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.handleClickFav}>
+            <Ionicons
+              name="md-heart"
+              size={32}
+              color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'gray'}
+            />
+          </TouchableHighlight>
+        </View>
         <Text style={styles.authorContainer}>
           <Image
             style={styles.imageSetting}
             source={{
-              uri:
-                this.state.authorPhoto ||
-                'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png',
+              uri: this.state.authorPhoto,
             }}
           />
           <Text>
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
           </Text>
         </Text>
-        <View
-          style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
-          <TouchableHighlight onPress={this.handleClickFav}>
-            <Ionicons
-              name="md-heart"
-              size={32}
-              color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
-            />
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.handleUpvote}>
-            <Ionicons name="md-arrow-up" size={32} color="blue" />
-          </TouchableHighlight>
-          <Text style={styles.titleText}>{this.state.votes}</Text>
-          <TouchableHighlight onPress={this.handleUndoUpvote}>
-            <Ionicons name="md-arrow-down" size={32} color="blue" />
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.share}>
-            <Ionicons name="md-share-alt" size={32} color="blue" />
-          </TouchableHighlight>
-        </View>
+
         <Text style={styles.titleText}>Comments</Text>
         {this.state.comments.map((comment, i) => (
           <Comment
