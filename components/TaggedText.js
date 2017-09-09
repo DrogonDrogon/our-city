@@ -7,11 +7,10 @@ class TaggedText extends React.Component {
     this.state = {text: 'Hello #World'};
   }
 
-  tagLink(tag) {
-    //needs to navigate to list page
-    //needs to set selectedTag to [tag]
+  goToTagLinkView(tag) {
+    // let phototagData = this.state.phototag;
+    this.props.navigation.navigate('Map');
   }
-
   render() {
 
     //define delimiter
@@ -43,7 +42,7 @@ class TaggedText extends React.Component {
     parts = parts.map(text => {
       if (/^#/.test(text)) {
         return (
-          <Text key={text} style={styles.hashtag}>
+          <Text onPress={()=> this.goToTagLinkView(text)} key={text} style={styles.hashtag}>
             {text}
           </Text>
         );

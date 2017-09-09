@@ -19,6 +19,7 @@ class Posts extends React.Component {
                 phototag={item}
                 key={item.id}
                 goToPhototags={this.props.goToPhototags.bind(this, item)}
+                navigation={this.props.navigation}
               />
             ))}
       </View>

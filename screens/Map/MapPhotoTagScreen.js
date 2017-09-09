@@ -245,7 +245,7 @@ class MapPhotoTagScreen extends React.Component {
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.phototag.imageUrl }}
           />
-          <TaggedText text={this.state.phototag.description}/>
+          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description}/>
         </View>
         <Text style={styles.authorContainer}>
           <Image
