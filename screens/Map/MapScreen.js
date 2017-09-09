@@ -29,8 +29,8 @@ class MapScreen extends React.Component {
   state = {
     // the intial location must be set because props take time to init it could be anything
     region: {
-      latitude: 20.750355960509054,
-      longitude: -73.97669815393424,
+      latitude: 40.75122,
+      longitude: -73.976698,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
