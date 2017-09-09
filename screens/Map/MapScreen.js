@@ -173,22 +173,24 @@ class MapScreen extends React.Component {
     let sortBy = this.state.filters.sortBy;
     if (sortBy === 'Date') {
       return photoTags.sort((a, b) => {
-        return Date.parse(a.timestamp) - Date.parse(b.timestamp);
+        return Date.parse(b.timestamp) - Date.parse(a.timestamp);
       });
     }
     if (sortBy === 'Popular') {
       return photoTags.sort((a, b) => {
-        return Date.parse(a.timestamp) - Date.parse(b.timestamp);
+        let result = b.upvotes*Date.parse(b.timestamp)-a.upvotes*Date.parse(a.timestamp);
+        console.log('popular filter', result);
+        return result;
       });
     }
     if (sortBy === 'Votes') {
       return photoTags.sort((a, b) => {
-        return a.upvotes - b.upvotes;
+        return (a.upvotes-a.downvotes)-(b.upvotes-b.downvotes);
       });
     }
     if (sortBy === 'Favorites') {
       return photoTags.sort((a, b) => {
-        return a.upvotes - b.upvotes;
+        return a.favTotal - b.favTotal;
       });
     }
     return photoTags;
