@@ -41,9 +41,8 @@ class MapScreen extends React.Component {
     filters: {
       selectedTags: [],
       numResults: 25,
-      radius: 2,
+      radius: 5,
       favorites: false,
-      modalVisible: false,
       sortBy: 'Date',
       FavIsSelected: false,
       user: null,

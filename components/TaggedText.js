@@ -19,7 +19,6 @@ class TaggedText extends React.Component {
         numResults: 25,
         radius: 50,
         favorites: false,
-        modalVisible: false,
         sortBy: 'Date',
         FavIsSelected: false,
         user: null,
