@@ -41,6 +41,7 @@ class Favourites extends React.Component {
               key={`${fav.id}f`}
               phototag={fav}
               goToPhototags={this.goToPhototagsDetail.bind(this, fav)}
+              navigation={this.props.navigation}
             />
           ))}
       </View>
