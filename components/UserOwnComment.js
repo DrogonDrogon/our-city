@@ -1,5 +1,6 @@
 import React from 'React';
-import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
 
 export default class UserOwnComment extends React.Component {
@@ -16,6 +17,11 @@ export default class UserOwnComment extends React.Component {
             )}
             <Text style={styles.dateText}>{moment(this.props.comment.timestamp).fromNow()}</Text>
           </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+          onPress={() => this.props.deleteComment(this.props.comment.id, this.props.comment.phototagId)}
+          style={styles.touchableDelete}>
+          <Ionicons name="md-close" size={20} color="gray" style={{ backgroundColor: '#fff' }} />
         </TouchableHighlight>
       </View>
     );
@@ -50,5 +56,10 @@ const styles = StyleSheet.create({
   postTitle: {
     fontSize: 16,
     fontStyle: 'italic',
+  },
+  touchableDelete: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
 });
