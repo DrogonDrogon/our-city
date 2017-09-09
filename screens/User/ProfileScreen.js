@@ -59,35 +59,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 class HomeScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    const _navigateTo = routeName => {
-      const actionToDispatch = NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName })],
-      });
-      navigation.dispatch(actionToDispatch);
-    };
-
-    const _logout = () => {
-      console.log('click Logout');
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          console.log('Sign out successful');
-          _navigateTo('Login');
-        })
-        .catch(error => {
-          console.log('Error sign out', error);
-        });
-    };
-
-    return {
-      title: 'Home',
-      headerRight: <Button onPress={() => _logout()} title="Logout" />,
-    };
-  };
-
   state = {
     selectedIndex: 0,
     modalVisibility: false,
@@ -127,6 +98,20 @@ class HomeScreen extends React.Component {
       actions: [NavigationActions.navigate({ routeName })],
     });
     this.props.navigation.dispatch(actionToDispatch);
+  };
+
+  _logout = () => {
+    console.log('click Logout');
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log('Sign out successful');
+        this._navigateTo('Login');
+      })
+      .catch(error => {
+        console.log('Error sign out', error);
+      });
   };
 
   goToPhototags = phototag => {
@@ -225,6 +210,7 @@ class HomeScreen extends React.Component {
             <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
             <Text>{displayName}</Text>
             <Button title="Edit Profile" onPress={this._handleClickEdit} />
+            <Button title="Logout" onPress={this._logout} />
           </View>
           <Modal
             animationType={'slide'}
@@ -322,7 +308,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 295,
+    top: 330,
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',

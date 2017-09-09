@@ -9,14 +9,14 @@ import MapScreen from '../screens/Map/MapScreen';
 
 export default TabNavigator(
   {
-    Home: {
-      screen: HomeScreen,
+    Map: {
+      screen: MapScreen,
     },
     Camera: {
       screen: CameraScreen,
     },
-    Map: {
-      screen: MapScreen,
+    Profile: {
+      screen: HomeScreen,
     },
   },
   {
@@ -25,20 +25,16 @@ export default TabNavigator(
         const { routeName } = navigation.state;
         let iconName;
         switch (routeName) {
-          case 'Home':
-            iconName = Platform.OS === 'ios'
-              ? `ios-person${focused ? '' : '-outline'}`
-              : 'md-person';
+          case 'Profile':
+            iconName =
+              Platform.OS === 'ios' ? `ios-person${focused ? '' : '-outline'}` : 'md-person';
             break;
           case 'Camera':
-            iconName = Platform.OS === 'ios'
-              ? `ios-camera${focused ? '' : '-outline'}`
-              : 'md-camera';
+            iconName =
+              Platform.OS === 'ios' ? `ios-camera${focused ? '' : '-outline'}` : 'md-camera';
             break;
           case 'Map':
-            iconName = Platform.OS === 'ios'
-              ? `ios-map${focused ? '' : '-outline'}`
-              : 'md-map';
+            iconName = Platform.OS === 'ios' ? `ios-map${focused ? '' : '-outline'}` : 'md-map';
         }
         return (
           <Ionicons
@@ -54,5 +50,8 @@ export default TabNavigator(
     tabBarPosition: 'bottom',
     animationEnabled: false,
     swipeEnabled: false,
+    tabBarOptions: {
+      showLabel: false,
+    },
   }
 );

@@ -20,8 +20,6 @@ const mapDispatchToProps = dispatch => {
 };
 
 class SplashScreen extends React.Component {
-  static navigationOptions = { header: null };
-
   componentDidMount() {
     this.props.checkIfLoggedIn();
   }
