@@ -18,7 +18,8 @@ const mapStateToProps = (state, ownProps) => {
 class FilterScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state =
+    {
       selectedTags: [],
       numResults: 25,
       radius: 5.0,
@@ -28,6 +29,19 @@ class FilterScreen extends Component {
       FavIsSelected: false,
     };
   }
+
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      selectedTags: nextProps.filters.selectedTags,
+      numResults: nextProps.filters.numResults,
+      radius: nextProps.filters.radius,
+      favorites: nextProps.filters.favorites,
+      sortBy: nextProps.filters.sortBy,
+      FavIsSelected: nextProps.filters.FavIsSelected,
+      });
+  }
+
   getVal(val){
     // this.setState({ radius: 8000 });
   }
@@ -83,7 +97,7 @@ class FilterScreen extends Component {
                     style={{ width: 300 }}
                     step={0.10}
                     minimumValue={0.10}
-                    maximumValue={10.0}
+                    maximumValue={50.0}
                     value={this.state.radius}
                     onValueChange={val => this.setState({ radius: Number(val.toPrecision(2)) })}
                     onSlidingComplete={ val => this.getVal(val)}

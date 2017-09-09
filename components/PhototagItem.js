@@ -3,6 +3,9 @@ import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native'
 import TaggedText from './TaggedText';
 
 class PhototagItem extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -11,7 +14,7 @@ class PhototagItem extends React.Component {
           style={{ width: '100%', height: 200 }}>
           <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
         </TouchableHighlight>
-        <TaggedText text={this.props.phototag.description}/>
+        <TaggedText navigation={this.props.navigation} text={this.props.phototag.description}/>
       </View>
     );
   }

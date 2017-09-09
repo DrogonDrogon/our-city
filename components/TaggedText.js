@@ -7,13 +7,25 @@ class TaggedText extends React.Component {
     this.state = {text: 'Hello #World'};
   }
 
-  tagLink(tag) {
-    //needs to navigate to list page
-    //needs to set selectedTag to [tag]
+  goToTagLinkView(tag) {
+    // let phototagData = this.state.phototag;
+    tag = tag.split('').slice(1).join('');
+    this.props.navigation.navigate('Map', {
+      navFromLink: true,
+      isMapToggled: false,
+      tags: [tag],
+      filters: {
+        selectedTags: [tag],
+        numResults: 25,
+        radius: 50,
+        favorites: false,
+        sortBy: 'Date',
+        FavIsSelected: false,
+        user: null,
+      },
+    });
   }
-
   render() {
-
     //define delimiter
     let delimiter = /\s+/;
 
@@ -43,7 +55,7 @@ class TaggedText extends React.Component {
     parts = parts.map(text => {
       if (/^#/.test(text)) {
         return (
-          <Text key={text} style={styles.hashtag}>
+          <Text onPress={() => this.goToTagLinkView(text)} key={text} style={styles.hashtag}>
             {text}
           </Text>
         );
@@ -68,5 +80,3 @@ const styles = StyleSheet.create({
 });
 
 export default TaggedText;
-
-

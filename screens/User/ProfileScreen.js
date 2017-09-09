@@ -201,6 +201,7 @@ class HomeScreen extends React.Component {
             user={this.props.user}
             phototags={this.props.phototags}
             goToPhototags={this.goToPhototags}
+            navigation={this.props.navigation}
           />
         );
       case 1:
