@@ -2,11 +2,13 @@ import React from 'react';
 import { View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
+import { Permissions, Notifications } from 'expo';
 import * as Actions from '../actions';
 import AppStyles from '../styles/AppStyles';
 
 const mapStateToProps = state => {
   return {
+    user: state.user,
     isLoggedIn: state.isLoggedIn,
   };
 };
@@ -15,6 +17,9 @@ const mapDispatchToProps = dispatch => {
   return {
     checkIfLoggedIn: () => {
       dispatch(Actions.checkUserLogin());
+    },
+    updateUser: userData => {
+      dispatch(Actions.updateUser(userData));
     },
   };
 };
@@ -26,12 +31,41 @@ class SplashScreen extends React.Component {
 
   componentDidUpdate() {
     if (this.props.isLoggedIn) {
+      this.notifications();
       console.log('[SplashScreen] --> navigate to main');
       this._navigateTo('Main');
     } else {
       console.log('[SplashScreen] --> navigate to auth');
       this._navigateTo('Login');
     }
+  }
+  async notifications() {
+    console.log('notifications splash');
+
+    const { existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    let finalStatus = existingStatus;
+
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      return;
+    }
+
+    // Get the token that uniquely identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+    console.log(token);
+
+    this.props.user.token = token;
+    console.log('token', this.props.user);
+    this.props.updateUser(this.props.user);
   }
 
   _navigateTo(routeName) {
@@ -45,7 +79,11 @@ class SplashScreen extends React.Component {
   render() {
     return (
       <View style={AppStyles.splash}>
-        <Image style={{height: '100%', width: '100%'}} source={require('../assets/images/mesh-1430108_1280.png')} resizeMode="cover" />
+        <Image
+          style={{ height: '100%', width: '100%' }}
+          source={require('../assets/images/mesh-1430108_1280.png')}
+          resizeMode="cover"
+        />
       </View>
     );
   }
