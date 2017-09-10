@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View, TextInput, ScrollView, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Expo from 'expo';
+import { Permissions, Notifications, Expo } from 'expo';
+//import Expo from 'expo';
 import firebase from 'firebase';
 import * as Actions from '../../actions';
 import Container from '../../components/Container';
@@ -25,6 +26,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     checkIfLoggedIn: () => {
       dispatch(Actions.checkUserLogin());
     },
+    updateUser: userData => {
+      dispatch(Actions.updateUser(userData));
+    },
   };
 };
 
@@ -43,9 +47,40 @@ class Login extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     // If logged in, Navigate to main view
+
     if (nextProps.isLoggedIn === true) {
+      this.notifications();
       this._navigateTo('Main');
     }
+  }
+
+  async notifications() {
+    console.log('notifications splash');
+
+    const { existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    let finalStatus = existingStatus;
+
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      return;
+    }
+
+    // Get the token that uniquely identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+    console.log(token);
+
+    this.props.user.token = token;
+    console.log('token', this.props.user.token);
+    this.props.updateUser(this.props.user);
   }
 
   pressLoginWithFb() {
@@ -69,10 +104,13 @@ class Login extends Component {
       // Build Firebase credential with the Facebook access token.
       const credential = firebase.auth.FacebookAuthProvider.credential(token);
       // Sign in with credential from the Facebook user.
-      firebase.auth().signInWithCredential(credential).catch(error => {
-        // Handle Errors here.
-        console.log('Error with fb login', error);
-      });
+      firebase
+        .auth()
+        .signInWithCredential(credential)
+        .catch(error => {
+          // Handle Errors here.
+          console.log('Error with fb login', error);
+        });
       console.log('Credential from fb', credential);
     }
   }
