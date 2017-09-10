@@ -51,7 +51,9 @@ export default class RootNavigator extends React.Component {
   static navigationOptions = {
     title: 'SplashScreen',
   };
-
+  componentWillMount() {
+    this._registerForPushNotifications();
+  }
   componentWillUnmount() {
     this._notificationSubscription && this._notificationSubscription.remove();
   }

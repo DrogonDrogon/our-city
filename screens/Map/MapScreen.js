@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapView, Location } from 'expo';
+import { MapView, Location, Notifications } from 'expo';
 import { connect } from 'react-redux';
 import { Button, Text, Image, StyleSheet, View, ActivityIndicator, Alert } from 'react-native';
 import db from '../../db';
@@ -7,7 +7,8 @@ import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
 import FilterScreen from './FilterScreen';
 import * as Actions from '../../actions';
-
+import axios from 'axios';
+//import registerForPushNotificationsAsync from 'registerForPushNotificationsAsync';
 const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
@@ -51,6 +52,14 @@ class MapScreen extends React.Component {
   };
 
   componentDidMount() {
+    axios
+      .post('http://cd41a62b.ngrok.io/notification', {
+        message: 'welcome to our app',
+        userid: this.props.user.id,
+      })
+      .then(res => {
+        console.log(res.data);
+      });
     let locationOptions = {
       enableHighAccuracy: true,
       distanceFilter: 10,
@@ -179,14 +188,14 @@ class MapScreen extends React.Component {
     }
     if (sortBy === 'Popular') {
       return photoTags.sort((a, b) => {
-        let result = b.upvotes*Date.parse(b.timestamp)-a.upvotes*Date.parse(a.timestamp);
+        let result = b.upvotes * Date.parse(b.timestamp) - a.upvotes * Date.parse(a.timestamp);
         console.log('popular filter', result);
         return result;
       });
     }
     if (sortBy === 'Votes') {
       return photoTags.sort((a, b) => {
-        return (a.upvotes-a.downvotes)-(b.upvotes-b.downvotes);
+        return a.upvotes - a.downvotes - (b.upvotes - b.downvotes);
       });
     }
     if (sortBy === 'Favorites') {
@@ -244,7 +253,7 @@ class MapScreen extends React.Component {
             tags={this.state.tags}
             getFilters={this.getFilters.bind(this)}
             genFilterTags={this.genFilterTags.bind(this)}
-            />
+          />
           <Button onPress={this.toggleView} title="Switch to List" />
           <MapView
             showsUserLocation
@@ -253,7 +262,6 @@ class MapScreen extends React.Component {
             provider={MapView.PROVIDER_GOOGLE}
             style={styles.map}
             region={this.state.region}>
-
             {this.props.phototags &&
               this.filterPhotoTags(this.props.phototags)
                 .filter(marker =>
@@ -291,10 +299,10 @@ class MapScreen extends React.Component {
           />
           <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView
-            phototags={this.sortPhotoTags(
-              this.filterPhotoTags(this.props.phototags))
-              .slice(0, this.state.filters.numResults)
-            }
+            phototags={this.sortPhotoTags(this.filterPhotoTags(this.props.phototags)).slice(
+              0,
+              this.state.filters.numResults
+            )}
             navigation={this.props.navigation}
           />
           {this.props.isLoading && (
