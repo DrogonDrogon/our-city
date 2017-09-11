@@ -58,7 +58,8 @@ class MapPhotoTagScreen extends React.Component {
     comment: '',
     upvotes: this.props.navigation.state.params.upvotes,
     downvotes: this.props.navigation.state.params.downvotes,
-    voteTotal: this.props.navigation.state.params.upvotes - this.props.navigation.state.params.downvotes,
+    voteTotal:
+      this.props.navigation.state.params.upvotes - this.props.navigation.state.params.downvotes,
     phototag: this.props.navigation.state.params,
     comments: [],
     modalVisibility: false,
@@ -134,8 +135,32 @@ class MapPhotoTagScreen extends React.Component {
         console.log('Err getting author of current phototag', err);
       });
   }
+  testKey = () => {
+    db
+    .child('users/' + this.props.user.id)
+    .once('value')
+    .then(snapshot => {
+      let solutionsExist = snapshot.child('solutions').exists();
+      console.log('solutionsExist', solutionsExist);
+      if (!solutionsExist) {
+        let test =['id123'];
+        db.child('users/' + this.props.user.id)
+        .child('/solutions/')
+        .update(test);
+      }
+      let favsExist = snapshot.child('favs').exists();
+      console.log('favsExist', favsExist);
+      let votes = snapshot.child('votes').exists();
+      console.log('votesExist', votes);
+    })
+  };
 
   handleClickUpvote = () => {
+    // test solutions
+    // this.addSolution(this.props.user.id);
+    // this.fetchSolutionsByPhotoId(this.state.phototag.id);
+    this.testKey();
+
     let userVotes = this.props.user.votes;
     let phototagId = this.state.phototag.id;
 
@@ -143,7 +168,7 @@ class MapPhotoTagScreen extends React.Component {
     if (!userVotes.hasOwnProperty(phototagId) || userVotes[phototagId] === 0) {
       this.setState({ upvotes: this.state.upvotes + 1 }, () => {
         // Update user
-        let userData = this.props.user;
+        let userData = Object.assign({}, this.props.user);
         userData.votes[phototagId] = 1;
         this.props.updateUser(userData);
 
@@ -259,14 +284,9 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   updateVoteTotal = () => {
-    this.setState(
-      {
-        voteTotal: this.state.upvotes - this.state.downvotes,
-      },
-      () => {
-        console.log('the votettoal in state', this.state.voteTotal);
-      }
-    );
+    this.setState({
+      voteTotal: this.state.upvotes - this.state.downvotes,
+    });
   };
 
   handleClickFav = () => {
@@ -373,6 +393,79 @@ class MapPhotoTagScreen extends React.Component {
     this.setState({ modalVisibility: bool });
   };
 
+  addSolution = (userId, solutionData) => {
+    // example solutionData
+    solutionData = solutionData || {
+      imageUrl: '',
+      isAccepted: false,
+      description: 'this is a solutions test',
+      userId: this.props.user.id,
+      phototagId: this.state.phototag.id,
+    };
+
+    // update the solutions node in firebase
+    let newSolutionId = db.child('solutions').push().key;
+    db
+      .child('solutions/' + newSolutionId)
+      .update(solutionData)
+      .then(() => {
+        console.log('New solution posted. Id is', newSolutionId);
+        // do something
+      })
+      .catch(error => console.log('Error writing to solutions', error));
+
+    // update the users node
+    let userData = Object.assign({}, this.props.user);
+    userData.solutions[newSolutionId] = true;
+    this.props.updateUser(userData);
+
+    // update the phototags node
+    let photoData = Object.assign({}, this.state.phototag);
+    photoData.solutions[newSolutionId] = true;
+    this.props.updatePhototag(photoData);
+  };
+
+  fetchSolutionsByPhotoId = phototagId => {
+    let solutionIds;
+    // get all solution ids for one phototag
+    db
+      .child('phototags/' + phototagId + '/solutions')
+      .once('value')
+      .then(snapshot => {
+        let snapshotObj = snapshot.val();
+        console.log('snapshot of phototag solutions', snapshotObj);
+        solutionIds = Object.keys(snapshotObj);
+        return solutionIds;
+      })
+      .then(keys => {
+        // get all the solutions (objects) based on the array of solution ids
+        const promises = keys.map(id => {
+          return db
+            .child('solutions/' + id)
+            .once('value')
+            .then(snapshot => {
+              return snapshot.val();
+            })
+            .catch(err => {
+              console.log('err', err);
+            });
+        });
+        Promise.all(promises)
+          .then(solutionData => {
+            let validEntries = [];
+            solutionData.forEach(item => {
+              if (item) {
+                validEntries.push(item);
+              }
+            });
+            console.log('Received all solutions', validEntries);
+          })
+          .catch(err => {
+            console.log('Error getting solutions from photoId', err);
+          });
+      });
+  };
+
   render() {
     let isEditable = this.props.user.id === this.state.phototag.userId;
     let userVoteStatus = this.props.user.votes[this.state.phototag.id];
@@ -384,7 +477,7 @@ class MapPhotoTagScreen extends React.Component {
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.phototag.imageUrl }}
           />
-          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description}/>
+          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
         </View>
         <Modal
           animationType={'slide'}
