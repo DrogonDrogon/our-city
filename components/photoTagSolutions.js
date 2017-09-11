@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Text, Image, Alert, } from 'react-native';
+import { FlatList, View, Text, Image, Modal, Alert,} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux';
 import db from '../../db';
@@ -28,16 +28,19 @@ class photoTagSolutions extends React.Component {
     // })
   };
   render() {
+    
     return (
-      <View>
-        <Text>Completed Solutions</Text>
-        <FlatList
-          data={this.state.solutions}
-          renderItem={({ item }) => <solverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
-          keyExtractor={this._keyExtractor}
-          contentContainerStyle={{ alignItems: 'center' }}
-        />
+      <Modal>
+        <View>
+          <Text>Completed Solutions</Text>
+          <FlatList
+            data={this.state.solutions}
+            renderItem={({ item }) => <solverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
+            keyExtractor={this._keyExtractor}
+            contentContainerStyle={{ alignItems: 'center' }}
+          />
         </View>
+      </Modal>  
     );
   }
 }
