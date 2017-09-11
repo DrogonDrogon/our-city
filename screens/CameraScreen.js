@@ -181,6 +181,7 @@ class CameraScreen extends React.Component {
       phototag.downvotes = 0;
       phototag.favTotal = 0;
       phototag.comments = { placeholderComment: true };
+      phototag.solutions = { solutionId: true };
       phototag.userProfileUrl = this.props.user.photoUrl;
       phototag.address = await Location.reverseGeocodeAsync({
         latitude: this.props.location.latitude,

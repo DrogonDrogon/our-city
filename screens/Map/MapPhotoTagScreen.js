@@ -58,7 +58,8 @@ class MapPhotoTagScreen extends React.Component {
     comment: '',
     upvotes: this.props.navigation.state.params.upvotes,
     downvotes: this.props.navigation.state.params.downvotes,
-    voteTotal: this.props.navigation.state.params.upvotes - this.props.navigation.state.params.downvotes,
+    voteTotal:
+      this.props.navigation.state.params.upvotes - this.props.navigation.state.params.downvotes,
     phototag: this.props.navigation.state.params,
     comments: [],
     modalVisibility: false,
@@ -143,7 +144,7 @@ class MapPhotoTagScreen extends React.Component {
     if (!userVotes.hasOwnProperty(phototagId) || userVotes[phototagId] === 0) {
       this.setState({ upvotes: this.state.upvotes + 1 }, () => {
         // Update user
-        let userData = this.props.user;
+        let userData = Object.assign({}, this.props.user);
         userData.votes[phototagId] = 1;
         this.props.updateUser(userData);
 
@@ -259,14 +260,9 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   updateVoteTotal = () => {
-    this.setState(
-      {
-        voteTotal: this.state.upvotes - this.state.downvotes,
-      },
-      () => {
-        console.log('the votettoal in state', this.state.voteTotal);
-      }
-    );
+    this.setState({
+      voteTotal: this.state.upvotes - this.state.downvotes,
+    });
   };
 
   handleClickFav = () => {
@@ -384,7 +380,7 @@ class MapPhotoTagScreen extends React.Component {
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.phototag.imageUrl }}
           />
-          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description}/>
+          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
         </View>
         <Modal
           animationType={'slide'}
