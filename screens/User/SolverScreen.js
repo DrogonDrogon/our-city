@@ -55,7 +55,7 @@ class SolverScreen extends React.Component {
         this.toggleModal(false);
       },
     },
-    editedDescription: this.props.navigation.state.params.description,
+    editedDescription: '',
   };
 
   openEditDescription = () => {

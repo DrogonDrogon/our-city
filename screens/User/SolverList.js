@@ -1,10 +1,20 @@
 import React from 'react';
-import { FlatList, View, Text, Image } from 'react-native';
+import { FlatList, View, Text, Image, Alert, } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux';
 import db from '../../db';
 import solverItem from '../../components/solverItem';
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    user: state.user,
+  };
+};
+
 class SolverList extends React.Component {
+  state={
+    solutions: [],
+  };
   _keyExtractor = (item, index) => item.id;
 
   goToSolver(item) {
@@ -19,14 +29,17 @@ class SolverList extends React.Component {
   };
   render() {
     return (
-      <FlatList
-        data={this.props.solutions}
-        renderItem={({ item }) => <solverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
-        keyExtractor={this._keyExtractor}
-        contentContainerStyle={{ alignItems: 'center' }}
-      />
+      <View>
+        <Text>Your Solutions</Text>
+        <FlatList
+          data={this.state.solutions}
+          renderItem={({ item }) => <solverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
+          keyExtractor={this._keyExtractor}
+          contentContainerStyle={{ alignItems: 'center' }}
+        />
+        </View>
     );
   }
 }
 
-export default SolverList;
+export default connect(mapStateToProps)(SolverList);

@@ -6,6 +6,7 @@ import Colors from '../constants/Colors';
 import HomeScreen from '../screens/User/ProfileScreen';
 import CameraScreen from '../screens/CameraScreen';
 import MapScreen from '../screens/Map/MapScreen';
+import SolverList from '../screens/User/SolverList';
 
 export default TabNavigator(
   {
@@ -14,6 +15,9 @@ export default TabNavigator(
     },
     Camera: {
       screen: CameraScreen,
+    },
+    Solutions: {
+      screen: SolverList,
     },
     Profile: {
       screen: HomeScreen,
@@ -29,6 +33,10 @@ export default TabNavigator(
             iconName =
               Platform.OS === 'ios' ? `ios-person${focused ? '' : '-outline'}` : 'md-person';
             break;
+          case 'Solutions':
+            iconName =
+              Platform.OS === 'ios' ? `ios-flag${focused ? '' : '-outline'}` : 'md-flag';
+            break; 
           case 'Camera':
             iconName =
               Platform.OS === 'ios' ? `ios-camera${focused ? '' : '-outline'}` : 'md-camera';
