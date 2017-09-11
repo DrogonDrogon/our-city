@@ -461,9 +461,14 @@ class MapPhotoTagScreen extends React.Component {
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
           </Text> 
         </Text>
-        <TouchableHighlight onPress={this.solve}>
-          <Ionicons name="md-flag" size={32} color="gray" />
-        </TouchableHighlight>
+        <View>
+          <TouchableHighlight onPress={(e) => this.toggleModal(true)}>
+            <Ionicons name="md-list" size={32} color="gray" />
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.solve}>
+            <Ionicons name="md-flag" size={32} color="gray" />
+          </TouchableHighlight>
+        </View>
         <Text style={styles.titleText}>Comments</Text>
         {this.state.comments.map((comment, i) => (
           <Comment
