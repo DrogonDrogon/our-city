@@ -337,6 +337,10 @@ class MapPhotoTagScreen extends React.Component {
     });
   };
 
+  solve = () => {
+    this.props.navigation.navigate('SolverScreen', { phototag: Object.assign({}, this.state.phototag)})
+  };
+
   goToElectedOfficials = () => {
     let phototagData = this.state.phototag;
     this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
@@ -459,9 +463,11 @@ class MapPhotoTagScreen extends React.Component {
           />
           <Text>
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
-          </Text>
+          </Text> 
         </Text>
-
+        <TouchableHighlight onPress={this.solve}>
+          <Ionicons name="md-flag" size={32} color="gray" />
+        </TouchableHighlight>
         <Text style={styles.titleText}>Comments</Text>
         {this.state.comments.map((comment, i) => (
           <Comment
