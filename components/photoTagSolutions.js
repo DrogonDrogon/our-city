@@ -28,16 +28,19 @@ class photoTagSolutions extends React.Component {
     // })
   };
   render() {
+    
     return (
-      <View>
-        <Text>Completed Solutions</Text>
-        <FlatList
-          data={this.state.solutions}
-          renderItem={({ item }) => <solverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
-          keyExtractor={this._keyExtractor}
-          contentContainerStyle={{ alignItems: 'center' }}
-        />
+      <Modal>
+        <View>
+          <Text>Completed Solutions</Text>
+          <FlatList
+            data={this.state.solutions}
+            renderItem={({ item }) => <solverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
+            keyExtractor={this._keyExtractor}
+            contentContainerStyle={{ alignItems: 'center' }}
+          />
         </View>
+      </Modal>  
     );
   }
 }
