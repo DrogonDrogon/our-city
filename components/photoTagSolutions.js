@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Text, Image, Alert, } from 'react-native';
+import { FlatList, View, Text, Image, Modal, Alert,} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux';
 import db from '../../db';
