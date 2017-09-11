@@ -1,6 +1,5 @@
 import React from 'React';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
-import TaggedText from './TaggedText';
 
 class solverItem extends React.Component {
   constructor(props) {
@@ -9,12 +8,14 @@ class solverItem extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight
-          onPress={this.props.goToPhototags}
-          style={{ width: '100%', height: 200 }}>
-          <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
+        <TouchableHighlight onPress={this.props.goToSolver} style={{ width: '100%', height: 200 }}>
+          <View>
+            <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
+            <Text>
+              {this.props.phototag.description}
+            </Text>
+          </View>
         </TouchableHighlight>
-        <TaggedText navigation={this.props.navigation} text={this.props.phototag.description}/>
       </View>
     );
   }
