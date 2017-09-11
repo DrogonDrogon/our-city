@@ -4,7 +4,6 @@ import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import LoginScreen from '../screens/Login/LoginScreen';
 import MapPhotoTagScreen from '../screens/Map/MapPhotoTagScreen';
-import UserPhotoTagScreen from '../screens/User/UserPhotoTagScreen';
 import SplashScreen from '../screens/SplashScreen';
 import SignupScreen from '../screens//Login/SignupScreen';
 import electedOfficials from '../screens/elected_official';
