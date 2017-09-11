@@ -36,27 +36,66 @@ const generateRandomID = () => {
 
 class SolverScreen extends React.Component {
   state = {
-    image: null,
-    allImageData: {},
+    
     description: '',
-    tags: [],
-    reps: {},
-    latitude: '',
-    longitude: '',
-    imageHasLocationExif: false,
+    modalVisibility: false,
+    modalNavTitle: {
+      title: 'Edit Description',
+    },
+    modalNavRightButton: {
+      title: 'Save',
+      handler: () => {
+        this.saveDescription(this.state.editedDescription);
+        this.toggleModal(false);
+      },
+    },
+    modalNavLeftButton: {
+      title: 'Cancel',
+      handler: () => {
+        this.toggleModal(false);
+      },
+    },
+    editedDescription: this.props.navigation.state.params.description,
+  };
+
+  openEditDescription = () => {
+    console.log('Editing description');
+    this.toggleModal(true);
   };
 
   render() {
     return (
       <View>
-        <TextInput
-          style={styles.descriptionInput}
-          placeholder="Enter description"
-          onChangeText={text => this.setState({ description: text })}
-          keyboardType={'default'}
-          multiline
-          ref={input => (this.descriptionInput = input)}>
-        </TextInput>
+        <Modal
+          animationType={'slide'}
+          transparent={false}
+          visible={this.state.modalVisibility}
+          onRequestClose={() => {}}>
+          <NavigationBar
+            title={this.state.modalNavTitle}
+            rightButton={this.state.modalNavRightButton}
+            leftButton={this.state.modalNavLeftButton}
+          />
+          <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
+            <View style={styles.photoDisplayContainer}>
+              <Image
+                style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
+                source={{ uri: this.state.phototag.imageUrl }}
+              />
+              <TextInput
+                value={this.state.editedDescription}
+                placeholder="Enter description"
+                onChangeText={text => this.editDescription(text)}
+                clearButtonMode={'always'}
+                style={styles.descriptionInput}
+                multiline
+              />
+            </View>
+          </KeyboardAwareScrollView>
+        </Modal>
+        <TouchableHighlight onPress={this.openEditDescription}>
+          <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+        </TouchableHighlight>
       </View>
     );
   }
