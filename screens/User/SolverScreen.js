@@ -36,7 +36,7 @@ const generateRandomID = () => {
 
 class SolverScreen extends React.Component {
   state = {
-    phototag: this.props.navigation.state.params,
+    phototag: Object.assign({}, this.props.navigation.state.params),
     description: '',
     modalVisibility: false,
     modalNavTitle: {
@@ -62,6 +62,19 @@ class SolverScreen extends React.Component {
     console.log('Editing description');
     this.toggleModal(true);
   };
+
+  editDescription = description => {
+    this.setState({ editedDescription: description });
+  };
+
+  saveDescription = description => {
+    let updatedData = this.state.phototag;
+    updatedData.description = description;
+    this.setState({ phototag: updatedData }, () => {
+      this.setState({ editedDescription: description });
+    });
+  };
+
   toggleModal = bool => {
     this.setState({ modalVisibility: bool });
   };
@@ -69,6 +82,9 @@ class SolverScreen extends React.Component {
   render() {
     return (
       <View>
+        <Text style={{ height: '50%', width: '80%', backgroundColor: 'white'}}>
+          {this.state.editedDescription}
+        </Text>
         <Modal
           animationType={'slide'}
           transparent={false}
