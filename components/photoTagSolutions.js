@@ -27,8 +27,7 @@ class photoTagSolutions extends React.Component {
     //   const selected =
     // })
   };
-  render() {
-    
+  render() {    
     return (
       <Modal>
         <View>
