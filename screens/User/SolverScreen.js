@@ -36,7 +36,7 @@ const generateRandomID = () => {
 
 class SolverScreen extends React.Component {
   state = {
-    
+    phototag: this.props.navigation.state.params,
     description: '',
     modalVisibility: false,
     modalNavTitle: {
@@ -61,6 +61,9 @@ class SolverScreen extends React.Component {
   openEditDescription = () => {
     console.log('Editing description');
     this.toggleModal(true);
+  };
+  toggleModal = bool => {
+    this.setState({ modalVisibility: bool });
   };
 
   render() {

@@ -338,7 +338,7 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   solve = () => {
-    console.log('If you got a problem...');
+    this.props.navigation.navigate('SolverScreen', { phototag: Object.assign({}, this.state.phototag)})
   };
 
   goToElectedOfficials = () => {
