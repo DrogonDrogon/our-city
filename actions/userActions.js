@@ -104,6 +104,7 @@ export const postNewUserBegin = user => dispatch => {
   userInfo.phototags = { phototagId: true };
   userInfo.favs = { phototagId: true };
   userInfo.comments = { commentId: true };
+  userInfo.solutions = { solutionId: true };
   userInfo.timestamp = new Date();
 
   // If auth through email/password, save info
