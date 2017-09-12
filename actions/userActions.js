@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import db from '../db';
-import { SET_USER, IS_LOGGED_IN } from './constants';
+import { SET_USER, IS_LOGGED_IN, SET_BADGE } from './constants';
 import * as Actions from './phototagActions';
 
 // For checking if user is logged in
@@ -111,8 +111,7 @@ export const postNewUserBegin = user => dispatch => {
   if (user.providerData[0].providerId === 'password') {
     userInfo.authMethod = 'email-password';
     userInfo.email = user.email;
-    userInfo.photoUrl =
-      'https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433_1280.png';
+    userInfo.photoUrl = 'https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433_1280.png';
     let getUsername = user.email.split('@');
     userInfo.displayName = getUsername[0];
   }
@@ -148,5 +147,13 @@ export const checkUserLoginComplete = bool => {
   return {
     type: IS_LOGGED_IN,
     payload: bool,
+  };
+};
+
+export const setBadge = badge => {
+  console.log('action badge', badge);
+  return {
+    type: SET_BADGE,
+    payload: badge,
   };
 };

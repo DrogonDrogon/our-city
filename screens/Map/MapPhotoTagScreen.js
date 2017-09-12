@@ -12,6 +12,7 @@ import {
   Share,
   Modal,
 } from 'react-native';
+import axios from 'axios';
 import NavigationBar from 'react-native-navbar';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
@@ -280,6 +281,14 @@ class MapPhotoTagScreen extends React.Component {
       updatedPhototag.favTotal -= 1;
       this.props.updatePhototag(this.state.phototag);
     }
+    axios
+      .post('http://cd41a62b.ngrok.io/notification', {
+        message: `someone liked your tag with description "${this.state.phototag.description}"`,
+        userid: this.state.phototag.userId,
+      })
+      .then(res => {
+        console.log(res.data);
+      });
   };
 
   editComment(text) {
@@ -325,6 +334,15 @@ class MapPhotoTagScreen extends React.Component {
 
     // 3. Adds the commentId under the phototag 'comments' node
     this.props.updatePhototagWithComment(phototagId, commentId);
+    axios
+      .post('http://cd41a62b.ngrok.io/notification', {
+        message: `someone commented "${this.state.comment}" on on your tag  "${this.state.phototag
+          .description}"`,
+        userid: this.state.phototag.userId,
+      })
+      .then(res => {
+        console.log(res.data);
+      });
   };
 
   share = () => {
