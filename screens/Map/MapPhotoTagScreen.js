@@ -507,7 +507,7 @@ class MapPhotoTagScreen extends React.Component {
   }
 }
 
-//<photoTagSolutions modalSolutionsVis={this.state.modalSolutionsVis}/>
+//<PhotoTagSolutions style={{height: '75%',}} toggleSolutionsModal={this.toggleSolutionsModal.bind(this)} modalSolutionsVis={this.state.modalSolutionsVis}/>
 
 const styles = StyleSheet.create({
   scrollViewContainer: {

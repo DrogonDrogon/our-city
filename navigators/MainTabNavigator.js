@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCmmunityIcons } from '@expo/vector-icons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import Colors from '../constants/Colors';
 import HomeScreen from '../screens/User/ProfileScreen';
@@ -35,7 +35,7 @@ export default TabNavigator(
             break;
           case 'Solutions':
             iconName =
-              Platform.OS === 'ios' ? `ios-flag${focused ? '' : '-outline'}` : 'md-flag';
+              Platform.OS === 'ios' ? `ios-bulb${focused ? '' : '-outline'}` : 'md-bulb';
             break; 
           case 'Camera':
             iconName =
@@ -63,3 +63,4 @@ export default TabNavigator(
     },
   }
 );
+//possible icons for solutions: bulb, build, cog, construct, hammer, hand, key, medal, ribbon, trophy, 
