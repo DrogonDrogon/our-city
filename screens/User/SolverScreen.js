@@ -1,15 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  TextInput,
-  Button,
-  CameraRoll,
-  ImagePicker,
-} from 'react-native';
+import { StyleSheet, View, Image, Text, TextInput, Button, CameraRoll, Alert } from 'react-native';
+import { ImagePicker } from 'expo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RNS3 } from 'react-native-aws3';
 import * as Actions from '../../actions';
@@ -55,29 +47,6 @@ class SolverScreen extends React.Component {
     title: 'Volunteer a Fix',
   };
 
-  state = {
-    phototag: Object.assign({}, this.props.navigation.state.params.phototag),
-    description: '',
-    modalVisibility: false,
-    modalNavTitle: {
-      title: 'Edit Description',
-    },
-    modalNavRightButton: {
-      title: 'Save',
-      handler: () => {
-        this.saveDescription(this.state.editedDescription);
-        this.toggleModal(false);
-      },
-    },
-    modalNavLeftButton: {
-      title: 'Cancel',
-      handler: () => {
-        this.toggleModal(false);
-      },
-    },
-    photoUri: this.props.navigation.state.params.phototag.imageUrl,
-  };
-
   _takePic = async () => {
     console.log('click image');
     let result = await ImagePicker.launchCameraAsync({
@@ -94,12 +63,9 @@ class SolverScreen extends React.Component {
   };
 
   handleSaveSolution = () => {
-    console.log('click save');
     let isNewPhoto = this.state.photoUri !== this.state.phototag.imageUrl;
-    let urlToSave = '';
 
     if (isNewPhoto) {
-      console.log('[handleSave] using the new photo that was taken (not the phototag photo)');
       // Set up file uri to save to AWS
       let photoIdName = generateRandomID();
       let file = {
@@ -127,7 +93,6 @@ class SolverScreen extends React.Component {
         }
       });
     } else {
-      console.log('[handleSave] using the old photo (same as phototag)');
       let newSolution = {
         imageUrl: this.state.photoUri,
         isAccepted: false,
@@ -136,12 +101,21 @@ class SolverScreen extends React.Component {
         phototagId: this.state.phototag.id,
       };
       this.addSolution(this.props.user.id, newSolution);
+      Alert.alert('Success', 'Solution posted', [
+        {
+          text: 'OK',
+          onPress: () => {
+            this.props.navigation.goBack();
+          },
+        },
+      ]);
     }
   };
 
   addSolution = (userId, solutionData) => {
     // update the solutions node in firebase
     let newSolutionId = db.child('solutions').push().key;
+    solutionData.id = newSolutionId;
     db
       .child('solutions/' + newSolutionId)
       .update(solutionData)
@@ -162,60 +136,22 @@ class SolverScreen extends React.Component {
     this.props.updatePhototag(photoData);
   };
 
-  fetchSolutionsByPhotoId = phototagId => {
-    let solutionIds;
-    // get all solution ids for one phototag
-    db
-      .child('phototags/' + phototagId + '/solutions')
-      .once('value')
-      .then(snapshot => {
-        let snapshotObj = snapshot.val();
-        console.log('snapshot of phototag solutions', snapshotObj);
-        solutionIds = Object.keys(snapshotObj);
-        return solutionIds;
-      })
-      .then(keys => {
-        // get all the solutions (objects) based on the array of solution ids
-        const promises = keys.map(id => {
-          return db
-            .child('solutions/' + id)
-            .once('value')
-            .then(snapshot => {
-              return snapshot.val();
-            })
-            .catch(err => {
-              console.log('err', err);
-            });
-        });
-        Promise.all(promises)
-          .then(solutionData => {
-            let validEntries = [];
-            solutionData.forEach(item => {
-              if (item) {
-                validEntries.push(item);
-              }
-            });
-            console.log('Received all solutions', validEntries);
-          })
-          .catch(err => {
-            console.log('Error getting solutions from photoId', err);
-          });
-      });
-  };
-
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
         <Text>Describe what you will do or have done:</Text>
         <TextInput
           style={styles.descriptionInput}
-          placeholder="i.e. I can move this, I can repair this"
+          placeholder="i.e. I can move this..., I can repair this..."
           onChangeText={text => this.setState({ description: text })}
           keyboardType={'default'}
           multiline
+          ref={input => {
+            this.descriptionInput = input;
+          }}
         />
         <View>
-          <Text>Take an updated image of the site (optional)</Text>
+          <Text>(Optional) Take an updated image of the site</Text>
           <Button title="Take new photo" onPress={this._takePic} />
         </View>
         <Image

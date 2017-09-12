@@ -1,19 +1,17 @@
 import React from 'React';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
 
-class solverItem extends React.Component {
-  constructor(props) {
-    super(props);
+class SolverItem extends React.Component {
+  componentDidMount() {
+    console.log('[solverItem] state', this.state, '/// props', this.props);
   }
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight onPress={this.props.goToSolver} style={{ width: '100%', height: 200 }}>
+        <TouchableHighlight onPress={this.props.goToSolver} style={{ width: 200, height: 200 }}>
           <View>
-            <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
-            <Text>
-              {this.props.phototag.description}
-            </Text>
+            <Image style={styles.imageStyle} source={{ uri: this.props.solution.imageUrl }} />
+            <Text>{this.props.solution.description}</Text>
           </View>
         </TouchableHighlight>
       </View>
@@ -39,7 +37,6 @@ const styles = StyleSheet.create({
     width: 200,
   },
   imageStyle: {
-    flex: 1,
     width: 200,
     height: 200,
     resizeMode: Image.resizeMode.contain,
@@ -47,4 +44,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default solverItem;
+export default SolverItem;
