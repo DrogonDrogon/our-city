@@ -10,8 +10,21 @@ import electedOfficials from '../screens/elected_official';
 import SolverScreen from '../screens/User/SolverScreen';
 import ViewSolverScreen from '../screens/User/ViewSolverScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
-
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
+const mapStateToProps = (state, ownProps) => {
+  return {
+    badges: state.badges,
+  };
+};
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    updateBadge: badges => {
+      dispatch(Actions.setBadge(badges));
+    },
+  };
+};
 const RootStackNavigator = StackNavigator(
   {
     SplashScreen: {
@@ -38,6 +51,7 @@ const RootStackNavigator = StackNavigator(
     SolverScreen: {
       screen: SolverScreen,
     },
+
     ViewSolverScreen: {
       screen: ViewSolverScreen,
     },
@@ -51,7 +65,7 @@ const RootStackNavigator = StackNavigator(
   }
 );
 
-export default class RootNavigator extends React.Component {
+class RootNavigator extends React.Component {
   static navigationOptions = {
     title: 'SplashScreen',
   };
@@ -63,7 +77,7 @@ export default class RootNavigator extends React.Component {
   }
 
   render() {
-    return <RootStackNavigator />;
+    return <RootStackNavigator screenProps={{ badges: this.props.badges }} />;
   }
 
   _registerForPushNotifications() {
@@ -78,6 +92,10 @@ export default class RootNavigator extends React.Component {
   }
 
   _handleNotification = ({ origin, data }) => {
+    console.log('type', typeof this.props.badges);
     console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
+    this.props.updateBadge(this.props.badges + 1);
   };
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(RootNavigator);
