@@ -336,7 +336,7 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   solve = () => {
-    this.props.navigation.navigate('SolverScreen', { solution: Object.assign({}, this.state.phototag)})
+    this.props.navigation.navigate('SolverScreen', { phototag: Object.assign({}, this.state.phototag)})
   };
 
   goToElectedOfficials = () => {
@@ -471,7 +471,13 @@ class MapPhotoTagScreen extends React.Component {
           <TouchableHighlight onPress={this.toggleSolutionsModal}>
             <Ionicons name="md-list" size={32} color="gray" />
           </TouchableHighlight>
-          <PhotoTagSolutions style={{height: '75%',}} toggleSolutionsModal={this.toggleSolutionsModal.bind(this)} modalSolutionsVis={this.state.modalSolutionsVis}/>
+          <PhotoTagSolutions
+            style={{ height: '75%' }}
+            toggleSolutionsModal={this.toggleSolutionsModal.bind(this)}
+            modalSolutionsVis={this.state.modalSolutionsVis}
+            phototag={this.state.phototag}
+            userId={this.props.user.id}
+          />
           <TouchableHighlight onPress={this.solve}>
             <Ionicons name="md-flag" size={32} color="gray" />
           </TouchableHighlight>
