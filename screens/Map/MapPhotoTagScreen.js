@@ -16,6 +16,7 @@ import NavigationBar from 'react-native-navbar';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import Comment from '../../components/comment';
+import PhotoTagSolutions from '../../components/photoTagSolutions';
 import TaggedText from '../../components/TaggedText';
 import * as Actions from '../../actions';
 import db from '../../db';
@@ -63,6 +64,7 @@ class MapPhotoTagScreen extends React.Component {
     phototag: this.props.navigation.state.params,
     comments: [],
     modalVisibility: false,
+    modalSolutionsVis: false,
     modalNavTitle: {
       title: 'Edit Description',
     },
@@ -369,6 +371,10 @@ class MapPhotoTagScreen extends React.Component {
     this.setState({ modalVisibility: bool });
   };
 
+  toggleSolutionsModal = () => {
+    this.setState({ modalSolutionsVis: !this.state.modalSolutionsVis });
+  };
+
   render() {
     let isEditable = this.props.user.id === this.state.phototag.userId;
     let userVoteStatus = this.props.user.votes[this.state.phototag.id];
@@ -462,9 +468,10 @@ class MapPhotoTagScreen extends React.Component {
           </Text> 
         </Text>
         <View>
-          <TouchableHighlight onPress={(e) => this.toggleModal(true)}>
+          <TouchableHighlight onPress={this.toggleSolutionsModal}>
             <Ionicons name="md-list" size={32} color="gray" />
           </TouchableHighlight>
+          <PhotoTagSolutions style={{height: '75%',}} toggleSolutionsModal={this.toggleSolutionsModal.bind(this)} modalSolutionsVis={this.state.modalSolutionsVis}/>
           <TouchableHighlight onPress={this.solve}>
             <Ionicons name="md-flag" size={32} color="gray" />
           </TouchableHighlight>
@@ -493,6 +500,8 @@ class MapPhotoTagScreen extends React.Component {
     );
   }
 }
+
+//<photoTagSolutions modalSolutionsVis={this.state.modalSolutionsVis}/>
 
 const styles = StyleSheet.create({
   scrollViewContainer: {

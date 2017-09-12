@@ -3,7 +3,7 @@ import { FlatList, View, Text, Image, Alert, } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux';
 import db from '../../db';
-import solverItem from '../../components/solverItem';
+import SolverItem from '../../components/solverItem';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -33,11 +33,11 @@ class SolverList extends React.Component {
         <Text>Your Solutions</Text>
         <FlatList
           data={this.state.solutions}
-          renderItem={({ item }) => <solverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
+          renderItem={({ item }) => <SolverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
           keyExtractor={this._keyExtractor}
           contentContainerStyle={{ alignItems: 'center' }}
         />
-        </View>
+      </View>
     );
   }
 }

@@ -1,20 +1,22 @@
 import React from 'react';
-import { FlatList, View, Text, Image, Modal, Alert,} from 'react-native';
+import { FlatList, View, Text, Image, Modal, Alert, TouchableHighlight} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { connect } from 'react-redux';
-import db from '../../db';
-import solverItem from '../../components/solverItem';
+import { Ionicons } from '@expo/vector-icons';
+import db from '../db';
+import SolverItem from './solverItem';
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    user: state.user,
-  };
-};
+// const mapStateToProps = (state, ownProps) => {
+//   return {
+//     user: state.user,
+//   };
+// };
 
-class photoTagSolutions extends React.Component {
+class PhotoTagSolutions extends React.Component {
   state={
     solutions: [],
   };
+
   _keyExtractor = (item, index) => item.id;
 
   goToSolver(item) {
@@ -22,27 +24,32 @@ class photoTagSolutions extends React.Component {
     this.props.navigation.navigate('SolverScreen', item);
   }
 
-  _onPressItem = id => {
-    // this.setState(state => {
-    //   const selected =
-    // })
-  };
   render() {
     
     return (
-      <Modal>
+      <Modal
+        style={{height: '75%',}}
+        animationType={'slide'}
+        transparent={false}
+        visible={this.props.modalSolutionsVis}
+        onRequestClose={() => {}}>
+        <TouchableHighlight onPress={this.props.toggleSolutionsModal}>
+          <Ionicons name="md-close" size={32} color="gray" />
+        </TouchableHighlight>
         <View>
           <Text>Completed Solutions</Text>
           <FlatList
-            data={this.state.solutions}
-            renderItem={({ item }) => <solverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
-            keyExtractor={this._keyExtractor}
-            contentContainerStyle={{ alignItems: 'center' }}
-          />
+           data={this.state.solutions}
+           renderItem={({ item }) => <SolverItem navigation={this.props.navigation} phototag={item} goToSolver={this.goToSolver.bind(this, item)}/>}
+           keyExtractor={this._keyExtractor}
+           contentContainerStyle={{ alignItems: 'center' }}
+         />
         </View>
       </Modal>  
     );
   }
 }
 
-export default connect(mapStateToProps)(photoTagSolutions);
+
+
+export default PhotoTagSolutions;
