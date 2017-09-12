@@ -40,7 +40,7 @@ class PhototagSolutionItem extends React.Component {
           }}
         />
         <Text>Suggested by {this.state.authorName}</Text>
-        <Button title="View" onPress={() => console.log('view')} />
+        <Button title="View" onPress={this.props.goToSolver} />
         {this.props.isOwner &&
         this.props.isOneAccepted === false && (
           <Button
