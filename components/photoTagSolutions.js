@@ -101,7 +101,13 @@ class PhotoTagSolutions extends React.Component {
           contentContainerStyle={{ flex: 1, alignItems: 'center' }}
           data={this.state.solutions}
           renderItem={({ item }) => (
-            <PhototagSolutionItem solution={item} isOneAccepted={this.state.isOneAccepted} isOwner={this.state.isOwner} handleMarkSelected={this.handleMarkSelected}/>
+            <PhototagSolutionItem
+              goToSolver={this.goToSolver.bind(this, item)}
+              navigation={this.props.navigation}
+              solution={item}
+              isOneAccepted={this.state.isOneAccepted}
+              isOwner={this.state.isOwner}
+              handleMarkSelected={this.handleMarkSelected}/>
           )}
           keyExtractor={this._keyExtractor}
         />

@@ -24,7 +24,7 @@ class SolverList extends React.Component {
 
   goToSolver(item) {
     console.log('This listview item = ', item);
-    this.props.navigation.navigate('SolverScreen', item);
+    this.props.navigation.navigate('ViewSolverScreen', item);
   }
 
   fetchSolutionsByUserId = userId => {

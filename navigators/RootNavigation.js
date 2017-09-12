@@ -8,6 +8,7 @@ import SplashScreen from '../screens/SplashScreen';
 import SignupScreen from '../screens//Login/SignupScreen';
 import electedOfficials from '../screens/elected_official';
 import SolverScreen from '../screens/User/SolverScreen';
+import ViewSolverScreen from '../screens/User/ViewSolverScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
@@ -36,7 +37,10 @@ const RootStackNavigator = StackNavigator(
     },
     SolverScreen: {
       screen: SolverScreen,
-    }
+    },
+    ViewSolverScreen: {
+      screen: ViewSolverScreen,
+    },
   },
   {
     navigationOptions: () => ({

@@ -473,13 +473,14 @@ class MapPhotoTagScreen extends React.Component {
           </TouchableHighlight>
           <PhotoTagSolutions
             style={{ height: '75%' }}
+            navigation={this.props.navigation}
             toggleSolutionsModal={this.toggleSolutionsModal.bind(this)}
             modalSolutionsVis={this.state.modalSolutionsVis}
             phototag={this.state.phototag}
             userId={this.props.user.id}
           />
           <TouchableHighlight onPress={this.solve}>
-            <Ionicons name="md-flag" size={32} color="gray" />
+            <Ionicons name="md-bulb" size={32} color="gray" />
           </TouchableHighlight>
         </View>
         <Text style={styles.titleText}>Comments</Text>
