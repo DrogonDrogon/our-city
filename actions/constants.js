@@ -7,3 +7,4 @@ export const RECEIVE_FAVS = 'RECEIVE_FAVS';
 export const SET_USER = 'SET_USER';
 export const IS_LOGGED_IN = 'IS_LOGGED_IN';
 export const SET_LOCATION = 'SET_LOCATION';
+export const SET_BADGE = 'SET_BADGE';

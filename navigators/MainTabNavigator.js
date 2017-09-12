@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import Colors from '../constants/Colors';
@@ -7,6 +7,7 @@ import HomeScreen from '../screens/User/ProfileScreen';
 import CameraScreen from '../screens/CameraScreen';
 import MapScreen from '../screens/Map/MapScreen';
 import SolverList from '../screens/User/SolverList';
+import IconBadge from 'react-native-icon-badge';
 
 export default TabNavigator(
   {
@@ -21,6 +22,27 @@ export default TabNavigator(
     },
     Profile: {
       screen: HomeScreen,
+      navigationOptions: ({ screenProps }) => ({
+        tabBarIcon: ({ tintColor }) => (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <IconBadge
+              MainElement={<Ionicons name="md-person" size={32} />}
+              BadgeElement={<Text style={{ color: '#FFFFFF' }}>{screenProps.badges}</Text>}
+              IconBadgeStyle={{
+                width: 15,
+                height: 15,
+                backgroundColor: '#ff0000',
+              }}
+              Hidden={screenProps.badges === 0}
+            />
+          </View>
+        ),
+      }),
     },
   },
   {
@@ -34,9 +56,8 @@ export default TabNavigator(
               Platform.OS === 'ios' ? `ios-person${focused ? '' : '-outline'}` : 'md-person';
             break;
           case 'Solutions':
-            iconName =
-              Platform.OS === 'ios' ? `ios-flag${focused ? '' : '-outline'}` : 'md-flag';
-            break; 
+            iconName = Platform.OS === 'ios' ? `ios-flag${focused ? '' : '-outline'}` : 'md-flag';
+            break;
           case 'Camera':
             iconName =
               Platform.OS === 'ios' ? `ios-camera${focused ? '' : '-outline'}` : 'md-camera';
