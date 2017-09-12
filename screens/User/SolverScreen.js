@@ -47,6 +47,11 @@ class SolverScreen extends React.Component {
     title: 'Volunteer a Fix',
   };
 
+  state = {
+    phototag: this.props.navigation.state.params.phototag,
+    photoUri: this.props.navigation.state.params.phototag.imageUrl,
+  };
+
   _takePic = async () => {
     console.log('click image');
     let result = await ImagePicker.launchCameraAsync({
@@ -90,6 +95,14 @@ class SolverScreen extends React.Component {
             phototagId: this.state.phototag.id,
           };
           this.addSolution(this.props.user.id, newSolution);
+          Alert.alert('Success', 'Solution posted', [
+            {
+              text: 'OK',
+              onPress: () => {
+                this.props.navigation.goBack();
+              },
+            },
+          ]);
         }
       });
     } else {
