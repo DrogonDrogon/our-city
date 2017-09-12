@@ -19,8 +19,8 @@ class PhotoTagSolutions extends React.Component {
   _keyExtractor = (item, index) => item.id;
 
   goToSolver(item) {
-    console.log('This listview item = ', item);
-    this.props.navigation.navigate('SolverScreen', item);
+    console.log('This Sollistview item = ', item);
+    this.props.navigation.navigate('ViewSolverScreen', item);
   }
 
   fetchSolutionsByPhotoId = phototagId => {

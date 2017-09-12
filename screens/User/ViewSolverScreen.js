@@ -47,6 +47,10 @@ class ViewSolverScreen extends React.Component {
     title: 'Volunteer a Fix',
   };
 
+  state={
+
+  }
+
   _takePic = async () => {
     console.log('click image');
     let result = await ImagePicker.launchCameraAsync({
@@ -62,7 +66,7 @@ class ViewSolverScreen extends React.Component {
     }
   };
 
-  // handleSaveSolution = () => {
+   handleSaveSolution = () => {
   //   let isNewPhoto = this.state.photoUri !== this.state.phototag.imageUrl;
 
   //   if (isNewPhoto) {
@@ -134,7 +138,7 @@ class ViewSolverScreen extends React.Component {
   //   let photoData = Object.assign({}, this.state.phototag);
   //   photoData.solutions[newSolutionId] = true;
   //   this.props.updatePhototag(photoData);
-  // };
+   };
 
   render() {
     return (
