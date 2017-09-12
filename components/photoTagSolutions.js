@@ -19,8 +19,8 @@ class PhotoTagSolutions extends React.Component {
   _keyExtractor = (item, index) => item.id;
 
   goToSolver(item) {
-    console.log('This Sollistview item = ', item);
     this.props.navigation.navigate('ViewSolverScreen', item);
+    this.props.toggleSolutionsModal();
   }
 
   fetchSolutionsByPhotoId = phototagId => {
@@ -92,7 +92,7 @@ class PhotoTagSolutions extends React.Component {
     return (
       <Modal
         style={{ top: 200 }}
-        animationType={'slide'}
+        animationType={'fade'}
         transparent={false}
         visible={this.props.modalSolutionsVis}
         onRequestClose={() => {}}>
