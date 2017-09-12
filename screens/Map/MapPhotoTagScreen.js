@@ -471,7 +471,7 @@ class MapPhotoTagScreen extends React.Component {
           <TouchableHighlight onPress={this.toggleSolutionsModal}>
             <Ionicons name="md-list" size={32} color="gray" />
           </TouchableHighlight>
-          <PhotoTagSolutions style={{height: '75%',}} toggleSolutionsModal={this.toggleSolutionsModal.bind(this)} modalSolutionsVis={this.state.modalSolutionsVis}/>
+          
           <TouchableHighlight onPress={this.solve}>
             <Ionicons name="md-flag" size={32} color="gray" />
           </TouchableHighlight>
@@ -501,7 +501,7 @@ class MapPhotoTagScreen extends React.Component {
   }
 }
 
-//<photoTagSolutions modalSolutionsVis={this.state.modalSolutionsVis}/>
+//<PhotoTagSolutions style={{height: '75%',}} toggleSolutionsModal={this.toggleSolutionsModal.bind(this)} modalSolutionsVis={this.state.modalSolutionsVis}/>
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
