@@ -33,11 +33,13 @@ class PhototagItem extends React.Component {
               height: 30,
               backgroundColor: '#FF00EE',
             }}
-            hidden={this.props.badges === 0}
+            Hidden={this.props.badges === 0}
           />
         </View>
         <TouchableHighlight
-          onPress={this.props.goToPhototags}
+          onPress={() => {
+            this.props.goToPhototags;
+          }}
           style={{ width: '100%', height: 200 }}>
           <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
         </TouchableHighlight>

@@ -94,7 +94,7 @@ class RootNavigator extends React.Component {
   _handleNotification = ({ origin, data }) => {
     console.log('type', typeof this.props.badges);
     console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
-    this.props.updateBadge(this.props.badges + 1);
+    //this.props.updateBadge(this.props.badges + 1);
   };
 }
 
