@@ -27,12 +27,13 @@ class PhototagItem extends React.Component {
                 }}
               />
             }
-            BadgeElement={<Text style={{ color: '#000' }}>5</Text>}
+            BadgeElement={<Text style={{ color: '#000' }}>{this.props.badges}</Text>}
             IconBadgeStyle={{
               width: 30,
               height: 30,
               backgroundColor: '#FF00EE',
             }}
+            hidden={this.props.badges === 0}
           />
         </View>
         <TouchableHighlight

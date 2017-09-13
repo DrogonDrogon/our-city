@@ -20,6 +20,7 @@ class Posts extends React.Component {
                 key={item.id}
                 goToPhototags={this.props.goToPhototags.bind(this, item)}
                 navigation={this.props.navigation}
+                badges={item.badges}
               />
             ))}
       </View>
