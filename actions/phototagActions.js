@@ -86,12 +86,18 @@ export const updatePhototag = phototag => dispatch => {
 };
 
 // For adding a new comment under 'comments' node
-export const addCommentUnderPhototag = (phototagId, commentData) => dispatch => {
+export const addCommentUnderPhototag = (phototagId, commentData, badgeCount) => dispatch => {
   db
     .child('phototags/' + phototagId + '/comments/')
     .update(commentData)
     .then(() => {
       // dispatch(fetchPhototags);
+      db
+        .child('phototags/' + phototagId)
+        .update({ badges: badgeCount })
+        .then(() => {
+          console.log('Update comment done');
+        })
     })
     .catch(error => console.log('ERROR writing to /phototags/comments', error));
 };
