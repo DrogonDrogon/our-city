@@ -215,6 +215,7 @@ class CameraScreen extends React.Component {
             latitude: '',
             longitude: '',
             imageHasLocationExif: false,
+            description: '',
           });
 
           // TODO: Error handling if post not successful from firebase
