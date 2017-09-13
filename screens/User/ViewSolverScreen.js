@@ -51,6 +51,7 @@ class ViewSolverScreen extends React.Component {
     solution: this.props.navigation.state.params,
     description: this.props.navigation.state.params.description,
     photoUri: this.props.navigation.state.params.imageUrl,
+    text: this.props.navigation.state.params.description,
   }
 
   _takePic = async () => {
@@ -90,23 +91,17 @@ class ViewSolverScreen extends React.Component {
           let awsUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
           let newSolution = {
             imageUrl: awsUrl,
-            isAccepted: false,
             description: this.state.description,
-            userId: this.props.user.id,
-            phototagId: this.state.phototag.id,
           };
-          this.addSolution(this.props.user.id, newSolution);
+          this.updateSolution(this.props.user.id, newSolution);
         }
       });
     } else {
       let newSolution = {
         imageUrl: this.state.photoUri,
-        isAccepted: false,
         description: this.state.description,
-        userId: this.props.user.id,
-        phototagId: this.state.phototag.id,
       };
-      this.addSolution(this.props.user.id, newSolution);
+      this.updateSolution(this.props.user.id, newSolution);
       Alert.alert('Success', 'Solution posted', [
         {
           text: 'OK',
@@ -118,28 +113,28 @@ class ViewSolverScreen extends React.Component {
     }
   };
 
-  addSolution = (userId, solutionData) => {
+  updateSolution = (userId, solutionData) => {
     // update the solutions node in firebase
-    let newSolutionId = db.child('solutions').push().key;
-    solutionData.id = newSolutionId;
+    // let newSolutionId = db.child('solutions').push().key;
+    var newSolutionId = this.state.solution.id;
     db
       .child('solutions/' + newSolutionId)
       .update(solutionData)
       .then(() => {
-        console.log('New solution posted. Id is', newSolutionId);
+        console.log('Solution updated. Id is', newSolutionId);
         // do something
       })
       .catch(error => console.log('Error writing to solutions', error));
 
-    // update the users node
-    let userData = Object.assign({}, this.props.user);
-    userData.solutions[newSolutionId] = true;
-    this.props.updateUser(userData);
+    // // update the users node
+    // let userData = Object.assign({}, this.props.user);
+    // userData.solutions[newSolutionId] = true;
+    // this.props.updateUser(userData);
 
-    // update the phototags node
-    let photoData = Object.assign({}, this.state.phototag);
-    photoData.solutions[newSolutionId] = true;
-    this.props.updatePhototag(photoData);
+    // // update the phototags node
+    // let photoData = Object.assign({}, this.state.phototag);
+    // photoData.solutions[newSolutionId] = true;
+    // this.props.updatePhototag(photoData);
    };
 
   render() {
@@ -153,8 +148,8 @@ class ViewSolverScreen extends React.Component {
         <Text>{this.state.description}</Text>
         <TextInput
           style={styles.descriptionInput}
-          placeholder="i.e. I can move this..., I can repair this..."
-          onChangeText={text => this.setState({ description: text })}
+          placeholder={this.state.text}
+          onChangeText={text => this.setState({ text: text })}
           keyboardType={'default'}
           multiline
           ref={input => {
