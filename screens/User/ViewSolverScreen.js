@@ -48,7 +48,7 @@ class ViewSolverScreen extends React.Component {
   };
 
   state={
-
+    description: this.state.navigation.params.description,
   }
 
   _takePic = async () => {
