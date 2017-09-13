@@ -28,7 +28,7 @@ export const updateUser = user => dispatch => {
     .child('users/' + user.id)
     .update(user)
     .then(() => {
-      // dispatch(getUserInfoCompleted(user));
+      dispatch(getUserInfoCompleted(user));
     })
     .catch(error => {
       console.log('ERROR posting updating user', error);

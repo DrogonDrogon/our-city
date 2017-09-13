@@ -1,6 +1,5 @@
 import db from '../db';
 import { SET_COMMENTS } from './constants';
-import * as Actions from './userActions';
 
 export const getAllCommentsByUser = user => dispatch => {
   let commentKeys = Object.keys(user.comments);
@@ -41,46 +40,39 @@ export const getAllCommentsByUser = user => dispatch => {
     })
     .catch(err => {
       console.log('Err getting phototags', err);
-      // this.props.updateLoadingStatus(false);
+      this.props.updateLoadingStatus(false);
     });
 };
 
-export const deleteComment = (commentId, userId, phototagId, callback) => dispatch => {
-  console.log('one');
+export const deleteComment = (commentId, userData, phototagId) => dispatch => {
   // delete comment from [/comments]
-  return db
+  db
     .child(`comments/${commentId}`)
     .remove()
     .then(() => {
-      console.log('two');
       // delete comment from [phototags/id/comments]
       return db
         .child(`phototags/${phototagId}/comments/${commentId}`)
         .remove()
         .then(() => {
-          console.log('three');
           // delete comment from [users/id/comments]
           return db
-            .child(`users/${userId}/comments/${commentId}`)
+            .child(`users/${userData.id}/comments/${commentId}`)
             .remove()
             .then(() => {
               console.log(`[success fully deleted commentId] -> ${commentId}`);
-              dispatch(getAllCommentsByUserComplete);
-              callback(null, 'done');
+              dispatch(getAllCommentsByUser(userData));
             })
             .catch(err => {
               console.log('[del comment] err', err);
-              callback(err, null);
             });
         })
         .catch(err => {
           console.log('[del comment] err', err);
-          callback(err, null);
         });
     })
     .catch(err => {
       console.log('[del comment] err', err);
-      callback(err, null);
     });
 };
 

@@ -27,8 +27,8 @@ const mapDispatchToProps = dispatch => {
     getAllCommentsByUser: user => {
       dispatch(Actions.getAllCommentsByUser(user));
     },
-    deleteOneComment: (commentId, userId, photoId) => {
-      dispatch(Actions.deleteComment(commentId, userId, photoId));
+    deleteOneComment: (commentId, userData, photoId) => {
+      dispatch(Actions.deleteComment(commentId, userData, photoId));
     },
   };
 };
@@ -71,7 +71,7 @@ class Comments extends React.Component {
     if (selectedIndex === WARNING_INDEX) {
       this.props.deleteOneComment(
         this.state.commentIdSelected,
-        this.props.user.id,
+        this.props.user,
         this.state.phototagIdForComment
       );
     }

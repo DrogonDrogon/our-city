@@ -39,21 +39,24 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       phototagRecord[key] = true;
       dispatch(Actions.addFavUnderUserId(userId, phototagRecord));
     },
-    deleteFavUnderUserId: (userId, phototagId) => {
-      dispatch(Actions.deleteFavUnderUserId(userId, phototagId));
+    deleteFavUnderUserId: (userId, phototagId, badgeCount) => {
+      dispatch(Actions.deleteFavUnderUserId(userId, phototagId, badgeCount));
     },
-    updatePhototagWithComment: (phototagId, commentId) => {
+    updatePhototagWithComment: (phototagId, commentId, badgeCount) => {
       let newCommentRecord = {};
       let key = commentId;
       newCommentRecord[key] = true;
-      dispatch(Actions.addCommentUnderPhototag(phototagId, newCommentRecord));
+      dispatch(Actions.addCommentUnderPhototag(phototagId, newCommentRecord, badgeCount));
     },
     updateUser: userData => {
       dispatch(Actions.updateUser(userData));
     },
-    deleteOneComment: (commentId, userId, photoId) => {
-      dispatch(Actions.deleteComment(commentId, userId, photoId));
+    deleteOneComment: (commentId, userData, photoId) => {
+      dispatch(Actions.deleteComment(commentId, userData, photoId));
     },
+    getAllCommentsByUser: user => {
+      dispatch(Actions.getAllCommentsByUser(user));
+    }
   };
 };
 
@@ -86,14 +89,13 @@ class MapPhotoTagScreen extends React.Component {
 
   componentDidMount() {
     let currentPhototag = this.props.navigation.state.params;
-    this.getCommentsForCurrentPhototag(currentPhototag);
+    this.getCommentsFromArrayOfCommentIds(Object.keys(currentPhototag.comments));
     this.getAuthorForCurrentPhototag(currentPhototag.userId);
   }
 
-  getCommentsForCurrentPhototag(currentPhototag) {
+  getCommentsFromArrayOfCommentIds(commentKeys) {
     // console.log('THIS COMMENTS -->', this.props.navigation.state.params.comments); // this is an object containing commentIds
     // Run the firebase query for comments here.
-    let commentKeys = Object.keys(currentPhototag.comments);
     const commentPromises = commentKeys.map(id => {
       return db
         .child('comments')
@@ -270,17 +272,24 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   handleClickFav = () => {
-    let updatedPhototag = this.state.phototag;
+    let updatedPhototag = Object.assign({}, this.state.phototag);
     // If user does not have this favorite, add
     if (!this.props.user.favs[this.state.phototag.id]) {
       this.props.addFavUnderUserId(this.props.user.id, this.state.phototag.id);
       updatedPhototag.favTotal += 1;
-      this.props.updatePhototag(this.state.phototag);
+      updatedPhototag.badges += 1;
+      this.props.updatePhototag(updatedPhototag);
+      this.setState({
+        phototag: updatedPhototag,
+      });
     } else {
       // If user does already have this favorite, remove
       this.props.deleteFavUnderUserId(this.props.user.id, this.state.phototag.id);
       updatedPhototag.favTotal -= 1;
-      this.props.updatePhototag(this.state.phototag);
+      this.props.updatePhototag(updatedPhototag);
+      this.setState({
+        phototag: updatedPhototag,
+      });
     }
     axios
       .post('https://notification-server-walter.herokuapp.com/notification', {
@@ -290,8 +299,6 @@ class MapPhotoTagScreen extends React.Component {
       .then(res => {
         console.log(res.data);
       });
-    this.state.phototag.badges += 1;
-    this.props.updatePhototag(this.state.phototag);
   };
 
   editComment(text) {
@@ -336,7 +343,6 @@ class MapPhotoTagScreen extends React.Component {
     this.props.updateUser(updatedUser);
 
     // 3. Adds the commentId under the phototag 'comments' node
-
     axios
       .post('https://notification-server-walter.herokuapp.com/notification', {
         message: `someone commented "${this.state.comment}" on on your tag  "${this.state.phototag
@@ -345,19 +351,11 @@ class MapPhotoTagScreen extends React.Component {
       })
       .then(res => {
         console.log('Notification post success', res.data);
-        let data = Object.assign({}, this.state.phototag);
-        data.badges += 1;
-        this.props.updatePhototag(this.state.phototag);
-      })
-      .then(() => {
-        this.props.updatePhototagWithComment(phototagId, commentId);
+        this.props.updatePhototagWithComment(phototagId, commentId, this.state.phototag.badges + 1);
       })
       .catch(err => {
         console.log('Notification post err', err);
-        this.props.updatePhototagWithComment(phototagId, commentId);
-        let data = Object.assign({}, this.state.phototag);
-        data.badges += 1;
-        this.props.updatePhototag(this.state.phototag);
+        this.props.updatePhototagWithComment(phototagId, commentId, this.state.phototag.badges + 1);
       });
   };
 
@@ -380,12 +378,17 @@ class MapPhotoTagScreen extends React.Component {
     this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
   };
 
-  notifyDeletedComment = (commentId, userId, photoId) => {
+  notifyDeletedComment = (commentId, userData, photoId) => {
     // Once a comment is deleted, this component is notified and refreshes UI by getting the latest comments again
-    this.props.deleteOneComment(commentId, userId, photoId);
-
-    // Need to handle refresh after the delete async call
-    this.getCommentsForCurrentPhototag(this.props.navigation.state.params);
+    this.props.deleteOneComment(commentId, this.props.user, photoId);
+    let commentsCopy = this.state.comments.slice();
+    let savedCommentIds = [];
+    for (var i = 0; i < commentsCopy.length; i++) {
+      if (commentsCopy[i].id !== commentId) {
+        savedCommentIds.push(commentsCopy[i].id);
+      }
+    }
+    this.getCommentsFromArrayOfCommentIds(savedCommentIds);
   };
 
   openEditDescription = () => {

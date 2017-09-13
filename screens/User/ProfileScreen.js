@@ -50,8 +50,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(Actions.updateLoadingStatus(true));
       dispatch(Actions.listenForPhototags);
     },
-    listenForUser: () => {
-      dispatch(Actions.checkUserLogin);
+    listenForUser: user => {
+      dispatch(Actions.listenForUserChanges(user));
     },
     submitUserUpdate: userInfo => {
       dispatch(Actions.updateUser(userInfo));
@@ -93,7 +93,7 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.props.listenForPhototags();
-    this.props.listenForUser();
+    // this.props.listenForUser(this.props.user);
   }
 
   _handleIndexChange = index => {
