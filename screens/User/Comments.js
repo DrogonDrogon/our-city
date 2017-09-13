@@ -50,7 +50,7 @@ class Comments extends React.Component {
     this.props.navigation.navigate('PhototagFromMap', item);
   };
 
-  deleteComment = (commentId, phototagId) => {
+  confirmDelete = (commentId, phototagId) => {
     console.log('comment + photo ids', commentId, phototagId);
     this.setState(
       {
@@ -87,7 +87,7 @@ class Comments extends React.Component {
             <UserOwnComment
               userId={this.props.user.id}
               comment={item}
-              deleteComment={this.deleteComment}
+              deleteComment={this.confirmDelete}
               goToPhototags={this.goToPhototagsDetail.bind(this, item.phototagData)}
             />
           )}

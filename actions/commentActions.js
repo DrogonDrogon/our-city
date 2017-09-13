@@ -1,5 +1,6 @@
 import db from '../db';
 import { SET_COMMENTS } from './constants';
+import * as Actions from './userActions';
 
 export const getAllCommentsByUser = user => dispatch => {
   let commentKeys = Object.keys(user.comments);
@@ -44,35 +45,42 @@ export const getAllCommentsByUser = user => dispatch => {
     });
 };
 
-export const deleteComment = (commentId, userId, phototagId) => dispatch => {
+export const deleteComment = (commentId, userId, phototagId, callback) => dispatch => {
+  console.log('one');
   // delete comment from [/comments]
-  db
+  return db
     .child(`comments/${commentId}`)
     .remove()
     .then(() => {
+      console.log('two');
       // delete comment from [phototags/id/comments]
-      db
+      return db
         .child(`phototags/${phototagId}/comments/${commentId}`)
         .remove()
         .then(() => {
+          console.log('three');
           // delete comment from [users/id/comments]
-          db
+          return db
             .child(`users/${userId}/comments/${commentId}`)
             .remove()
             .then(() => {
-              console.log(`[success fully deleted commentid] -> ${commentId}`);
+              console.log(`[success fully deleted commentId] -> ${commentId}`);
               dispatch(getAllCommentsByUserComplete);
+              callback(null, 'done');
             })
             .catch(err => {
               console.log('[del comment] err', err);
+              callback(err, null);
             });
         })
         .catch(err => {
           console.log('[del comment] err', err);
+          callback(err, null);
         });
     })
     .catch(err => {
       console.log('[del comment] err', err);
+      callback(err, null);
     });
 };
 
