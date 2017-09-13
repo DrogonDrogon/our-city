@@ -97,22 +97,22 @@ class ViewSolverScreen extends React.Component {
   //       }
   //     });
   //   } else {
-      // let newSolution = {
-      //   imageUrl: this.state.photoUri,
-      //   isAccepted: false,
-      //   description: this.state.description,
-      //   userId: this.props.user.id,
-      //   phototagId: this.state.phototag.id,
-      // };
-      // this.addSolution(this.props.user.id, newSolution);
-      // Alert.alert('Success', 'Solution posted', [
-      //   {
-      //     text: 'OK',
-      //     onPress: () => {
-      //       this.props.navigation.goBack();
-      //     },
-      //   },
-      // ]);
+  //     let newSolution = {
+  //       imageUrl: this.state.photoUri,
+  //       isAccepted: false,
+  //       description: this.state.description,
+  //       userId: this.props.user.id,
+  //       phototagId: this.state.phototag.id,
+  //     };
+  //     this.addSolution(this.props.user.id, newSolution);
+  //     Alert.alert('Success', 'Solution posted', [
+  //       {
+  //         text: 'OK',
+  //         onPress: () => {
+  //           this.props.navigation.goBack();
+  //         },
+  //       },
+  //     ]);
   //   }
   // };
 

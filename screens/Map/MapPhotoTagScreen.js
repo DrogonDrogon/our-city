@@ -455,7 +455,7 @@ class MapPhotoTagScreen extends React.Component {
             flex: 1,
             flexDirection: 'row',
             justifyContent: 'space-around',
-            width: '80%%',
+            width: '80%',
             alignItems: 'center',
           }}>
           {isEditable && (
@@ -474,7 +474,7 @@ class MapPhotoTagScreen extends React.Component {
             />
           </TouchableHighlight>
         </View>
-        <Text style={styles.authorContainer}>
+        <View style={styles.authorContainer}>
           <Image
             style={styles.imageSetting}
             source={{
@@ -484,7 +484,7 @@ class MapPhotoTagScreen extends React.Component {
           <Text>
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
           </Text> 
-        </Text>
+        </View>
         <View>
           <TouchableHighlight onPress={this.toggleSolutionsModal}>
             <Ionicons name="md-list" size={32} color="gray" />
