@@ -69,8 +69,8 @@ class ViewSolverScreen extends React.Component {
     }
   };
 
-   handleSaveSolution = () => {
-    let isNewPhoto = this.state.photoUri !== this.state.phototag.imageUrl;
+  handleSaveSolution = () => {
+    let isNewPhoto = this.state.photoUri !== this.state.solution.imageUrl;
 
     if (isNewPhoto) {
       // Set up file uri to save to AWS
@@ -91,7 +91,7 @@ class ViewSolverScreen extends React.Component {
           let awsUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
           let newSolution = {
             imageUrl: awsUrl,
-            description: this.state.description,
+            description: this.state.text,
           };
           this.updateSolution(this.props.user.id, newSolution);
         }
@@ -99,7 +99,7 @@ class ViewSolverScreen extends React.Component {
     } else {
       let newSolution = {
         imageUrl: this.state.photoUri,
-        description: this.state.description,
+        description: this.state.text,
       };
       this.updateSolution(this.props.user.id, newSolution);
       Alert.alert('Success', 'Solution posted', [
