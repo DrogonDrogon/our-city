@@ -138,6 +138,7 @@ class ViewSolverScreen extends React.Component {
    };
 
   render() {
+    let isEditable = this.props.user.id === this.state.phototag.userId;
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
         <Image
@@ -146,16 +147,11 @@ class ViewSolverScreen extends React.Component {
           source={{ uri: this.state.photoUri }}
         />
         <Text>{this.state.description}</Text>
-        <TextInput
-          style={styles.descriptionInput}
-          placeholder={this.state.text}
-          onChangeText={text => this.setState({ text: text })}
-          keyboardType={'default'}
-          multiline
-          ref={input => {
-            this.descriptionInput = input;
-          }}
-        />
+         {isEditable && (
+            <TouchableHighlight onPress={this.openEditDescription}>
+              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+            </TouchableHighlight>
+          )}
         <View>
           <Text>(Optional) Take an updated image of the site</Text>
           <Button title="Take new photo" onPress={this._takePic} />
@@ -195,3 +191,14 @@ const styles = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewSolverScreen);
+
+// <TextInput
+//           style={styles.descriptionInput}
+//           placeholder={this.state.text}
+//           onChangeText={text => this.setState({ text: text })}
+//           keyboardType={'default'}
+//           multiline
+//           ref={input => {
+//             this.descriptionInput = input;
+//           }}
+//         />
