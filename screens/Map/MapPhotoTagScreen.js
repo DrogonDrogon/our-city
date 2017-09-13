@@ -10,15 +10,14 @@ import {
   Button,
   TouchableHighlight,
   Share,
-  Modal,
 } from 'react-native';
 import axios from 'axios';
-import NavigationBar from 'react-native-navbar';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import Comment from '../../components/comment';
 import PhotoTagSolutions from '../../components/photoTagSolutions';
 import TaggedText from '../../components/TaggedText';
+import EditPhototagModal from '../../components/editPhototagModal';
 import * as Actions from '../../actions';
 import db from '../../db';
 
@@ -64,22 +63,19 @@ class MapPhotoTagScreen extends React.Component {
       this.props.navigation.state.params.upvotes - this.props.navigation.state.params.downvotes,
     phototag: this.props.navigation.state.params,
     comments: [],
-    modalVisibility: false,
+    modalEditVis: false,
     modalSolutionsVis: false,
-    modalNavTitle: {
-      title: 'Edit Description',
-    },
     modalNavRightButton: {
       title: 'Save',
       handler: () => {
         this.saveDescription(this.state.editedDescription);
-        this.toggleModal(false);
+        this.toggleEditModal();
       },
     },
     modalNavLeftButton: {
       title: 'Cancel',
       handler: () => {
-        this.toggleModal(false);
+        this.toggleEditModal();
       },
     },
     editedDescription: this.props.navigation.state.params.description,
@@ -369,7 +365,7 @@ class MapPhotoTagScreen extends React.Component {
 
   openEditDescription = () => {
     console.log('Editing description');
-    this.toggleModal(true);
+    this.toggleEditModal();
   };
 
   editDescription = description => {
@@ -385,8 +381,8 @@ class MapPhotoTagScreen extends React.Component {
     });
   };
 
-  toggleModal = bool => {
-    this.setState({ modalVisibility: bool });
+  toggleEditModal = () => {
+    this.setState({ modalEditVis: !this.state.modalEditVis });
   };
 
   toggleSolutionsModal = () => {
@@ -406,33 +402,15 @@ class MapPhotoTagScreen extends React.Component {
           />
           <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
         </View>
-        <Modal
-          animationType={'slide'}
-          transparent={false}
-          visible={this.state.modalVisibility}
-          onRequestClose={() => {}}>
-          <NavigationBar
-            title={this.state.modalNavTitle}
-            rightButton={this.state.modalNavRightButton}
-            leftButton={this.state.modalNavLeftButton}
-          />
-          <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-            <View style={styles.photoDisplayContainer}>
-              <Image
-                style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-                source={{ uri: this.state.phototag.imageUrl }}
-              />
-              <TextInput
-                value={this.state.editedDescription}
-                placeholder="Enter description"
-                onChangeText={text => this.editDescription(text)}
-                clearButtonMode={'always'}
-                style={styles.descriptionInput}
-                multiline
-              />
-            </View>
-          </KeyboardAwareScrollView>
-        </Modal>
+        <EditPhototagModal 
+          toggleEditModal={this.modalEditVis}
+          modalEditVis={this.state.modalEditVis}
+          phototag={this.state.phototag}
+          modalNavRightButton={this.state.modalNavRightButton}
+          modalNavLeftButton={this.state.modalNavLeftButton}
+          editedDescription={this.state.editedDescription}
+          editDescription={this.editDescription}
+        />
         <View style={{ flex: 1, flexDirection: 'column' }}>
           <TouchableHighlight onPress={this.handleClickUpvote}>
             <Ionicons
