@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     getUserFavorites: user => {
       dispatch(Actions.fetchFavoritesByUser(user));
-    }
+    },
   };
 };
 
@@ -42,6 +42,9 @@ class Favourites extends React.Component {
               phototag={fav}
               goToPhototags={this.goToPhototagsDetail.bind(this, fav)}
               navigation={this.props.navigation}
+              badges={fav.badges}
+              deleteBadges={this.props.deleteBadges}
+              decreaseBadges={this.props.decreaseBadges}
             />
           ))}
       </View>
