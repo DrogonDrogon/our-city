@@ -46,9 +46,12 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   // Define the function that will be passed as prop
   return {
-    getAllPhototags: () => {
+    listenForPhototags: () => {
       dispatch(Actions.updateLoadingStatus(true));
-      dispatch(Actions.fetchPhototags);
+      dispatch(Actions.listenForPhototags);
+    },
+    listenForUser: () => {
+      dispatch(Actions.checkUserLogin);
     },
     submitUserUpdate: userInfo => {
       dispatch(Actions.updateUser(userInfo));
@@ -89,7 +92,8 @@ class HomeScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.props.getAllPhototags();
+    this.props.listenForPhototags();
+    this.props.listenForUser();
   }
 
   _handleIndexChange = index => {
