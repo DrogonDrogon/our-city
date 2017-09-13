@@ -187,6 +187,7 @@ class CameraScreen extends React.Component {
         latitude: this.props.location.latitude,
         longitude: this.props.location.longitude,
       });
+      phototag.badges = 0;
       phototag.reps = this.state.reps;
       console.log('[saveImg] phototag.reps: ', phototag.reps);
 
