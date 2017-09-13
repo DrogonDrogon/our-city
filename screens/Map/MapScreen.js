@@ -1,7 +1,18 @@
 import React from 'react';
 import { MapView, Location } from 'expo';
 import { connect } from 'react-redux';
-import { Button, Text, Image, StyleSheet, View, ActivityIndicator, Alert } from 'react-native';
+import SegmentedControlTab from 'react-native-segmented-control-tab';
+import {
+  Dimensions,
+  Button,
+  TouchableHighlight,
+  Text,
+  Image,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
@@ -48,6 +59,7 @@ class MapScreen extends React.Component {
       FavIsSelected: false,
       user: null,
     },
+    selectedIndex: 0,
   };
 
   componentDidMount() {
@@ -101,10 +113,10 @@ class MapScreen extends React.Component {
     }
   }
 
-  toggleView = () => {
-    let reverse = !this.state.isMapToggled;
-    this.setState({ isMapToggled: reverse }, () => {
-      console.log('toggled', this.state.isMapToggled);
+  _handleIndexChange = index => {
+    this.setState({
+      ...this.state,
+      selectedIndex: index,
     });
   };
 
@@ -180,14 +192,14 @@ class MapScreen extends React.Component {
     }
     if (sortBy === 'Popular') {
       return photoTags.sort((a, b) => {
-        let result = b.upvotes*Date.parse(b.timestamp)-a.upvotes*Date.parse(a.timestamp);
+        let result = b.upvotes * Date.parse(b.timestamp) - a.upvotes * Date.parse(a.timestamp);
         console.log('popular filter', result);
         return result;
       });
     }
     if (sortBy === 'Votes') {
       return photoTags.sort((a, b) => {
-        return (a.upvotes-a.downvotes)-(b.upvotes-b.downvotes);
+        return a.upvotes - a.downvotes - (b.upvotes - b.downvotes);
       });
     }
     if (sortBy === 'Favorites') {
@@ -237,16 +249,9 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    if (this.state.isMapToggled === true) {
+    if (this.state.selectedIndex === 0) {
       return (
         <View style={{ height: '100%' }}>
-          <FilterScreen
-            filters={this.state.filters}
-            tags={this.state.tags}
-            getFilters={this.getFilters.bind(this)}
-            genFilterTags={this.genFilterTags.bind(this)}
-            />
-          <Button onPress={this.toggleView} title="Switch to List" />
           <MapView
             showsUserLocation
             followsUserLocation
@@ -254,7 +259,6 @@ class MapScreen extends React.Component {
             provider={MapView.PROVIDER_GOOGLE}
             style={styles.map}
             region={this.state.region}>
-
             {this.props.phototags &&
               this.filterPhotoTags(this.props.phototags)
                 .filter(marker =>
@@ -279,23 +283,38 @@ class MapScreen extends React.Component {
                   </MapView.Marker>
                 ))}
           </MapView>
-        </View>
-      );
-    } else {
-      return (
-        <View style={{ height: '100%' }}>
+          <SegmentedControlTab
+            values={['Map', 'List']}
+            selectedIndex={this.state.selectedIndex}
+            onTabPress={this._handleIndexChange}
+            borderRadius={14}
+            tabsContainerStyle={styles.tabsContainerStyle}
+            tabStyle={styles.tabStyle}
+            tabTextStyle={styles.tabTextStyle}
+            activeTabStyle={styles.activeTabStyle}
+            activeTabTextStyle={styles.activeTabTextStyle}
+          />
           <FilterScreen
             filters={this.state.filters}
             tags={this.state.tags}
             getFilters={this.getFilters.bind(this)}
             genFilterTags={this.genFilterTags.bind(this)}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}
           />
-          <Button onPress={this.toggleView} title="Switch to Map" />
+        </View>
+      );
+    } else {
+      return (
+        <View style={{ height: '100%' }}>
           <ListView
-            phototags={this.sortPhotoTags(
-              this.filterPhotoTags(this.props.phototags))
-              .slice(0, this.state.filters.numResults)
-            }
+            phototags={this.sortPhotoTags(this.filterPhotoTags(this.props.phototags)).slice(
+              0,
+              this.state.filters.numResults
+            )}
             navigation={this.props.navigation}
           />
           {this.props.isLoading && (
@@ -303,6 +322,23 @@ class MapScreen extends React.Component {
               <ActivityIndicator animated={this.props.isLoading} size="large" />
             </View>
           )}
+          <SegmentedControlTab
+            values={['Map', 'List']}
+            selectedIndex={this.state.selectedIndex}
+            onTabPress={this._handleIndexChange}
+            borderRadius={14}
+            tabsContainerStyle={styles.tabsContainerStyle}
+            tabStyle={styles.tabStyle}
+            tabTextStyle={styles.tabTextStyle}
+            activeTabStyle={styles.activeTabStyle}
+            activeTabTextStyle={styles.activeTabTextStyle}
+          />
+          <FilterScreen
+            filters={this.state.filters}
+            tags={this.state.tags}
+            getFilters={this.getFilters.bind(this)}
+            genFilterTags={this.genFilterTags.bind(this)}
+          />
         </View>
       );
     }
@@ -324,5 +360,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5FCFF88',
+  },
+  switchButton: {
+    position: 'absolute',
+  },
+  tabsContainerStyle: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 200,
+    backgroundColor: 'transparent',
+  },
+  tabStyle: {
+    backgroundColor: '#fff',
+    borderColor: '#2f95dc',
+    height: 28,
+  },
+  tabTextStyle: {
+    color: '#2f95dc',
+  },
+  activeTabStyle: {
+    backgroundColor: '#2f95dc',
+    borderColor: '#2f95dc',
+  },
+  activeTabTextStyle: {
+    color: '#fff',
   },
 });
