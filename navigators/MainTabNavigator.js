@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, View, Text } from 'react-native';
+import { Platform, View, Text, TouchableHighlight } from 'react-native';
 import { Ionicons, MaterialCmmunityIcons } from '@expo/vector-icons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import Colors from '../constants/Colors';
@@ -46,7 +46,7 @@ export default TabNavigator(
     },
   },
   {
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: ({ navigation, screenProps }) => ({
       tabBarIcon: ({ focused }) => {
         const { routeName } = navigation.state;
         let iconName;

@@ -23,6 +23,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateBadge: badges => {
       dispatch(Actions.setBadge(badges));
     },
+    getAllPhototags: () => {
+      dispatch(Actions.updateLoadingStatus(true));
+      dispatch(Actions.fetchPhototags);
+    },
   };
 };
 const RootStackNavigator = StackNavigator(
@@ -66,6 +70,10 @@ const RootStackNavigator = StackNavigator(
 );
 
 class RootNavigator extends React.Component {
+  constructor() {
+    super();
+    this.deleteBadges = this.deleteBadges.bind(this);
+  }
   static navigationOptions = {
     title: 'SplashScreen',
   };
@@ -76,8 +84,16 @@ class RootNavigator extends React.Component {
     this._notificationSubscription && this._notificationSubscription.remove();
   }
 
+  deleteBadges() {
+    this.props.updateBadge(0);
+  }
+
   render() {
-    return <RootStackNavigator screenProps={{ badges: this.props.badges }} />;
+    return (
+      <RootStackNavigator
+        screenProps={{ badges: this.props.badges, updateBadge: this.deleteBadges }}
+      />
+    );
   }
 
   _registerForPushNotifications() {
@@ -95,6 +111,7 @@ class RootNavigator extends React.Component {
     console.log('type', typeof this.props.badges);
     console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
     this.props.updateBadge(this.props.badges + 1);
+    this.props.getAllPhototags();
   };
 }
 
