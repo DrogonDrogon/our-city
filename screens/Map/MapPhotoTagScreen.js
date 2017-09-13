@@ -278,7 +278,7 @@ class MapPhotoTagScreen extends React.Component {
       this.props.updatePhototag(this.state.phototag);
     }
     axios
-      .post('http://cd41a62b.ngrok.io/notification', {
+      .post('https://notification-server-walter.herokuapp.com/notification', {
         message: `someone liked your tag with description "${this.state.phototag.description}"`,
         userid: this.state.phototag.userId,
       })
@@ -333,7 +333,7 @@ class MapPhotoTagScreen extends React.Component {
     // 3. Adds the commentId under the phototag 'comments' node
     this.props.updatePhototagWithComment(phototagId, commentId);
     axios
-      .post('http://cd41a62b.ngrok.io/notification', {
+      .post('https://notification-server-walter.herokuapp.com/notification', {
         message: `someone commented "${this.state.comment}" on on your tag  "${this.state.phototag
           .description}"`,
         userid: this.state.phototag.userId,
@@ -408,7 +408,7 @@ class MapPhotoTagScreen extends React.Component {
           />
           <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
         </View>
-        <EditPhototagModal 
+        <EditPhototagModal
           toggleEditModal={this.modalEditVis}
           modalEditVis={this.state.modalEditVis}
           phototag={this.state.phototag}
