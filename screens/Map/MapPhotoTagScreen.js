@@ -9,13 +9,15 @@ import {
   TextInput,
   Button,
   TouchableHighlight,
-  Alert,
   Share,
 } from 'react-native';
+import axios from 'axios';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import Comment from '../../components/comment';
+import PhotoTagSolutions from '../../components/photoTagSolutions';
 import TaggedText from '../../components/TaggedText';
+import EditPhototagModal from '../../components/editPhototagModal';
 import * as Actions from '../../actions';
 import db from '../../db';
 
@@ -55,11 +57,28 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class MapPhotoTagScreen extends React.Component {
   state = {
     comment: '',
-    votes: this.props.navigation.state.params.upvotes,
+    upvotes: this.props.navigation.state.params.upvotes,
+    downvotes: this.props.navigation.state.params.downvotes,
+    voteTotal:
+      this.props.navigation.state.params.upvotes - this.props.navigation.state.params.downvotes,
     phototag: this.props.navigation.state.params,
-    edited: false,
     comments: [],
-    tempCommentId: 0,
+    modalEditVis: false,
+    modalSolutionsVis: false,
+    modalNavRightButton: {
+      title: 'Save',
+      handler: () => {
+        this.saveDescription(this.state.editedDescription);
+        this.toggleEditModal();
+      },
+    },
+    modalNavLeftButton: {
+      title: 'Cancel',
+      handler: () => {
+        this.toggleEditModal();
+      },
+    },
+    editedDescription: this.props.navigation.state.params.description,
   };
 
   componentDidMount() {
@@ -116,47 +135,133 @@ class MapPhotoTagScreen extends React.Component {
       });
   }
 
-  handleUpvote = () => {
-    if (
-      !this.props.user.votes.hasOwnProperty(this.state.phototag.id) ||
-      this.props.user.votes[this.state.phototag.id] === 0
-    ) {
-      this.setState({ votes: this.state.votes + 1 }, () => {
+  handleClickUpvote = () => {
+    let userVotes = this.props.user.votes;
+    let phototagId = this.state.phototag.id;
+
+    // if the user has not up-voted or down-voted before, or if currently 0
+    if (!userVotes.hasOwnProperty(phototagId) || userVotes[phototagId] === 0) {
+      this.setState({ upvotes: this.state.upvotes + 1 }, () => {
         // Update user
-        let userData = this.props.user;
-        userData.votes[this.state.phototag.id] = 1;
+        let userData = Object.assign({}, this.props.user);
+        userData.votes[phototagId] = 1;
         this.props.updateUser(userData);
 
         // Update phototag
         let phototagData = this.state.phototag;
-        phototagData.upvotes = this.state.votes;
+        phototagData.upvotes = this.state.upvotes;
         this.props.updatePhototag(phototagData);
+
+        this.updateVoteTotal();
       });
-    } else {
-      Alert.alert(
-        'Note',
-        'You have already submitted 1 vote for this! To remove your vote, click the down button'
+    } else if (userVotes[phototagId] === 1) {
+      // if the user has up-voted already, undo the upvote.
+      this.setState({ upvotes: this.state.upvotes - 1 }, () => {
+        // Update user
+        let userData = this.props.user;
+        userData.votes[phototagId] = 0;
+        this.props.updateUser(userData);
+
+        // Update phototag
+        let phototagData = this.state.phototag;
+        phototagData.upvotes = this.state.upvotes;
+        this.props.updatePhototag(phototagData);
+
+        this.updateVoteTotal();
+      });
+    } else if (userVotes[phototagId] === -1) {
+      // if the user has down-voted already, undo the downvote and add a upvote.
+      this.setState(
+        {
+          upvotes: this.state.upvotes + 1,
+          downvotes: this.state.downvotes - 1,
+        },
+        () => {
+          // Update user
+          let userData = this.props.user;
+          userData.votes[phototagId] = 1;
+          this.props.updateUser(userData);
+
+          // Update phototag upvotes and downvotes count
+          let phototagData = this.state.phototag;
+          phototagData.upvotes = this.state.upvotes;
+          phototagData.downvotes = this.state.downvotes;
+          this.props.updatePhototag(phototagData);
+
+          this.updateVoteTotal();
+        }
       );
     }
   };
 
-  handleUndoUpvote = () => {
-    if (
-      this.props.user.votes.hasOwnProperty(this.state.phototag.id) &&
-      this.props.user.votes[this.state.phototag.id] === 1
-    ) {
-      this.setState({ votes: this.state.votes - 1 }, () => {
+  handleClickDownvote = () => {
+    let userVotes = this.props.user.votes;
+    let phototagId = this.state.phototag.id;
+
+    // if the user has not up-voted or down-voted before, or if currently 0
+    if (!userVotes.hasOwnProperty(phototagId) || userVotes[phototagId] === 0) {
+      this.setState({ downvotes: this.state.downvotes + 1 }, () => {
         // Update user
         let userData = this.props.user;
-        userData.votes[this.state.phototag.id] = 0;
+        userData.votes[phototagId] = -1;
         this.props.updateUser(userData);
 
         // Update phototag
         let phototagData = this.state.phototag;
-        phototagData.upvotes = this.state.votes;
+        phototagData.downvotes = this.state.downvotes;
         this.props.updatePhototag(phototagData);
+
+        this.updateVoteTotal();
       });
+    } else if (userVotes[phototagId] === 1) {
+      // if the user has up-voted already, undo the upvote and add a downvote.
+      this.setState(
+        {
+          upvotes: this.state.upvotes - 1,
+          downvotes: this.state.downvotes + 1,
+        },
+        () => {
+          // Update user
+          let userData = this.props.user;
+          userData.votes[phototagId] = -1;
+          this.props.updateUser(userData);
+
+          // Update phototag
+          let phototagData = this.state.phototag;
+          phototagData.upvotes = this.state.upvotes;
+          phototagData.downvotes = this.state.downvotes;
+          this.props.updatePhototag(phototagData);
+
+          this.updateVoteTotal();
+        }
+      );
+    } else if (userVotes[phototagId] === -1) {
+      // if the user has down-voted already, then undo the downvote.
+      this.setState(
+        {
+          downvotes: this.state.downvotes - 1,
+        },
+        () => {
+          // Update user
+          let userData = this.props.user;
+          userData.votes[phototagId] = 0;
+          this.props.updateUser(userData);
+
+          // Update phototag upvotes and downvotes count
+          let phototagData = this.state.phototag;
+          phototagData.downvotes = this.state.downvotes;
+          this.props.updatePhototag(phototagData);
+
+          this.updateVoteTotal();
+        }
+      );
     }
+  };
+
+  updateVoteTotal = () => {
+    this.setState({
+      voteTotal: this.state.upvotes - this.state.downvotes,
+    });
   };
 
   handleClickFav = () => {
@@ -172,6 +277,16 @@ class MapPhotoTagScreen extends React.Component {
       updatedPhototag.favTotal -= 1;
       this.props.updatePhototag(this.state.phototag);
     }
+    axios
+      .post('http://cd41a62b.ngrok.io/notification', {
+        message: `someone liked your tag with description "${this.state.phototag.description}"`,
+        userid: this.state.phototag.userId,
+      })
+      .then(res => {
+        console.log(res.data);
+      });
+    this.state.phototag.badges += 1;
+    this.props.updatePhototag(this.state.phototag);
   };
 
   editComment(text) {
@@ -217,27 +332,73 @@ class MapPhotoTagScreen extends React.Component {
 
     // 3. Adds the commentId under the phototag 'comments' node
     this.props.updatePhototagWithComment(phototagId, commentId);
+    axios
+      .post('http://cd41a62b.ngrok.io/notification', {
+        message: `someone commented "${this.state.comment}" on on your tag  "${this.state.phototag
+          .description}"`,
+        userid: this.state.phototag.userId,
+      })
+      .then(res => {
+        console.log(res.data);
+      });
+    this.state.phototag.badges += 1;
+    this.props.updatePhototag(this.state.phototag);
   };
 
-  share() {
+  share = () => {
     Share.share({
       title: this.state.phototag.description,
       message: this.state.phototag.description,
       url: this.state.phototag.imageUrl,
     });
-  }
+  };
 
-  goToElectedOfficials() {
+  solve = () => {
+    this.props.navigation.navigate('SolverScreen', {
+      phototag: Object.assign({}, this.state.phototag),
+    });
+  };
+
+  goToElectedOfficials = () => {
     let phototagData = this.state.phototag;
     this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
-  }
+  };
 
   notifyDeletedComment = () => {
     // Once a comment is deleted, this component is notified and refreshes UI by getting the latest comments again
     this.getCommentsForCurrentPhototag(this.props.navigation.state.params);
   };
 
+  openEditDescription = () => {
+    console.log('Editing description');
+    this.toggleEditModal();
+  };
+
+  editDescription = description => {
+    this.setState({ editedDescription: description });
+  };
+
+  saveDescription = description => {
+    let updatedData = this.state.phototag;
+    updatedData.description = description;
+    this.setState({ phototag: updatedData }, () => {
+      this.props.updatePhototag(this.state.phototag);
+      this.setState({ editedDescription: description });
+    });
+  };
+
+  toggleEditModal = () => {
+    this.setState({ modalEditVis: !this.state.modalEditVis });
+  };
+
+  toggleSolutionsModal = () => {
+    this.setState({ modalSolutionsVis: !this.state.modalSolutionsVis });
+  };
+
   render() {
+    let isEditable = this.props.user.id === this.state.phototag.userId;
+    let userVoteStatus = this.props.user.votes[this.state.phototag.id];
+
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.photoDisplayContainer}>
@@ -245,39 +406,83 @@ class MapPhotoTagScreen extends React.Component {
             style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.phototag.imageUrl }}
           />
-          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description}/>
+          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
         </View>
-        <Text style={styles.authorContainer}>
+        <EditPhototagModal 
+          toggleEditModal={this.modalEditVis}
+          modalEditVis={this.state.modalEditVis}
+          phototag={this.state.phototag}
+          modalNavRightButton={this.state.modalNavRightButton}
+          modalNavLeftButton={this.state.modalNavLeftButton}
+          editedDescription={this.state.editedDescription}
+          editDescription={this.editDescription}
+        />
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          <TouchableHighlight onPress={this.handleClickUpvote}>
+            <Ionicons
+              name="md-arrow-round-up"
+              size={32}
+              color={userVoteStatus === 1 ? 'orange' : 'gray'}
+            />
+          </TouchableHighlight>
+          <Text style={styles.titleText}>{this.state.voteTotal}</Text>
+          <TouchableHighlight onPress={this.handleClickDownvote}>
+            <Ionicons
+              name="md-arrow-round-down"
+              size={32}
+              color={userVoteStatus === -1 ? 'orange' : 'gray'}
+            />
+          </TouchableHighlight>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            width: '80%',
+            alignItems: 'center',
+          }}>
+          {isEditable && (
+            <TouchableHighlight onPress={this.openEditDescription}>
+              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+            </TouchableHighlight>
+          )}
+          <TouchableHighlight onPress={this.share}>
+            <Ionicons name="md-share" size={32} color="gray" />
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.handleClickFav}>
+            <Ionicons
+              name="md-heart"
+              size={32}
+              color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'gray'}
+            />
+          </TouchableHighlight>
+        </View>
+        <View style={styles.authorContainer}>
           <Image
             style={styles.imageSetting}
             source={{
-              uri:
-                this.state.authorPhoto ||
-                'https://upload.wikimedia.org/wikipedia/commons/4/41/NYC_Skyline_Silhouette.png',
+              uri: this.state.authorPhoto,
             }}
           />
           <Text>
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
           </Text>
-        </Text>
-        <View
-          style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
-          <TouchableHighlight onPress={this.handleClickFav}>
-            <Ionicons
-              name="md-heart"
-              size={32}
-              color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'black'}
-            />
+        </View>
+        <View>
+          <TouchableHighlight onPress={this.toggleSolutionsModal}>
+            <Ionicons name="md-list" size={32} color="gray" />
           </TouchableHighlight>
-          <TouchableHighlight onPress={this.handleUpvote}>
-            <Ionicons name="md-arrow-up" size={32} color="blue" />
-          </TouchableHighlight>
-          <Text style={styles.titleText}>{this.state.votes}</Text>
-          <TouchableHighlight onPress={this.handleUndoUpvote}>
-            <Ionicons name="md-arrow-down" size={32} color="blue" />
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.share.bind(this)}>
-            <Ionicons name="md-share-alt" size={32} color="blue" />
+          <PhotoTagSolutions
+            style={{ height: '75%' }}
+            navigation={this.props.navigation}
+            toggleSolutionsModal={this.toggleSolutionsModal.bind(this)}
+            modalSolutionsVis={this.state.modalSolutionsVis}
+            phototag={this.state.phototag}
+            userId={this.props.user.id}
+          />
+          <TouchableHighlight onPress={this.solve}>
+            <Ionicons name="md-bulb" size={32} color="gray" />
           </TouchableHighlight>
         </View>
         <Text style={styles.titleText}>Comments</Text>
@@ -298,20 +503,20 @@ class MapPhotoTagScreen extends React.Component {
         />
         <Button title="Submit comment" onPress={this.handleSubmitComment} />
         {this.state.phototag.reps && (
-          <Button
-            title="View government contact info"
-            onPress={this.goToElectedOfficials.bind(this)}
-          />
+          <Button title="View government contact info" onPress={this.goToElectedOfficials} />
         )}
       </KeyboardAwareScrollView>
     );
   }
 }
 
+//<PhotoTagSolutions style={{height: '75%',}} toggleSolutionsModal={this.toggleSolutionsModal.bind(this)} modalSolutionsVis={this.state.modalSolutionsVis}/>
+
 const styles = StyleSheet.create({
   scrollViewContainer: {
     alignItems: 'center',
     paddingBottom: 50,
+    backgroundColor: '#FBF8F5',
   },
   titleText: {
     textAlign: 'center',
@@ -344,6 +549,14 @@ const styles = StyleSheet.create({
   hashtag: {
     color: 'blue',
     fontWeight: 'bold',
+  },
+  iconStyle: {
+    backgroundColor: '#FBF8F5',
+  },
+  descriptionInput: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 10,
   },
 });
 

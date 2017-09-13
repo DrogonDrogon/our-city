@@ -5,6 +5,15 @@ import isLoading from './isLoading';
 import isLoggedIn from './isLoggedIn';
 import userFavs from './userFavs';
 import location from './location';
-const rootReducer = combineReducers({ user, phototags, isLoading, isLoggedIn, userFavs, location });
+import badges from './badges';
+const rootReducer = combineReducers({
+  user,
+  phototags,
+  isLoading,
+  isLoggedIn,
+  userFavs,
+  location,
+  badges,
+});
 
 export default rootReducer;

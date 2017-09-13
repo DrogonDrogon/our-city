@@ -6,6 +6,7 @@ class Posts extends React.Component {
   componentWillUpdate() {
     // console.log('posts updated', this.props);
   }
+  componentDidMount() {}
 
   render() {
     return (
@@ -20,6 +21,8 @@ class Posts extends React.Component {
                 key={item.id}
                 goToPhototags={this.props.goToPhototags.bind(this, item)}
                 navigation={this.props.navigation}
+                badges={item.badges}
+                deleteBadges={this.props.deleteBadges}
               />
             ))}
       </View>

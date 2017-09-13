@@ -4,17 +4,38 @@ import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import LoginScreen from '../screens/Login/LoginScreen';
 import MapPhotoTagScreen from '../screens/Map/MapPhotoTagScreen';
-import UserPhotoTagScreen from '../screens/User/UserPhotoTagScreen';
 import SplashScreen from '../screens/SplashScreen';
 import SignupScreen from '../screens//Login/SignupScreen';
 import electedOfficials from '../screens/elected_official';
+import SolverScreen from '../screens/User/SolverScreen';
+import ViewSolverScreen from '../screens/User/ViewSolverScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
-
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
 // RootNavigation actually uses a StackNavigator but the StackNavigator in turn loads a TabNavigator
+const mapStateToProps = (state, ownProps) => {
+  return {
+    badges: state.badges,
+  };
+};
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    updateBadge: badges => {
+      dispatch(Actions.setBadge(badges));
+    },
+    getAllPhototags: () => {
+      dispatch(Actions.updateLoadingStatus(true));
+      dispatch(Actions.fetchPhototags);
+    },
+  };
+};
 const RootStackNavigator = StackNavigator(
   {
     SplashScreen: {
       screen: SplashScreen,
+      navigationOptions: {
+        header: false,
+      },
     },
     Login: {
       screen: LoginScreen,
@@ -25,14 +46,18 @@ const RootStackNavigator = StackNavigator(
     PhototagFromMap: {
       screen: MapPhotoTagScreen,
     },
-    PhototagFromUser: {
-      screen: UserPhotoTagScreen,
-    },
     Signup: {
       screen: SignupScreen,
     },
     electedOfficials: {
       screen: electedOfficials,
+    },
+    SolverScreen: {
+      screen: SolverScreen,
+    },
+
+    ViewSolverScreen: {
+      screen: ViewSolverScreen,
     },
   },
   {
@@ -44,17 +69,31 @@ const RootStackNavigator = StackNavigator(
   }
 );
 
-export default class RootNavigator extends React.Component {
+class RootNavigator extends React.Component {
+  constructor() {
+    super();
+    this.deleteBadges = this.deleteBadges.bind(this);
+  }
   static navigationOptions = {
     title: 'SplashScreen',
   };
-
+  componentWillMount() {
+    this._registerForPushNotifications();
+  }
   componentWillUnmount() {
     this._notificationSubscription && this._notificationSubscription.remove();
   }
 
+  deleteBadges() {
+    this.props.updateBadge(0);
+  }
+
   render() {
-    return <RootStackNavigator />;
+    return (
+      <RootStackNavigator
+        screenProps={{ badges: this.props.badges, updateBadge: this.deleteBadges }}
+      />
+    );
   }
 
   _registerForPushNotifications() {
@@ -69,6 +108,11 @@ export default class RootNavigator extends React.Component {
   }
 
   _handleNotification = ({ origin, data }) => {
+    console.log('type', typeof this.props.badges);
     console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
+    this.props.updateBadge(this.props.badges + 1);
+    this.props.getAllPhototags();
   };
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(RootNavigator);

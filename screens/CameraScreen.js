@@ -60,7 +60,7 @@ class CameraScreen extends React.Component {
   _takePic = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [16, 9],
       base64: true,
       exif: true,
     });
@@ -75,7 +75,7 @@ class CameraScreen extends React.Component {
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [16, 9],
       base64: true,
       exif: true,
     });
@@ -181,11 +181,13 @@ class CameraScreen extends React.Component {
       phototag.downvotes = 0;
       phototag.favTotal = 0;
       phototag.comments = { placeholderComment: true };
+      phototag.solutions = { solutionId: true };
       phototag.userProfileUrl = this.props.user.photoUrl;
       phototag.address = await Location.reverseGeocodeAsync({
         latitude: this.props.location.latitude,
         longitude: this.props.location.longitude,
       });
+      phototag.badges = 0;
       phototag.reps = this.state.reps;
       console.log('[saveImg] phototag.reps: ', phototag.reps);
 

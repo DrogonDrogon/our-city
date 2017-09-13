@@ -2,11 +2,13 @@ import React from 'react';
 import { View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
+import { Permissions, Notifications } from 'expo';
 import * as Actions from '../actions';
 import AppStyles from '../styles/AppStyles';
 
 const mapStateToProps = state => {
   return {
+    user: state.user,
     isLoggedIn: state.isLoggedIn,
   };
 };
@@ -16,24 +18,49 @@ const mapDispatchToProps = dispatch => {
     checkIfLoggedIn: () => {
       dispatch(Actions.checkUserLogin());
     },
+    updateUser: userData => {
+      dispatch(Actions.updateUser(userData));
+    },
   };
 };
 
 class SplashScreen extends React.Component {
-  static navigationOptions = { header: null };
-
   componentDidMount() {
     this.props.checkIfLoggedIn();
   }
 
   componentDidUpdate() {
     if (this.props.isLoggedIn) {
+      this.notifications();
       console.log('[SplashScreen] --> navigate to main');
       this._navigateTo('Main');
     } else {
       console.log('[SplashScreen] --> navigate to auth');
       this._navigateTo('Login');
     }
+  }
+  async notifications() {
+    console.log('notifications splash');
+
+    const { existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      return;
+    }
+
+    // Get the token that uniquely identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+    console.log(token);
+
+    this.props.user.token = token;
+    console.log('token', this.props.user);
+    this.props.updateUser(this.props.user);
   }
 
   _navigateTo(routeName) {
@@ -47,7 +74,11 @@ class SplashScreen extends React.Component {
   render() {
     return (
       <View style={AppStyles.splash}>
-        <Image style={{height: '100%', width: '100%'}} source={require('../assets/images/mesh-1430108_1280.png')} resizeMode="cover" />
+        <Image
+          style={{ height: '100%', width: '100%' }}
+          source={require('../assets/images/mesh-1430108_1280.png')}
+          resizeMode="cover"
+        />
       </View>
     );
   }

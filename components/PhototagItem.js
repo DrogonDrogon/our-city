@@ -1,20 +1,51 @@
 import React from 'React';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
 import TaggedText from './TaggedText';
+import IconBadge from 'react-native-icon-badge';
 
 class PhototagItem extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     return (
       <View style={styles.container}>
+        <View
+          style={{
+            alignSelf: 'flex-end',
+            marginTop: -5,
+            position: 'absolute',
+          }}>
+          <IconBadge
+            MainElement={
+              <View
+                style={{
+                  backgroundColor: '#fff',
+                  width: 50,
+                  height: 50,
+                  margin: 6,
+                }}
+              />
+            }
+            BadgeElement={<Text style={{ color: '#000' }}>{this.props.badges}</Text>}
+            IconBadgeStyle={{
+              width: 30,
+              height: 30,
+              backgroundColor: '#ff0000',
+            }}
+            Hidden={this.props.badges === 0}
+          />
+        </View>
         <TouchableHighlight
-          onPress={this.props.goToPhototags}
+          onPress={() => {
+            this.props.deleteBadges(this.props.phototag);
+            this.props.goToPhototags();
+          }}
           style={{ width: '100%', height: 200 }}>
           <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
         </TouchableHighlight>
-        <TaggedText navigation={this.props.navigation} text={this.props.phototag.description}/>
+        <TaggedText navigation={this.props.navigation} text={this.props.phototag.description} />
       </View>
     );
   }
@@ -42,6 +73,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: Image.resizeMode.contain,
+    backgroundColor: '#fff',
   },
 });
 

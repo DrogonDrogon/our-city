@@ -1,18 +1,31 @@
 import React from 'react';
-import { MapView, Location, Permissions } from 'expo';
+import { MapView, Location, Notifications } from 'expo';
 import { connect } from 'react-redux';
-import { Button, Text, Image, StyleSheet, View, ScrollView, Alert } from 'react-native';
+import SegmentedControlTab from 'react-native-segmented-control-tab';
+import {
+  Dimensions,
+  Button,
+  TouchableHighlight,
+  Text,
+  Image,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
 import FilterScreen from './FilterScreen';
 import * as Actions from '../../actions';
-
+import axios from 'axios';
+//import registerForPushNotificationsAsync from 'registerForPushNotificationsAsync';
 const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
     location: state.location,
     user: state.user,
+    isLoading: state.isLoading,
   };
 };
 
@@ -37,7 +50,7 @@ class MapScreen extends React.Component {
     markers: [],
     isMapToggled: true,
     modalVisible: false,
-    tags: ['parks', 'trees', 'waterfalls'],
+    tags: [],
     filters: {
       selectedTags: [],
       numResults: 25,
@@ -47,6 +60,7 @@ class MapScreen extends React.Component {
       FavIsSelected: false,
       user: null,
     },
+    selectedIndex: 0,
   };
 
   componentDidMount() {
@@ -100,14 +114,15 @@ class MapScreen extends React.Component {
     }
   }
 
-  toggleView = () => {
-    let reverse = !this.state.isMapToggled;
-    this.setState({ isMapToggled: reverse }, () => {
-      console.log('toggled', this.state.isMapToggled);
+  _handleIndexChange = index => {
+    this.setState({
+      ...this.state,
+      selectedIndex: index,
     });
   };
 
   goToPhototags(marker) {
+    console.log('clicked marker');
     this.props.navigation.navigate('PhototagFromMap', marker);
   }
 
@@ -166,29 +181,31 @@ class MapScreen extends React.Component {
     });
     if (tags.length !== this.state.tags.length) {
       this.setState({ tags });
-    }  
+    }
   }
 
   sortPhotoTags(photoTags) {
     let sortBy = this.state.filters.sortBy;
     if (sortBy === 'Date') {
       return photoTags.sort((a, b) => {
-        return Date.parse(a.timestamp) - Date.parse(b.timestamp);
+        return Date.parse(b.timestamp) - Date.parse(a.timestamp);
       });
     }
     if (sortBy === 'Popular') {
       return photoTags.sort((a, b) => {
-        return Date.parse(a.timestamp) - Date.parse(b.timestamp);
+        let result = b.upvotes * Date.parse(b.timestamp) - a.upvotes * Date.parse(a.timestamp);
+        console.log('popular filter', result);
+        return result;
       });
     }
     if (sortBy === 'Votes') {
       return photoTags.sort((a, b) => {
-        return a.upvotes - b.upvotes;
+        return a.upvotes - a.downvotes - (b.upvotes - b.downvotes);
       });
     }
     if (sortBy === 'Favorites') {
       return photoTags.sort((a, b) => {
-        return a.upvotes - b.upvotes;
+        return a.favTotal - b.favTotal;
       });
     }
     return photoTags;
@@ -233,16 +250,26 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    if (this.state.isMapToggled === true) {
+    if (this.state.selectedIndex === 0) {
       return (
         <View style={{ height: '100%' }}>
+          <SegmentedControlTab
+            values={['Map', 'List']}
+            selectedIndex={this.state.selectedIndex}
+            onTabPress={this._handleIndexChange}
+            borderRadius={14}
+            tabsContainerStyle={styles.tabsContainerStyle}
+            tabStyle={styles.tabStyle}
+            tabTextStyle={styles.tabTextStyle}
+            activeTabStyle={styles.activeTabStyle}
+            activeTabTextStyle={styles.activeTabTextStyle}
+          />
           <FilterScreen
             filters={this.state.filters}
             tags={this.state.tags}
             getFilters={this.getFilters.bind(this)}
             genFilterTags={this.genFilterTags.bind(this)}
-            />
-          <Button onPress={this.toggleView} title="Switch to List" />
+          />
           <MapView
             showsUserLocation
             followsUserLocation
@@ -250,8 +277,6 @@ class MapScreen extends React.Component {
             provider={MapView.PROVIDER_GOOGLE}
             style={styles.map}
             region={this.state.region}>
-
-
             {this.props.phototags &&
               this.filterPhotoTags(this.props.phototags)
                 .filter(marker =>
@@ -281,20 +306,35 @@ class MapScreen extends React.Component {
     } else {
       return (
         <View style={{ height: '100%' }}>
+          <SegmentedControlTab
+            values={['Map', 'List']}
+            selectedIndex={this.state.selectedIndex}
+            onTabPress={this._handleIndexChange}
+            borderRadius={14}
+            tabsContainerStyle={styles.tabsContainerStyle}
+            tabStyle={styles.tabStyle}
+            tabTextStyle={styles.tabTextStyle}
+            activeTabStyle={styles.activeTabStyle}
+            activeTabTextStyle={styles.activeTabTextStyle}
+          />
           <FilterScreen
             filters={this.state.filters}
             tags={this.state.tags}
             getFilters={this.getFilters.bind(this)}
             genFilterTags={this.genFilterTags.bind(this)}
           />
-          <Button onPress={this.toggleView} title="Switch to Map" />
           <ListView
-            phototags={this.sortPhotoTags(
-              this.filterPhotoTags(this.props.phototags))
-              .slice(0, this.state.filters.numResults)
-            }
+            phototags={this.sortPhotoTags(this.filterPhotoTags(this.props.phototags)).slice(
+              0,
+              this.state.filters.numResults
+            )}
             navigation={this.props.navigation}
           />
+          {this.props.isLoading && (
+            <View style={styles.loading}>
+              <ActivityIndicator animated={this.props.isLoading} size="large" />
+            </View>
+          )}
         </View>
       );
     }
@@ -306,5 +346,40 @@ export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
 const styles = StyleSheet.create({
   map: {
     flex: 1,
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 50,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+  },
+  switchButton: {
+    position: 'absolute',
+  },
+  tabsContainerStyle: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 200,
+    backgroundColor: 'transparent',
+  },
+  tabStyle: {
+    backgroundColor: '#fff',
+    borderColor: '#2f95dc',
+    height: 28,
+  },
+  tabTextStyle: {
+    color: '#2f95dc',
+  },
+  activeTabStyle: {
+    backgroundColor: '#2f95dc',
+    borderColor: '#2f95dc',
+  },
+  activeTabTextStyle: {
+    color: '#fff',
   },
 });
