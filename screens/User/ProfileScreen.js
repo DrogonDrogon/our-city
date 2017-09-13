@@ -55,6 +55,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     getLocation: () => {
       dispatch(Actions.getLocationAsync());
     },
+    updatePhototag: phototag => {
+      dispatch(Actions.updatePhototag(phototag));
+    },
+    updateBadge: badges => {
+      dispatch(Actions.setBadge(badges));
+    },
   };
 };
 
@@ -136,6 +142,15 @@ class HomeScreen extends React.Component {
     }
   };
 
+  deleteBadges(phototag) {
+    phototag.badges = 0;
+    this.props.updatePhototag(phototag);
+  }
+
+  resetBadges() {
+    this.props.updateBadge(0);
+  }
+
   _handleSaveProfile = () => {
     let didNameChange = this.state.editDisplayNameText !== this.props.user.displayName;
     let didPhotoChange = this.state.image !== this.props.user.photoUrl;
@@ -187,6 +202,8 @@ class HomeScreen extends React.Component {
             phototags={this.props.phototags}
             goToPhototags={this.goToPhototags}
             navigation={this.props.navigation}
+            deleteBadges={this.deleteBadges.bind(this)}
+            resetBadges={this.deleteBadges.bind(this)}
           />
         );
       case 1:

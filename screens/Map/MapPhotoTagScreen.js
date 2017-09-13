@@ -289,6 +289,8 @@ class MapPhotoTagScreen extends React.Component {
       .then(res => {
         console.log(res.data);
       });
+    this.state.phototag.badges += 1;
+    this.props.updatePhototag(this.state.phototag);
   };
 
   editComment(text) {
@@ -343,6 +345,8 @@ class MapPhotoTagScreen extends React.Component {
       .then(res => {
         console.log(res.data);
       });
+    this.state.phototag.badges += 1;
+    this.props.updatePhototag(this.state.phototag);
   };
 
   share = () => {
@@ -354,7 +358,9 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   solve = () => {
-    this.props.navigation.navigate('SolverScreen', { phototag: Object.assign({}, this.state.phototag)})
+    this.props.navigation.navigate('SolverScreen', {
+      phototag: Object.assign({}, this.state.phototag),
+    });
   };
 
   goToElectedOfficials = () => {
@@ -483,7 +489,7 @@ class MapPhotoTagScreen extends React.Component {
           />
           <Text>
             Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
-          </Text> 
+          </Text>
         </View>
         <View>
           <TouchableHighlight onPress={this.toggleSolutionsModal}>

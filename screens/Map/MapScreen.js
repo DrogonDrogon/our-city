@@ -52,14 +52,6 @@ class MapScreen extends React.Component {
   };
 
   componentDidMount() {
-    axios
-      .post('http://cd41a62b.ngrok.io/notification', {
-        message: 'welcome to our app',
-        userid: this.props.user.id,
-      })
-      .then(res => {
-        console.log(res.data);
-      });
     let locationOptions = {
       enableHighAccuracy: true,
       distanceFilter: 10,
