@@ -2,6 +2,22 @@ import db from '../db';
 import { RECEIVE_PHOTOTAGS, IS_LOADING, RECEIVE_FAVS } from './constants';
 import * as Actions from './userActions';
 import { store } from '../navigators/AppRoot.js';
+
+export const listenForPhototags = dispatch => {
+  db.child('phototags').on('value', snapshot => {
+    let data = snapshot.val();
+    let phototagArray = [];
+    for (var key in data) {
+      let obj = {};
+      obj = data[key];
+      obj.id = key;
+      phototagArray.push(obj);
+    }
+    dispatch(receivePhototags(phototagArray));
+    dispatch(updateLoadingStatus(false));
+  });
+};
+
 // For fetching all phototags (ALL users)
 export const fetchPhototags = dispatch => {
   db
@@ -49,7 +65,7 @@ export const postNewPhototag = phototag => dispatch => {
     .update(phototag)
     .then(() => {
       // Fire another fetch to get all updated phototags
-      dispatch(fetchPhototags);
+      // dispatch(fetchPhototags);
       dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR writing to /posts', error));
@@ -63,7 +79,7 @@ export const updatePhototag = phototag => dispatch => {
     .update(phototag)
     .then(() => {
       // Fire another fetch to get all updated phototags
-      dispatch(fetchPhototags);
+      // dispatch(fetchPhototags);
       dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR writing to /posts', error));
@@ -75,7 +91,7 @@ export const addCommentUnderPhototag = (phototagId, commentData) => dispatch => 
     .child('phototags/' + phototagId + '/comments/')
     .update(commentData)
     .then(() => {
-      dispatch(fetchPhototags);
+      // dispatch(fetchPhototags);
     })
     .catch(error => console.log('ERROR writing to /phototags/comments', error));
 };

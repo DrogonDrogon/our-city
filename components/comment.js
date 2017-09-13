@@ -12,7 +12,7 @@ const options = ['Delete', 'Cancel'];
 const title = 'Are you sure you want to delete this comment?';
 
 export default class Comment extends React.Component {
-  deleteComment = () => {
+  confirmDeleteComment = () => {
     this.showActionSheet();
   };
 
@@ -23,18 +23,10 @@ export default class Comment extends React.Component {
   handleActionSheetPress = selectedIndex => {
     if (selectedIndex === WARNING_INDEX) {
       // Run the delete function
-      db.deleteComment(
+      this.props.notifyDeletedComment(
         this.props.comment.id,
         this.props.userId,
-        this.props.comment.phototagId,
-        (err, data) => {
-          if (err) {
-            console.log('Err deleting', err);
-          } else {
-            console.log('Success deleting', data);
-            this.props.notifyDeleted();
-          }
-        }
+        this.props.comment.phototagId
       );
     }
   };
@@ -53,7 +45,7 @@ export default class Comment extends React.Component {
           <Text style={styles.commentText}>{this.props.comment.text}</Text>
         </View>
         {isMyOwnComment && (
-          <TouchableHighlight onPress={this.deleteComment} style={styles.touchableDelete}>
+          <TouchableHighlight onPress={this.confirmDeleteComment} style={styles.touchableDelete}>
             <Ionicons name="md-close" size={20} color="gray" style={{ backgroundColor: '#fff' }} />
           </TouchableHighlight>
         )}

@@ -51,6 +51,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateUser: userData => {
       dispatch(Actions.updateUser(userData));
     },
+    deleteOneComment: (commentId, userId, photoId) => {
+      dispatch(Actions.deleteComment(commentId, userId, photoId));
+    },
   };
 };
 
@@ -111,7 +114,9 @@ class MapPhotoTagScreen extends React.Component {
             validComments.push(item);
           }
         });
-        this.setState({ comments: validComments });
+        this.setState({ comments: validComments }, () => {
+          console.log('got comments for current phototag');
+        });
       })
       .catch(err => {
         console.log('Err getting comments', err);
@@ -331,7 +336,7 @@ class MapPhotoTagScreen extends React.Component {
     this.props.updateUser(updatedUser);
 
     // 3. Adds the commentId under the phototag 'comments' node
-    this.props.updatePhototagWithComment(phototagId, commentId);
+
     axios
       .post('http://cd41a62b.ngrok.io/notification', {
         message: `someone commented "${this.state.comment}" on on your tag  "${this.state.phototag
@@ -339,10 +344,21 @@ class MapPhotoTagScreen extends React.Component {
         userid: this.state.phototag.userId,
       })
       .then(res => {
-        console.log(res.data);
+        console.log('Notification post success', res.data);
+        let data = Object.assign({}, this.state.phototag);
+        data.badges += 1;
+        this.props.updatePhototag(this.state.phototag);
+      })
+      .then(() => {
+        this.props.updatePhototagWithComment(phototagId, commentId);
+      })
+      .catch(err => {
+        console.log('Notification post err', err);
+        this.props.updatePhototagWithComment(phototagId, commentId);
+        let data = Object.assign({}, this.state.phototag);
+        data.badges += 1;
+        this.props.updatePhototag(this.state.phototag);
       });
-    this.state.phototag.badges += 1;
-    this.props.updatePhototag(this.state.phototag);
   };
 
   share = () => {
@@ -364,8 +380,11 @@ class MapPhotoTagScreen extends React.Component {
     this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
   };
 
-  notifyDeletedComment = () => {
+  notifyDeletedComment = (commentId, userId, photoId) => {
     // Once a comment is deleted, this component is notified and refreshes UI by getting the latest comments again
+    this.props.deleteOneComment(commentId, userId, photoId);
+
+    // Need to handle refresh after the delete async call
     this.getCommentsForCurrentPhototag(this.props.navigation.state.params);
   };
 
@@ -408,7 +427,7 @@ class MapPhotoTagScreen extends React.Component {
           />
           <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
         </View>
-        <EditPhototagModal 
+        <EditPhototagModal
           toggleEditModal={this.modalEditVis}
           modalEditVis={this.state.modalEditVis}
           phototag={this.state.phototag}
@@ -491,7 +510,7 @@ class MapPhotoTagScreen extends React.Component {
             key={comment.id}
             comment={comment}
             userId={this.props.user.id}
-            notifyDeleted={this.notifyDeletedComment}
+            notifyDeletedComment={this.notifyDeletedComment}
           />
         ))}
         <TextInput
