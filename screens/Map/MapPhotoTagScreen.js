@@ -331,7 +331,7 @@ class MapPhotoTagScreen extends React.Component {
     this.props.updateUser(updatedUser);
 
     // 3. Adds the commentId under the phototag 'comments' node
-    this.props.updatePhototagWithComment(phototagId, commentId);
+
     axios
       .post('http://cd41a62b.ngrok.io/notification', {
         message: `someone commented "${this.state.comment}" on on your tag  "${this.state.phototag
@@ -339,10 +339,21 @@ class MapPhotoTagScreen extends React.Component {
         userid: this.state.phototag.userId,
       })
       .then(res => {
-        console.log(res.data);
+        console.log('Notification post success', res.data);
+        let data = Object.assign({}, this.state.phototag);
+        data.badges += 1;
+        this.props.updatePhototag(this.state.phototag);
+      })
+      .then(() => {
+        this.props.updatePhototagWithComment(phototagId, commentId);
+      })
+      .catch(err => {
+        console.log('Notification post err', err);
+        this.props.updatePhototagWithComment(phototagId, commentId);
+        let data = Object.assign({}, this.state.phototag);
+        data.badges += 1;
+        this.props.updatePhototag(this.state.phototag);
       });
-    this.state.phototag.badges += 1;
-    this.props.updatePhototag(this.state.phototag);
   };
 
   share = () => {
