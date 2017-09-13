@@ -48,7 +48,9 @@ class ViewSolverScreen extends React.Component {
   };
 
   state={
-    description: this.state.navigation.params.description,
+    solution: this.props.navigation.state.params,
+    description: this.props.navigation.state.params.description,
+    photoUri: this.props.navigation.state.params.imageUrl,
   }
 
   _takePic = async () => {
@@ -67,83 +69,88 @@ class ViewSolverScreen extends React.Component {
   };
 
    handleSaveSolution = () => {
-  //   let isNewPhoto = this.state.photoUri !== this.state.phototag.imageUrl;
+    let isNewPhoto = this.state.photoUri !== this.state.phototag.imageUrl;
 
-  //   if (isNewPhoto) {
-  //     // Set up file uri to save to AWS
-  //     let photoIdName = generateRandomID();
-  //     let file = {
-  //       uri: this.state.photoUri,
-  //       name: `${photoIdName}.jpg`,
-  //       type: 'image/jpg',
-  //     };
+    if (isNewPhoto) {
+      // Set up file uri to save to AWS
+      let photoIdName = generateRandomID();
+      let file = {
+        uri: this.state.photoUri,
+        name: `${photoIdName}.jpg`,
+        type: 'image/jpg',
+      };
 
-  //     // Make AWS upload request
-  //     RNS3.put(file, awsOptions).then(response => {
-  //       if (response.status !== 201) {
-  //         console.log('[s3 upload] ERROR failed to upload image', response.body);
-  //         // TODO: handle error through alert
-  //       } else {
-  //         console.log('[s3 upload] Success!');
-  //         let awsUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
-  //         let newSolution = {
-  //           imageUrl: awsUrl,
-  //           isAccepted: false,
-  //           description: this.state.description,
-  //           userId: this.props.user.id,
-  //           phototagId: this.state.phototag.id,
-  //         };
-  //         this.addSolution(this.props.user.id, newSolution);
-  //       }
-  //     });
-  //   } else {
-  //     let newSolution = {
-  //       imageUrl: this.state.photoUri,
-  //       isAccepted: false,
-  //       description: this.state.description,
-  //       userId: this.props.user.id,
-  //       phototagId: this.state.phototag.id,
-  //     };
-  //     this.addSolution(this.props.user.id, newSolution);
-  //     Alert.alert('Success', 'Solution posted', [
-  //       {
-  //         text: 'OK',
-  //         onPress: () => {
-  //           this.props.navigation.goBack();
-  //         },
-  //       },
-  //     ]);
-  //   }
-  // };
+      // Make AWS upload request
+      RNS3.put(file, awsOptions).then(response => {
+        if (response.status !== 201) {
+          console.log('[s3 upload] ERROR failed to upload image', response.body);
+          // TODO: handle error through alert
+        } else {
+          console.log('[s3 upload] Success!');
+          let awsUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
+          let newSolution = {
+            imageUrl: awsUrl,
+            isAccepted: false,
+            description: this.state.description,
+            userId: this.props.user.id,
+            phototagId: this.state.phototag.id,
+          };
+          this.addSolution(this.props.user.id, newSolution);
+        }
+      });
+    } else {
+      let newSolution = {
+        imageUrl: this.state.photoUri,
+        isAccepted: false,
+        description: this.state.description,
+        userId: this.props.user.id,
+        phototagId: this.state.phototag.id,
+      };
+      this.addSolution(this.props.user.id, newSolution);
+      Alert.alert('Success', 'Solution posted', [
+        {
+          text: 'OK',
+          onPress: () => {
+            this.props.navigation.goBack();
+          },
+        },
+      ]);
+    }
+  };
 
-  // addSolution = (userId, solutionData) => {
-  //   // update the solutions node in firebase
-  //   let newSolutionId = db.child('solutions').push().key;
-  //   solutionData.id = newSolutionId;
-  //   db
-  //     .child('solutions/' + newSolutionId)
-  //     .update(solutionData)
-  //     .then(() => {
-  //       console.log('New solution posted. Id is', newSolutionId);
-  //       // do something
-  //     })
-  //     .catch(error => console.log('Error writing to solutions', error));
+  addSolution = (userId, solutionData) => {
+    // update the solutions node in firebase
+    let newSolutionId = db.child('solutions').push().key;
+    solutionData.id = newSolutionId;
+    db
+      .child('solutions/' + newSolutionId)
+      .update(solutionData)
+      .then(() => {
+        console.log('New solution posted. Id is', newSolutionId);
+        // do something
+      })
+      .catch(error => console.log('Error writing to solutions', error));
 
-  //   // update the users node
-  //   let userData = Object.assign({}, this.props.user);
-  //   userData.solutions[newSolutionId] = true;
-  //   this.props.updateUser(userData);
+    // update the users node
+    let userData = Object.assign({}, this.props.user);
+    userData.solutions[newSolutionId] = true;
+    this.props.updateUser(userData);
 
-  //   // update the phototags node
-  //   let photoData = Object.assign({}, this.state.phototag);
-  //   photoData.solutions[newSolutionId] = true;
-  //   this.props.updatePhototag(photoData);
+    // update the phototags node
+    let photoData = Object.assign({}, this.state.phototag);
+    photoData.solutions[newSolutionId] = true;
+    this.props.updatePhototag(photoData);
    };
 
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <Text>Describe what you will do or have done:</Text>
+        <Image
+          onPress={this.handleSelectImage}
+          style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
+          source={{ uri: this.state.photoUri }}
+        />
+        <Text>{this.state.description}</Text>
         <TextInput
           style={styles.descriptionInput}
           placeholder="i.e. I can move this..., I can repair this..."
@@ -158,11 +165,6 @@ class ViewSolverScreen extends React.Component {
           <Text>(Optional) Take an updated image of the site</Text>
           <Button title="Take new photo" onPress={this._takePic} />
         </View>
-        <Image
-          onPress={this.handleSelectImage}
-          style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
-          source={{ uri: this.state.photoUri }}
-        />
         <Button title="Submit" onPress={this.handleSaveSolution} />
       </KeyboardAwareScrollView>
     );
