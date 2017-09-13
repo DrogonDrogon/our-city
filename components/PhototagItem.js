@@ -39,6 +39,7 @@ class PhototagItem extends React.Component {
         </View>
         <TouchableHighlight
           onPress={() => {
+            this.props.decreaseBadges(this.props.phototag.badges);
             this.props.deleteBadges(this.props.phototag);
             this.props.goToPhototags();
           }}

@@ -39,6 +39,7 @@ const mapStateToProps = (state, ownProps) => {
     user: state.user,
     isLoading: state.isLoading,
     location: state.location,
+    badges: state.badges,
   };
 };
 
@@ -147,8 +148,9 @@ class HomeScreen extends React.Component {
     this.props.updatePhototag(phototag);
   }
 
-  resetBadges() {
-    this.props.updateBadge(0);
+  decreaseBadges(decreaseAmount) {
+    if (this.props.badges > 0) this.props.updateBadge(this.props.badges - decreaseAmount);
+    if ((this, this.props.badges < 0)) this.props.updateBadge(0);
   }
 
   _handleSaveProfile = () => {
@@ -203,7 +205,7 @@ class HomeScreen extends React.Component {
             goToPhototags={this.goToPhototags}
             navigation={this.props.navigation}
             deleteBadges={this.deleteBadges.bind(this)}
-            resetBadges={this.deleteBadges.bind(this)}
+            decreaseBadges={this.decreaseBadges.bind(this)}
           />
         );
       case 1:

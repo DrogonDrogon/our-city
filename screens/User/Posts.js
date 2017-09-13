@@ -23,6 +23,7 @@ class Posts extends React.Component {
                 navigation={this.props.navigation}
                 badges={item.badges}
                 deleteBadges={this.props.deleteBadges}
+                decreaseBadges={this.props.decreaseBadges}
               />
             ))}
       </View>
