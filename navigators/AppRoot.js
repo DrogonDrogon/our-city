@@ -9,7 +9,11 @@ import RootNavigation from './RootNavigation';
 
 // Create the redux store
 const initialState = {};
-const store = createStore(rootReducer, initialState, applyMiddleware(thunkMiddleware, asyncAwait));
+export const store = createStore(
+  rootReducer,
+  initialState,
+  applyMiddleware(thunkMiddleware, asyncAwait)
+);
 
 export default () => (
   <Provider store={store}>

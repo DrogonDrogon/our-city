@@ -1,7 +1,7 @@
 import db from '../db';
 import { RECEIVE_PHOTOTAGS, IS_LOADING, RECEIVE_FAVS } from './constants';
 import * as Actions from './userActions';
-
+import { store } from '../navigators/AppRoot.js';
 // For fetching all phototags (ALL users)
 export const fetchPhototags = dispatch => {
   db
@@ -17,6 +17,18 @@ export const fetchPhototags = dispatch => {
         obj.id = key;
         phototagArray.push(obj);
       }
+      let userid = store.getState().user.id;
+      let badges = 0;
+      phototagArray.forEach(tag => {
+        if (userid === tag.userId) {
+          badges += tag.badges;
+        }
+      });
+      phototagArray = phototagArray.sort((a, b) => {
+        return b.badges - a.badges;
+      });
+
+      dispatch(Actions.setBadge(badges));
       dispatch(receivePhototags(phototagArray));
       dispatch(updateLoadingStatus(false));
     })
