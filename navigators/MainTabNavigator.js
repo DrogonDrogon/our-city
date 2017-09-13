@@ -81,7 +81,12 @@ export default TabNavigator(
     swipeEnabled: false,
     tabBarOptions: {
       showLabel: false,
+      style: {
+        height: 40,
+        backgroundColor: '#fff',
+      },
     },
+    header: null,
   }
 );
 //possible icons for solutions: bulb, build, cog, construct, hammer, hand, key, medal, ribbon, trophy,
