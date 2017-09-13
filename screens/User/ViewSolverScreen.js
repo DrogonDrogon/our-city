@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Image, Text, TextInput, Button, CameraRoll, Alert } from 'react-native';
+import { StyleSheet, View, Image, Text, TextInput, Button, CameraRoll, Alert, TouchableHighlight} from 'react-native';
 import { ImagePicker } from 'expo';
+import { Ionicons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RNS3 } from 'react-native-aws3';
 import * as Actions from '../../actions';
 import db from '../../db';
 import config from '../../config/config';
+import EditPhototagModal from '../../components/editPhototagModal';
 
 const awsOptions = {
   keyPrefix: 'phototags/',
@@ -47,11 +49,26 @@ class ViewSolverScreen extends React.Component {
     title: 'Volunteer a Fix',
   };
 
-  state={
+  state = {
     solution: this.props.navigation.state.params,
     description: this.props.navigation.state.params.description,
     photoUri: this.props.navigation.state.params.imageUrl,
-    text: this.props.navigation.state.params.description,
+    modalEditVis: false,
+    modalSolutionsVis: false,
+    modalNavRightButton: {
+      title: 'Save',
+      handler: () => {
+        this.saveDescription(this.state.editedDescription);
+        this.toggleEditModal();
+      },
+    },
+    modalNavLeftButton: {
+      title: 'Cancel',
+      handler: () => {
+        this.toggleEditModal();
+      },
+    },
+    editedDescription: this.props.navigation.state.params.description,
   }
 
   _takePic = async () => {
@@ -136,9 +153,22 @@ class ViewSolverScreen extends React.Component {
     // photoData.solutions[newSolutionId] = true;
     // this.props.updatePhototag(photoData);
    };
+   openEditDescription = () => {
+    console.log('Editing description');
+    this.toggleEditModal();
+  };
+
+  editDescription = description => {
+    this.setState({ editedDescription: description });
+  };
+
+  toggleEditModal = () => {
+    this.setState({ modalEditVis: !this.state.modalEditVis });
+  };
+
 
   render() {
-    let isEditable = this.props.user.id === this.state.phototag.userId;
+    let isEditable = this.props.user.id === this.state.solution.userId;
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
         <Image
@@ -147,6 +177,14 @@ class ViewSolverScreen extends React.Component {
           source={{ uri: this.state.photoUri }}
         />
         <Text>{this.state.description}</Text>
+         <EditPhototagModal
+          toggleEditModal={this.modalEditVis}
+          modalEditVis={this.state.modalEditVis}
+          modalNavRightButton={this.state.modalNavRightButton}
+          modalNavLeftButton={this.state.modalNavLeftButton}
+          editedDescription={this.state.editedDescription}
+          editDescription={this.editDescription}
+        />
          {isEditable && (
             <TouchableHighlight onPress={this.openEditDescription}>
               <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
