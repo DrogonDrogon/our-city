@@ -145,6 +145,11 @@ class ViewSolverScreen extends React.Component {
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <Image
+          onPress={this.handleSelectImage}
+          style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
+          source={{ uri: this.state.photoUri }}
+        />
         <Text>{this.state.description}</Text>
         <TextInput
           style={styles.descriptionInput}
@@ -160,11 +165,6 @@ class ViewSolverScreen extends React.Component {
           <Text>(Optional) Take an updated image of the site</Text>
           <Button title="Take new photo" onPress={this._takePic} />
         </View>
-        <Image
-          onPress={this.handleSelectImage}
-          style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
-          source={{ uri: this.state.photoUri }}
-        />
         <Button title="Submit" onPress={this.handleSaveSolution} />
       </KeyboardAwareScrollView>
     );
