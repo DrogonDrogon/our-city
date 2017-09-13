@@ -7,6 +7,7 @@ class PhototagItem extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     return (
       <View style={styles.container}>
@@ -31,13 +32,16 @@ class PhototagItem extends React.Component {
             IconBadgeStyle={{
               width: 30,
               height: 30,
-              backgroundColor: '#FF00EE',
+              backgroundColor: '#ff0000',
             }}
-            hidden={this.props.badges === 0}
+            Hidden={this.props.badges === 0}
           />
         </View>
         <TouchableHighlight
-          onPress={this.props.goToPhototags}
+          onPress={() => {
+            this.props.deleteBadges(this.props.phototag);
+            this.props.goToPhototags();
+          }}
           style={{ width: '100%', height: 200 }}>
           <Image style={styles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
         </TouchableHighlight>
