@@ -21,13 +21,12 @@ class MarkerTag extends React.Component {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     width: 90,
   },
-  // descriptionText: {
-  //   marginTop: 10,
-  //   marginBottom: 20,
-  // },
+  descriptionText: {
+    fontWeight: 'bold',
+  },
 });
 
 export default MarkerTag;
