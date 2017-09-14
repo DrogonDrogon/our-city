@@ -20,6 +20,7 @@ import TaggedText from '../../components/TaggedText';
 import EditPhototagModal from '../../components/editPhototagModal';
 import * as Actions from '../../actions';
 import db from '../../db';
+import AppStyles from '../../styles/AppStyles.js';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -56,7 +57,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     getAllCommentsByUser: user => {
       dispatch(Actions.getAllCommentsByUser(user));
-    }
+    },
   };
 };
 
@@ -422,14 +423,11 @@ class MapPhotoTagScreen extends React.Component {
     let userVoteStatus = this.props.user.votes[this.state.phototag.id];
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <View style={styles.photoDisplayContainer}>
-          <Image
-            style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-            source={{ uri: this.state.phototag.imageUrl }}
-          />
-          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
+      <KeyboardAwareScrollView contentContainerStyle={AppStyles.scrollViewContainer}>
+        <View style={AppStyles.photoDisplayContainer}>
+          <Image style={AppStyles.phototagImage} source={{ uri: this.state.phototag.imageUrl }} />
         </View>
+        <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
         <EditPhototagModal
           toggleEditModal={this.modalEditVis}
           modalEditVis={this.state.modalEditVis}
@@ -445,14 +443,16 @@ class MapPhotoTagScreen extends React.Component {
               name="md-arrow-round-up"
               size={32}
               color={userVoteStatus === 1 ? 'orange' : 'gray'}
+              style={AppStyles.iconStyle}
             />
           </TouchableHighlight>
-          <Text style={styles.titleText}>{this.state.voteTotal}</Text>
+          <Text style={AppStyles.titleText}>{this.state.voteTotal}</Text>
           <TouchableHighlight onPress={this.handleClickDownvote}>
             <Ionicons
               name="md-arrow-round-down"
               size={32}
               color={userVoteStatus === -1 ? 'orange' : 'gray'}
+              style={AppStyles.iconStyle}
             />
           </TouchableHighlight>
         </View>
@@ -466,23 +466,24 @@ class MapPhotoTagScreen extends React.Component {
           }}>
           {isEditable && (
             <TouchableHighlight onPress={this.openEditDescription}>
-              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+              <Ionicons name="md-create" size={28} color="gray" style={AppStyles.iconStyle} />
             </TouchableHighlight>
           )}
           <TouchableHighlight onPress={this.share}>
-            <Ionicons name="md-share" size={32} color="gray" />
+            <Ionicons name="md-share" size={32} color="gray" style={AppStyles.iconStyle} />
           </TouchableHighlight>
           <TouchableHighlight onPress={this.handleClickFav}>
             <Ionicons
               name="md-heart"
               size={32}
               color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'gray'}
+              style={AppStyles.iconStyle}
             />
           </TouchableHighlight>
         </View>
-        <View style={styles.authorContainer}>
+        <View style={AppStyles.authorContainer}>
           <Image
-            style={styles.imageSetting}
+            style={AppStyles.imageSetting}
             source={{
               uri: this.state.authorPhoto,
             }}
@@ -493,7 +494,7 @@ class MapPhotoTagScreen extends React.Component {
         </View>
         <View>
           <TouchableHighlight onPress={this.toggleSolutionsModal}>
-            <Ionicons name="md-list" size={32} color="gray" />
+            <Ionicons name="md-list" size={32} color="gray" style={AppStyles.iconStyle} />
           </TouchableHighlight>
           <PhotoTagSolutions
             style={{ height: '75%' }}
@@ -504,10 +505,10 @@ class MapPhotoTagScreen extends React.Component {
             userId={this.props.user.id}
           />
           <TouchableHighlight onPress={this.solve}>
-            <Ionicons name="md-bulb" size={32} color="gray" />
+            <Ionicons name="md-bulb" size={32} color="gray" style={AppStyles.iconStyle} />
           </TouchableHighlight>
         </View>
-        <Text style={styles.titleText}>Comments</Text>
+        <Text style={AppStyles.titleText}>Comments</Text>
         {this.state.comments.map((comment, i) => (
           <Comment
             key={comment.id}
@@ -521,7 +522,7 @@ class MapPhotoTagScreen extends React.Component {
           placeholder="Enter a new comment"
           onChangeText={text => this.editComment(text)}
           clearButtonMode={'always'}
-          style={styles.commentInput}
+          style={AppStyles.commentInput}
         />
         <Button title="Submit comment" onPress={this.handleSubmitComment} />
         {this.state.phototag.reps && (
@@ -531,55 +532,5 @@ class MapPhotoTagScreen extends React.Component {
     );
   }
 }
-
-//<PhotoTagSolutions style={{height: '75%',}} toggleSolutionsModal={this.toggleSolutionsModal.bind(this)} modalSolutionsVis={this.state.modalSolutionsVis}/>
-
-const styles = StyleSheet.create({
-  scrollViewContainer: {
-    alignItems: 'center',
-    paddingBottom: 50,
-    backgroundColor: '#FBF8F5',
-  },
-  titleText: {
-    textAlign: 'center',
-    fontSize: 20,
-    alignItems: 'center',
-  },
-  commentInput: {
-    width: '80%',
-    backgroundColor: '#fff',
-    padding: 10,
-  },
-  photoDisplayContainer: {
-    width: 250,
-    height: 250,
-    marginBottom: 20,
-  },
-  authorContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    marginBottom: 10,
-    width: '80%',
-  },
-  imageSetting: {
-    height: 40,
-    width: 40,
-    marginRight: 10,
-    borderRadius: 20,
-  },
-  hashtag: {
-    color: 'blue',
-    fontWeight: 'bold',
-  },
-  iconStyle: {
-    backgroundColor: '#FBF8F5',
-  },
-  descriptionInput: {
-    width: '80%',
-    backgroundColor: '#fff',
-    padding: 10,
-  },
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapPhotoTagScreen);
