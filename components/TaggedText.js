@@ -3,11 +3,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import AppStyles from '../styles/AppStyles.js';
 
 class TaggedText extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { text: 'Hello #World' };
-  }
-
   goToTagLinkView(tag) {
     // let phototagData = this.state.phototag;
     tag = tag
@@ -69,8 +64,8 @@ class TaggedText extends React.Component {
     });
 
     return (
-      <View style={AppStyles.textDisplayPadding}>
-        <Text>{parts}</Text>
+      <View style={AppStyles.descriptionContainerView}>
+        <Text style={AppStyles.descriptionContainerText}>{parts}</Text>
       </View>
     );
   }

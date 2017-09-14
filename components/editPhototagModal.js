@@ -5,6 +5,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import AppStyles from '../styles/AppStyles';
 
 class EditPhototagModal extends React.Component {
+  state = {
+    navBarTitle: {
+      title: 'Edit Description',
+    },
+  }
+
   render() {
     return (
       <Modal
@@ -13,7 +19,7 @@ class EditPhototagModal extends React.Component {
         visible={this.props.modalEditVis}
         onRequestClose={() => {}}>
         <NavigationBar
-          title={this.props.modalNavTitle}
+          title={this.state.navBarTitle}
           rightButton={this.props.modalNavRightButton}
           leftButton={this.props.modalNavLeftButton}
         />
