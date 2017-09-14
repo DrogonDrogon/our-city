@@ -174,32 +174,38 @@ class ViewSolverScreen extends React.Component {
   render() {
     let isEditable = this.props.user.id === this.state.solution.userId;
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <Image
-          onPress={this.handleSelectImage}
-          style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
-          source={{ uri: this.state.photoUri }}
-        />
-        <Text>{this.state.editedDescription}</Text>
-         <EditPhototagModal
-          toggleEditModal={this.modalEditVis}
-          modalEditVis={this.state.modalEditVis}
-          modalNavRightButton={this.state.modalNavRightButton}
-          modalNavLeftButton={this.state.modalNavLeftButton}
-          editedDescription={this.state.editedDescription}
-          editDescription={this.editDescription}
-        />
-        {isEditable && (
-          <TouchableHighlight onPress={this.openEditDescription}>
-            <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
-          </TouchableHighlight>
-        )}
-        <View>
-          <Text>(Optional) Take an updated image of the site</Text>
-          <Button title="Take new photo" onPress={this._takePic} />
-        </View>
-        <Button title="Submit" onPress={this.handleSaveSolution} />
-      </KeyboardAwareScrollView>
+      <Image
+        style={{ height: '100%', width: '100%' }}
+        source={require('../../assets/images/background-723053_1920.jpg')}
+        resizeMode="cover"
+      >
+        <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
+          <Image
+            onPress={this.handleSelectImage}
+            style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
+            source={{ uri: this.state.photoUri }}
+          />
+          <Text>{this.state.editedDescription}</Text>
+           <EditPhototagModal
+            toggleEditModal={this.modalEditVis}
+            modalEditVis={this.state.modalEditVis}
+            modalNavRightButton={this.state.modalNavRightButton}
+            modalNavLeftButton={this.state.modalNavLeftButton}
+            editedDescription={this.state.editedDescription}
+            editDescription={this.editDescription}
+          />
+          {isEditable && (
+            <TouchableHighlight onPress={this.openEditDescription}>
+              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+            </TouchableHighlight>
+          )}
+          <View>
+            <Text>(Optional) Take an updated image of the site</Text>
+            <Button title="Take new photo" onPress={this._takePic} />
+          </View>
+          <Button title="Submit" onPress={this.handleSaveSolution} />
+        </KeyboardAwareScrollView>
+      </Image>  
     );
   }
 }
