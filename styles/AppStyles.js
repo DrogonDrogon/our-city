@@ -64,7 +64,7 @@ const AppStyles = StyleSheet.create({
     flex: 1,
   },
 
-//GLOBAL STYLES  
+  //GLOBAL STYLES
   container: {
     paddingTop: 20,
     paddingBottom: 20,
@@ -99,7 +99,18 @@ const AppStyles = StyleSheet.create({
     height: 50,
     margin: 6,
     borderRadius: 25,
-  }
+  },
+  buttonWhiteText: {
+    fontSize: 16,
+    color: '#FFF',
+  },
+  actionButton: {
+    backgroundColor: 'red',
+    height: 20,
+    borderRadius: 20,
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });
 
 export default AppStyles;
