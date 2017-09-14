@@ -36,17 +36,23 @@ class SolverList extends React.Component {
 
   render() {
     return (
-      <KeyboardAwareScrollView>
-        <Text>Your Solutions</Text>
-        <FlatList
-          data={this.props.solutions}
-          renderItem={({ item }) => (
-            <SolverItem solution={item} goToSolver={this.goToSolver.bind(this, item)} />
-          )}
-          keyExtractor={this._keyExtractor}
-          contentContainerStyle={{ alignItems: 'center' }}
-        />
-      </KeyboardAwareScrollView>
+      <Image
+          style={{ height: '100%', width: '100%' }}
+          source={require('../../assets/images/background-723053_1920.jpg')}
+          resizeMode="cover"
+        >
+        <KeyboardAwareScrollView>
+          <Text>Your Solutions</Text>
+          <FlatList
+            data={this.props.solutions}
+            renderItem={({ item }) => (
+              <SolverItem solution={item} goToSolver={this.goToSolver.bind(this, item)} />
+            )}
+            keyExtractor={this._keyExtractor}
+            contentContainerStyle={{ alignItems: 'center' }}
+          />
+        </KeyboardAwareScrollView>
+      </Image>    
     );
   }
 }
