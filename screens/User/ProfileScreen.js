@@ -9,6 +9,7 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import NavigationBar from 'react-native-navbar';
