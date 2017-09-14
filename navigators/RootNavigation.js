@@ -63,9 +63,6 @@ const RootStackNavigator = StackNavigator(
   },
   {
     navigationOptions: () => ({
-      // headerTitleStyle: {
-      //   fontWeight: 'normal',
-      // },
       headerStyle: {
         backgroundColor: 'black',
         height: 30,
