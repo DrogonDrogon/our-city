@@ -56,6 +56,7 @@ class CameraScreen extends React.Component {
     latitude: '',
     longitude: '',
     imageHasLocationExif: false,
+    address: '',
   };
 
   _takePic = async () => {
@@ -119,6 +120,10 @@ class CameraScreen extends React.Component {
         address,
         `${address[0].name} ${address[0].city} ${address[0].region} ${address[0].postalCode}`
       );
+      this.setState({
+        address: `${address[0].name} ${address[0].city} ${address[0].region} ${address[0]
+          .postalCode}`,
+      });
       axios
         .get('https://www.googleapis.com/civicinfo/v2/representatives', {
           params: {
@@ -184,10 +189,7 @@ class CameraScreen extends React.Component {
       phototag.comments = { placeholderComment: true };
       phototag.solutions = { solutionId: true };
       phototag.userProfileUrl = this.props.user.photoUrl;
-      phototag.address = await Location.reverseGeocodeAsync({
-        latitude: this.props.location.latitude,
-        longitude: this.props.location.longitude,
-      });
+      phototag.address = this.state.address;
       phototag.badges = 0;
       phototag.reps = this.state.reps;
       console.log('[saveImg] phototag.reps: ', phototag.reps);

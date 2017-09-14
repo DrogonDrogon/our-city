@@ -59,7 +59,9 @@ export default class electedOfficials extends React.Component {
   share = () => {
     Share.share({
       title: this.state.phototag.description,
-      message: `${this.state.phototag.description} ${this.state.twitterId}`,
+      message: `There are ${this.state.phototag.upvotes +
+        1} voter(s) who think that this change should happen${this.state.phototag
+        .description} ${this.state.twitterId} at ${this.state.phototag.address || ''}`,
       url: this.state.phototag.imageUrl,
     });
   };
@@ -112,8 +114,7 @@ export default class electedOfficials extends React.Component {
           }}
         />
         <Text>{currentSelectedOfficial.name}</Text>
-        <Text onPress={this._handleOpenWithBrowser}
-          style={styles.urlLink}>
+        <Text onPress={this._handleOpenWithBrowser} style={styles.urlLink}>
           {currentSelectedOfficial.urls[0]}
         </Text>
         {this.state.twitterId !== '' && (
