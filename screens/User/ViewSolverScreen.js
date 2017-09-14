@@ -73,16 +73,18 @@ class ViewSolverScreen extends React.Component {
 
   _takePic = async () => {
     console.log('click image');
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [16, 9],
-      base64: true,
-      exif: true,
-    });
+    if (this.props.user.id === this.state.solution.userId) { 
+      let result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [16, 9],
+        base64: true,
+        exif: true,
+      });
 
-    if (!result.cancelled) {
-      CameraRoll.saveToCameraRoll(result.uri);
-      this.setState({ photoUri: result.uri });
+      if (!result.cancelled) {
+        CameraRoll.saveToCameraRoll(result.uri);
+        this.setState({ photoUri: result.uri });
+      }
     }
   };
 
@@ -128,6 +130,12 @@ class ViewSolverScreen extends React.Component {
         },
       ]);
     }
+  };
+
+  saveDescription = description => {
+    let updatedData = this.state.solution;
+    updatedData.description = description;
+    this.setState({ solution: updatedData })    
   };
 
   updateSolution = (userId, solutionData) => {
