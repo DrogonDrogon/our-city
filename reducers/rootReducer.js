@@ -7,6 +7,7 @@ import userFavs from './userFavs';
 import location from './location';
 import badges from './badges';
 import userComments from './userComments';
+import solutions from './solutions';
 
 const rootReducer = combineReducers({
   user,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   location,
   badges,
   userComments,
+  solutions,
 });
 
 export default rootReducer;

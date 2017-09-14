@@ -1,6 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Image, Text, TextInput, Button, CameraRoll, Alert, TouchableHighlight} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TextInput,
+  Button,
+  CameraRoll,
+  Alert,
+  TouchableHighlight,
+ } from 'react-native';
 import { ImagePicker } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -28,11 +38,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePhototag: phototag => {
-      dispatch(Actions.updatePhototag(phototag));
-    },
-    updateUser: userData => {
-      dispatch(Actions.updateUser(userData));
+    getSolutions: userId => {
+      dispatch(Actions.fetchSolutionsByUserId(userId));
     },
   };
 };
@@ -70,11 +77,10 @@ class ViewSolverScreen extends React.Component {
       },
     },
     editedDescription: this.props.navigation.state.params.description,
-  }
+  };
 
   _takePic = async () => {
-    console.log('click image');
-    if (this.props.user.id === this.state.solution.userId) { 
+    if (this.props.user.id === this.state.solution.userId) {
       let result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [16, 9],
@@ -136,33 +142,23 @@ class ViewSolverScreen extends React.Component {
   saveDescription = description => {
     let updatedData = this.state.solution;
     updatedData.description = description;
-    this.setState({ solution: updatedData })    
+    this.setState({ solution: updatedData });
   };
 
   updateSolution = (userId, solutionData) => {
     // update the solutions node in firebase
-    // let newSolutionId = db.child('solutions').push().key;
     var newSolutionId = this.state.solution.id;
     db
       .child('solutions/' + newSolutionId)
       .update(solutionData)
       .then(() => {
         console.log('Solution updated. Id is', newSolutionId);
-        // do something
+        this.props.getSolutions(this.props.user.id);
       })
       .catch(error => console.log('Error writing to solutions', error));
+  };
 
-    // // update the users node
-    // let userData = Object.assign({}, this.props.user);
-    // userData.solutions[newSolutionId] = true;
-    // this.props.updateUser(userData);
-
-    // // update the phototags node
-    // let photoData = Object.assign({}, this.state.phototag);
-    // photoData.solutions[newSolutionId] = true;
-    // this.props.updatePhototag(photoData);
-   };
-   openEditDescription = () => {
+  openEditDescription = () => {
     console.log('Editing description');
     this.toggleEditModal();
   };
@@ -174,7 +170,6 @@ class ViewSolverScreen extends React.Component {
   toggleEditModal = () => {
     this.setState({ modalEditVis: !this.state.modalEditVis });
   };
-
 
   render() {
     let isEditable = this.props.user.id === this.state.solution.userId;
@@ -194,11 +189,11 @@ class ViewSolverScreen extends React.Component {
           editedDescription={this.state.editedDescription}
           editDescription={this.editDescription}
         />
-         {isEditable && (
-            <TouchableHighlight onPress={this.openEditDescription}>
-              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
-            </TouchableHighlight>
-          )}
+        {isEditable && (
+          <TouchableHighlight onPress={this.openEditDescription}>
+            <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+          </TouchableHighlight>
+        )}
         <View>
           <Text>(Optional) Take an updated image of the site</Text>
           <Button title="Take new photo" onPress={this._takePic} />
@@ -239,6 +234,10 @@ const styles = {
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewSolverScreen);
 
+/*
+        {/* <Text>{this.state.description}</Text>
+        <EditPhototagModal
+*/
 // <TextInput
 //           style={styles.descriptionInput}
 //           placeholder={this.state.text}
