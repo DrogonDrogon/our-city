@@ -35,13 +35,15 @@ class PhototagItem extends React.Component {
               height: 30,
               backgroundColor: '#ff0000',
             }}
-            Hidden={this.props.badges === 0}
+            Hidden={!this.props.badges || this.props.badges === 0}
           />
         </View>
         <TouchableHighlight
           onPress={() => {
-            this.props.decreaseBadges(this.props.phototag.badges);
-            this.props.deleteBadges(this.props.phototag);
+            if (this.props.decreaseBadges) {
+              this.props.decreaseBadges(this.props.phototag.badges);
+              this.props.deleteBadges(this.props.phototag);
+            }
             this.props.goToPhototags();
           }}
           style={{ width: '100%', height: 200 }}>
