@@ -4,6 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { connect } from 'react-redux';
 import db from '../../db';
 import SolverItem from '../../components/solverItem';
+import AppStyles from '../../styles/AppStyles';
 
 const mapStateToProps = (state, ownProps) => {
   return {
