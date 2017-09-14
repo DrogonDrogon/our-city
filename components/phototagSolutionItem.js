@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, Button } from 'react-native';
 import db from '../db';
+import AppStyles from '../styles/AppStyles';
 
 class PhototagSolutionItem extends React.Component {
   state = {

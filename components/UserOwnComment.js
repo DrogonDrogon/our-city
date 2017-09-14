@@ -2,6 +2,7 @@ import React from 'React';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
+import AppStyles from '../styles/AppStyles';
 
 export default class UserOwnComment extends React.Component {
   render() {

@@ -4,6 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Ionicons } from '@expo/vector-icons';
 import PhototagSolutionItem from './phototagSolutionItem';
 import db from '../db';
+import AppStyles from '../styles/AppStyles';
 
 class PhotoTagSolutions extends React.Component {
   state = {

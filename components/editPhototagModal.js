@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, View, Text, TextInput, Image } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AppStyles from '../styles/AppStyles';
 
 class EditPhototagModal extends React.Component {
   render() {

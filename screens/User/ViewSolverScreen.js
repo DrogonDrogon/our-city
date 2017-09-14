@@ -9,6 +9,7 @@ import * as Actions from '../../actions';
 import db from '../../db';
 import config from '../../config/config';
 import EditPhototagModal from '../../components/editPhototagModal';
+import AppStyles from '../../styles/AppStyles';
 
 const awsOptions = {
   keyPrefix: 'phototags/',
@@ -110,7 +111,7 @@ class ViewSolverScreen extends React.Component {
           let awsUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
           let newSolution = {
             imageUrl: awsUrl,
-            description: this.state.text,
+            description: this.state.editedDescription,
           };
           this.updateSolution(this.props.user.id, newSolution);
         }
@@ -118,7 +119,7 @@ class ViewSolverScreen extends React.Component {
     } else {
       let newSolution = {
         imageUrl: this.state.photoUri,
-        description: this.state.text,
+        description: this.state.editedDescription,
       };
       this.updateSolution(this.props.user.id, newSolution);
       Alert.alert('Success', 'Solution posted', [
@@ -184,7 +185,7 @@ class ViewSolverScreen extends React.Component {
           style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
           source={{ uri: this.state.photoUri }}
         />
-        <Text>{this.state.description}</Text>
+        <Text>{this.state.editedDescription}</Text>
          <EditPhototagModal
           toggleEditModal={this.modalEditVis}
           modalEditVis={this.state.modalEditVis}

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import PhototagItem from '../../components/PhototagItem';
 import * as Actions from '../../actions';
+import AppStyles from '../../styles/AppStyles';
 
 const mapStateToProps = (state, ownProps) => {
   return {

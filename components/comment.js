@@ -4,6 +4,7 @@ import ActionSheet from 'react-native-actionsheet';
 import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
 import db from '../db';
+import AppStyles from '../styles/AppStyles';
 
 // Settings for the ActionSheet
 const WARNING_INDEX = 0;

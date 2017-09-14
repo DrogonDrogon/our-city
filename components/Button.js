@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
 import { StyleSheet, Text, TouchableHighlight } from 'react-native';
+import AppStyles from '../styles/AppStyles';
 
 function getContent(props) {
   if (props.children) {

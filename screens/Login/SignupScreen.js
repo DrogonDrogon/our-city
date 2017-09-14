@@ -8,6 +8,7 @@ import Container from '../../components/Container';
 import Button from '../../components/Button';
 import Label from '../../components/Label';
 import LoginStyles from '../../styles/LoginStyles.js';
+import AppStyles from '../../styles/AppStyles';
 
 const mapStateToProps = (state, ownProps) => {
   return {

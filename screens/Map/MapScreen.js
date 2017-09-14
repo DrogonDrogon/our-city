@@ -19,6 +19,7 @@ import ListView from './ListView.js';
 import FilterScreen from './FilterScreen';
 import * as Actions from '../../actions';
 import axios from 'axios';
+import AppStyles from '../../styles/AppStyles';
 //import registerForPushNotificationsAsync from 'registerForPushNotificationsAsync';
 const mapStateToProps = (state, ownProps) => {
   return {
