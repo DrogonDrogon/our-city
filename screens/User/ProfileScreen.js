@@ -242,58 +242,66 @@ class HomeScreen extends React.Component {
         this.props.user.displayName === '' ? this.props.user.email : this.props.user.displayName;
 
       return (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.container}>
-            <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
-            <Text>{displayName}</Text>
-            <Button title="Edit Profile" onPress={this._handleClickEdit} />
-            <Button title="Logout" onPress={this._logout} />
-          </View>
-          <Modal
-            animationType={'slide'}
-            transparent={false}
-            visible={this.state.modalVisibility}
-            onRequestClose={() => {
-              console.log('Modal closed');
-            }}>
-            <NavigationBar
-              title={this.state.navBarTitle}
-              rightButton={this.state.rightButton}
-              leftButton={this.state.leftButton}
-            />
-            <ScrollView>
-              <View style={styles.container}>
-                <Image style={styles.profileImage} source={{ uri: this.state.imageUri }} />
-                <Button
-                  title="Change picture"
-                  onPress={this._pickImage}
-                  style={styles.smallButton}
-                />
-                <Text>
-                  Display Name
-                  <TextInput
-                    value={this.state.editDisplayNameText}
-                    keyboardType={'default'}
-                    placeholder="Enter name"
-                    onChangeText={editDisplayNameText => this.setState({ editDisplayNameText })}
-                    style={styles.inputBox}
+        <View style={styles.scrollContainer}>
+          <Image
+            style={{ height: '25%', width: '100%' }}
+            source={require('../../assets/images/background-723053_1920.jpg')}
+            resizeMode="cover"
+          >
+            <View style={styles.container}>
+              <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
+              <Text>{displayName}</Text>
+              <Button title="Edit Profile" onPress={this._handleClickEdit} />
+              <Button title="Logout" onPress={this._logout} />
+            </View>  
+            <Modal
+              animationType={'slide'}
+              transparent={false}
+              visible={this.state.modalVisibility}
+              onRequestClose={() => {
+                console.log('Modal closed');
+              }}>
+              <NavigationBar
+                title={this.state.navBarTitle}
+                rightButton={this.state.rightButton}
+                leftButton={this.state.leftButton}
+              />
+              <ScrollView>
+                <View style={styles.container}>
+                  <Image style={styles.profileImage} source={{ uri: this.state.imageUri }} />
+                  <Button
+                    title="Change picture"
+                    onPress={this._pickImage}
+                    style={styles.smallButton}
                   />
-                </Text>
+                  <Text>
+                    Display Name
+                    <TextInput
+                      value={this.state.editDisplayNameText}
+                      keyboardType={'default'}
+                      placeholder="Enter name"
+                      onChangeText={editDisplayNameText => this.setState({ editDisplayNameText })}
+                      style={styles.inputBox}
+                    />
+                  </Text>
+                </View>
+              </ScrollView>
+            </Modal> 
+          </Image>    
+          <ScrollView contentContainerStyle={styles.scrollContainer}> 
+            <SegmentedControlTab
+              values={['Posts', 'Favs', 'Comments']}
+              selectedIndex={this.state.selectedIndex}
+              onTabPress={this._handleIndexChange}
+            />
+            {this.renderForm(this.state.selectedIndex)}
+            {this.props.isLoading && (
+              <View style={styles.loading}>
+                <ActivityIndicator animated={this.props.isLoading} size="large" />
               </View>
-            </ScrollView>
-          </Modal>
-          <SegmentedControlTab
-            values={['Posts', 'Favs', 'Comments']}
-            selectedIndex={this.state.selectedIndex}
-            onTabPress={this._handleIndexChange}
-          />
-          {this.renderForm(this.state.selectedIndex)}
-          {this.props.isLoading && (
-            <View style={styles.loading}>
-              <ActivityIndicator animated={this.props.isLoading} size="large" />
-            </View>
-          )}
-        </ScrollView>
+            )}
+          </ScrollView>
+        </View>  
       );
     } else {
       return <ScrollView />;

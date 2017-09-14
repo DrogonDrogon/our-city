@@ -1,6 +1,11 @@
 import { StyleSheet, Image } from 'react-native';
 
+//GLOBAL COLORS
+const dark = '#eee';
+//-----------
+
 const AppStyles = StyleSheet.create({
+
   splash: {
     height: '100%',
     width: '100%',
@@ -60,10 +65,7 @@ const AppStyles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 20,
   },
-  hashtag: {
-    color: 'blue',
-    fontWeight: 'bold',
-  },
+
   iconStyle: {
     backgroundColor: '#FBF8F5',
   },
@@ -157,7 +159,11 @@ const AppStyles = StyleSheet.create({
     height: 50,
     margin: 6,
     borderRadius: 25,
-  }
+  },
+  hashtag: {
+    color: 'blue',
+    fontWeight: 'bold',
+  },
 });
 
 export default AppStyles;

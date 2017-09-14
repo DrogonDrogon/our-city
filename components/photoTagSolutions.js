@@ -97,22 +97,28 @@ class PhotoTagSolutions extends React.Component {
         transparent={false}
         visible={this.props.modalSolutionsVis}
         onRequestClose={() => {}}>
-        <Text>Solutions</Text>
-        <FlatList
-          contentContainerStyle={{ flex: 1, alignItems: 'center' }}
-          data={this.state.solutions}
-          renderItem={({ item }) => (
-            <PhototagSolutionItem
-              goToSolver={this.goToSolver.bind(this, item)}
-              navigation={this.props.navigation}
-              solution={item}
-              isOneAccepted={this.state.isOneAccepted}
-              isOwner={this.state.isOwner}
-              handleMarkSelected={this.handleMarkSelected}/>
-          )}
-          keyExtractor={this._keyExtractor}
-        />
-        <Button title="Close" onPress={this.props.toggleSolutionsModal} />
+        <Image
+          style={{ height: '100%', width: '100%' }}
+          source={require('../assets/images/background-723053_1920.jpg')}
+          resizeMode="cover"
+        >
+          <Text>Solutions</Text>
+          <FlatList
+            contentContainerStyle={{ flex: 1, alignItems: 'center' }}
+            data={this.state.solutions}
+            renderItem={({ item }) => (
+              <PhototagSolutionItem
+                goToSolver={this.goToSolver.bind(this, item)}
+                navigation={this.props.navigation}
+                solution={item}
+                isOneAccepted={this.state.isOneAccepted}
+                isOwner={this.state.isOwner}
+                handleMarkSelected={this.handleMarkSelected}/>
+            )}
+            keyExtractor={this._keyExtractor}
+          />
+          <Button title="Close" onPress={this.props.toggleSolutionsModal} />
+        </Image>  
       </Modal>
     );
   }
