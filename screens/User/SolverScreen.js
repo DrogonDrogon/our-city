@@ -32,6 +32,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateUser: userData => {
       dispatch(Actions.updateUser(userData));
     },
+    getSolutions: userId => {
+      dispatch(Actions.fetchSolutionsByUserId(userId));
+    },
   };
 };
 
@@ -135,7 +138,8 @@ class SolverScreen extends React.Component {
       .update(solutionData)
       .then(() => {
         console.log('New solution posted. Id is', newSolutionId);
-        // do something
+        // refetch solutions
+        this.props.getSolutions(this.props.user.id)
       })
       .catch(error => console.log('Error writing to solutions', error));
 

@@ -3,9 +3,6 @@ import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native'
 import AppStyles from '../styles/AppStyles';
 
 class SolverItem extends React.Component {
-  componentDidMount() {
-    console.log('[solverItem] state', this.state, '/// props', this.props);
-  }
   render() {
     return (
       <View style={styles.container}>
