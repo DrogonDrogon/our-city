@@ -6,16 +6,10 @@ function getContent(props) {
   if (props.children) {
     return props.children;
   }
-  return (
-    <Text style={props.styles.label}>
-      {props.label}
-    </Text>
-  );
+  return <Text style={props.styles.label}>{props.label}</Text>;
 }
 
 const Button = props => {
-  
-
   return (
     <TouchableHighlight
       underlayColor="#ccc"
