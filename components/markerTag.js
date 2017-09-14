@@ -7,7 +7,7 @@ class MarkerTag extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          style={{ width: 50, height: 50, resizeMode: Image.resizeMode.contain }}
+          style={{ width: 50, height: 50, marginTop: 10, resizeMode: Image.resizeMode.contain }}
           source={{ uri: this.props.phototag.imageUrl }}
         />
         <Text onPress={this.props.goToPhototags} style={styles.descriptionText}>
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     backgroundColor: 'white',
+    width: 90,
   },
   // descriptionText: {
   //   marginTop: 10,

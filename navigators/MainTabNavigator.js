@@ -92,7 +92,7 @@ export default TabNavigator(
       showLabel: false,
       style: {
         height: 40,
-        backgroundColor: '#fff',
+        backgroundColor: 'black',
       },
     },
     header: null,
