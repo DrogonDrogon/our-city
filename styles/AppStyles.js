@@ -60,6 +60,46 @@ const AppStyles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 10,
   },
+  imageBackground: {
+    flex: 1,
+  },
+
+//GLOBAL STYLES  
+  container: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 30,
+    paddingRight: 30,
+    marginTop: 0,
+    marginBottom: 15,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    width: '80%',
+  },
+  descriptionText: {
+    marginTop: 10,
+    width: 200,
+  },
+  imageStyle: {
+    flex: 1,
+    width: 200,
+    height: 200,
+    resizeMode: Image.resizeMode.contain,
+    backgroundColor: '#fff',
+  },
+  iconBadgeStyle: {
+    width: 30,
+    height: 30,
+    backgroundColor: '#ff0000',
+  },
+  iconBadgeMain: {
+    backgroundColor: '#fff',
+    width: 50,
+    height: 50,
+    margin: 6,
+    borderRadius: 25,
+  }
 });
 
 export default AppStyles;
