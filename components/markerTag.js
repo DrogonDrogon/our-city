@@ -1,5 +1,6 @@
 import React from 'React';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
+import AppStyles from '../styles/AppStyles';
 
 class MarkerTag extends React.Component {
   render() {

@@ -22,6 +22,7 @@ import * as Actions from '../../actions';
 import Favourites from './Favourites';
 import Posts from './Posts';
 import Comments from './Comments';
+import AppStyles from '../../styles/AppStyles';
 
 const awsOptions = {
   keyPrefix: 'users/',

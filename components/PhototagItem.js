@@ -2,6 +2,7 @@ import React from 'React';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
 import TaggedText from './TaggedText';
 import IconBadge from 'react-native-icon-badge';
+import AppStyles from '../styles/AppStyles';
 
 class PhototagItem extends React.Component {
   constructor(props) {

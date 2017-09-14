@@ -19,6 +19,7 @@ import Expo from 'expo';
 import firebase from 'firebase';
 import db from '../../db';
 import FilterTag from '../../components/FilterTag.js';
+import AppStyles from '../../styles/AppStyles';
 
 const mapStateToProps = (state, ownProps) => {
   return {

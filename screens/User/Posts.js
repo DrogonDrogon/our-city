@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import PhototagItem from '../../components/PhototagItem';
+import AppStyles from '../../styles/AppStyles';
 
 class Posts extends React.Component {
   componentWillUpdate() {

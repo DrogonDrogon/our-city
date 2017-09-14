@@ -5,6 +5,7 @@ import ActionSheet from 'react-native-actionsheet';
 import UserOwnComment from '../../components/UserOwnComment';
 import db from '../../db';
 import * as Actions from '../../actions';
+import AppStyles from '../../styles/AppStyles';
 
 // Settings for the ActionSheet
 const WARNING_INDEX = 0;

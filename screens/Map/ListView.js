@@ -3,6 +3,7 @@ import { FlatList, View, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
 import db from '../../db';
 import PhototagItem from '../../components/PhototagItem';
+import AppStyles from '../../styles/AppStyles';
 
 class ListView extends React.Component {
   _keyExtractor = (item, index) => item.id;

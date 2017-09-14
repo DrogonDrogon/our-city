@@ -7,6 +7,7 @@ import { RNS3 } from 'react-native-aws3';
 import * as Actions from '../../actions';
 import db from '../../db';
 import config from '../../config/config';
+import AppStyles from '../../styles/AppStyles';
 
 const awsOptions = {
   keyPrefix: 'phototags/',

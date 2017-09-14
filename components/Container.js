@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
 import { StyleSheet, View } from 'react-native';
+import AppStyles from '../styles/AppStyles';
 
 const Container = props => {
   return (

@@ -80,6 +80,7 @@ class SolverList extends React.Component {
             <SolverItem solution={item} goToSolver={this.goToSolver.bind(this, item)} />
           )}
           keyExtractor={this._keyExtractor}
+          contentContainerStyle={{ alignItems: 'center' }}
         />
       </KeyboardAwareScrollView>
     );
