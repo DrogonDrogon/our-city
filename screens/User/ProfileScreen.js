@@ -213,9 +213,21 @@ class HomeScreen extends React.Component {
           />
         );
       case 1:
-        return <Favourites navigation={this.props.navigation} />;
+        return (
+          <Favourites
+            navigation={this.props.navigation}
+            deleteBadges={this.deleteBadges.bind(this)}
+            decreaseBadges={this.decreaseBadges.bind(this)}
+          />
+        );
       case 2:
-        return <Comments navigation={this.props.navigation} />;
+        return (
+          <Comments
+            navigation={this.props.navigation}
+            deleteBadges={this.deleteBadges.bind(this)}
+            decreaseBadges={this.decreaseBadges.bind(this)}
+          />
+        );
       default:
         return <View />;
     }
