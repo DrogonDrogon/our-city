@@ -438,6 +438,17 @@ class MapPhotoTagScreen extends React.Component {
           editDescription={this.editDescription}
         />
         <View style={{ flex: 1, flexDirection: 'column' }}>
+          
+          
+        </View>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            width: '80%',
+            alignItems: 'center',
+          }}>
           <TouchableHighlight onPress={this.handleClickUpvote}>
             <Ionicons
               name="md-arrow-round-up"
@@ -455,15 +466,6 @@ class MapPhotoTagScreen extends React.Component {
               style={AppStyles.iconStyle}
             />
           </TouchableHighlight>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            width: '80%',
-            alignItems: 'center',
-          }}>
           {isEditable && (
             <TouchableHighlight onPress={this.openEditDescription}>
               <Ionicons name="md-create" size={28} color="gray" style={AppStyles.iconStyle} />
@@ -499,7 +501,7 @@ class MapPhotoTagScreen extends React.Component {
           <PhotoTagSolutions
             style={{ height: '75%' }}
             navigation={this.props.navigation}
-            toggleSolutionsModal={this.toggleSolutionsModal.bind(this)}
+            toggleSolutionsModal={this.toggleSolutionsModal}
             modalSolutionsVis={this.state.modalSolutionsVis}
             phototag={this.state.phototag}
             userId={this.props.user.id}

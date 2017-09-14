@@ -37,8 +37,9 @@ const AppStyles = StyleSheet.create({
   },
   authorContainer: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: 'row',
     flexWrap: 'wrap',
+    alignItems: 'center',
     marginBottom: 10,
     width: '80%',
   },
