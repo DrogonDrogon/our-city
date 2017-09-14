@@ -1,6 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Image, TextInput, Text, ActivityIndicator, Alert, CameraRoll } from 'react-native';
+import {
+  Image,
+  TextInput,
+  Text,
+  ActivityIndicator,
+  Alert,
+  CameraRoll,
+  View,
+  TouchableHighlight,
+} from 'react-native';
+import Button from '../components/Button';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePicker, Location, Permissions } from 'expo';
 import { RNS3 } from 'react-native-aws3';
@@ -270,13 +281,26 @@ class CameraScreen extends React.Component {
 
     return (
       <Image
-          style={{ height: '100%', width: '100%' }}
-          source={require('../assets/images/cameraBack.png')}
-          resizeMode="cover"
-        >
+        style={{ height: '100%', width: '100%' }}
+        source={require('../assets/images/cameraBack.png')}
+        resizeMode="cover">
         <KeyboardAwareScrollView contentContainerStyle={styles.center} behavior="padding">
-          <Button title="Pick an image from camera roll" onPress={this._pickImage} />
-          <Button title="Use camera" onPress={this._takePic} />
+          <TouchableHighlight onPress={this._takePic}>
+            <FontAwesome
+              name="camera-retro"
+              size={40}
+              color="white"
+              style={{ backgroundColor: 'transparent' }}
+            />
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this._pickImage}>
+            <MaterialIcons
+              name="camera-roll"
+              size={40}
+              color="white"
+              style={{ backgroundColor: 'transparent' }}
+            />
+          </TouchableHighlight>
           {imageUri && <Image source={{ uri: imageUri }} style={styles.imageSetting} />}
           <TextInput
             style={styles.descriptionInput}
@@ -287,10 +311,16 @@ class CameraScreen extends React.Component {
             ref={input => (this.descriptionInput = input)}>
             <Text>{parts}</Text>
           </TextInput>
-
-          <Button title="Upload my post" onPress={this._saveImg} />
+          <Button
+            label="Post"
+            onPress={this._saveImg}
+            styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
+          />
+          <View style={styles.view}>
+            <Text style={styles.text}>Show Us What The World Could Be</Text>
+          </View>
         </KeyboardAwareScrollView>
-      </Image>  
+      </Image>
     );
   }
 }
@@ -308,6 +338,7 @@ const styles = {
     textAlignVertical: 'top',
     fontSize: 16,
     padding: 10,
+    color: 'white',
   },
   center: {
     alignItems: 'center',
@@ -315,6 +346,17 @@ const styles = {
   hashtag: {
     color: 'blue',
     fontWeight: 'bold',
+  },
+  view: {
+    alignItems: 'center',
+    margin: 20,
+    backgroundColor: 'transparent',
+  },
+  text: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 40,
+    textAlign: 'center',
   },
 };
 

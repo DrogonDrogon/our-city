@@ -5,7 +5,6 @@ const dark = '#eee';
 //-----------
 
 const AppStyles = StyleSheet.create({
-
   splash: {
     height: '100%',
     width: '100%',
@@ -124,7 +123,7 @@ const AppStyles = StyleSheet.create({
     flex: 1,
   },
 
-//GLOBAL STYLES  
+  //GLOBAL STYLES
   container: {
     paddingTop: 20,
     paddingBottom: 20,
@@ -160,9 +159,21 @@ const AppStyles = StyleSheet.create({
     margin: 6,
     borderRadius: 25,
   },
+
   hashtag: {
     color: 'blue',
     fontWeight: 'bold',
+  },
+  buttonWhiteText: {
+    fontSize: 16,
+    color: '#FFF',
+  },
+  actionButton: {
+    backgroundColor: 'red',
+    height: 20,
+    borderRadius: 20,
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
 
