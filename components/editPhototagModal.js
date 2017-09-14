@@ -18,10 +18,6 @@ class EditPhototagModal extends React.Component {
         />
         <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.photoDisplayContainer}>
-            <Image
-              style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-              source={{ uri: this.props.phototag.imageUrl }}
-            />
             <TextInput
               value={this.props.editedDescription}
               placeholder="Enter description"
