@@ -5,6 +5,8 @@ import db from '../../db';
 import PhototagItem from '../../components/PhototagItem';
 import AppStyles from '../../styles/AppStyles';
 
+const remote = 'https://s15.postimg.org/tw2qkvmcb/400px.png';
+
 class ListView extends React.Component {
   _keyExtractor = (item, index) => item.id;
 
@@ -18,14 +20,41 @@ class ListView extends React.Component {
     //   const selected =
     // })
   };
-  render() {
+
+  render() { 
+    const resizeMode = 'center';
+
     return (
-      <FlatList
-        data={this.props.phototags}
-        renderItem={({ item }) => <PhototagItem navigation={this.props.navigation} phototag={item} goToPhototags={this.goToPhototags.bind(this, item)}/>}
-        keyExtractor={this._keyExtractor}
-        contentContainerStyle={{ alignItems: 'center' }}
-      />
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#eee',
+        }}
+      >
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          <Image
+            style={{
+              flex: 1,
+              resizeMode,
+            }}
+            source={{ uri: remote }}
+          />
+        </View>
+        <FlatList
+          data={this.props.phototags}
+          renderItem={({ item }) => <PhototagItem navigation={this.props.navigation} phototag={item} goToPhototags={this.goToPhototags.bind(this, item)}/>}
+          keyExtractor={this._keyExtractor}
+          contentContainerStyle={{ alignItems: 'center' }}
+        />
+      </View>  
     );
   }
 }
