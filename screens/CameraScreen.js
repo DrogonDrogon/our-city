@@ -269,22 +269,28 @@ class CameraScreen extends React.Component {
     });
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.center} behavior="padding">
-        <Button title="Pick an image from camera roll" onPress={this._pickImage} />
-        <Button title="Use camera" onPress={this._takePic} />
-        {imageUri && <Image source={{ uri: imageUri }} style={styles.imageSetting} />}
-        <TextInput
-          style={styles.descriptionInput}
-          placeholder="Enter description"
-          onChangeText={text => this.setState({ description: text })}
-          keyboardType={'default'}
-          multiline
-          ref={input => (this.descriptionInput = input)}>
-          <Text>{parts}</Text>
-        </TextInput>
+      <Image
+          style={{ height: '100%', width: '100%' }}
+          source={require('../assets/images/cameraBack.png')}
+          resizeMode="cover"
+        >
+        <KeyboardAwareScrollView contentContainerStyle={styles.center} behavior="padding">
+          <Button title="Pick an image from camera roll" onPress={this._pickImage} />
+          <Button title="Use camera" onPress={this._takePic} />
+          {imageUri && <Image source={{ uri: imageUri }} style={styles.imageSetting} />}
+          <TextInput
+            style={styles.descriptionInput}
+            placeholder="Enter description"
+            onChangeText={text => this.setState({ description: text })}
+            keyboardType={'default'}
+            multiline
+            ref={input => (this.descriptionInput = input)}>
+            <Text>{parts}</Text>
+          </TextInput>
 
-        <Button title="Upload my post" onPress={this._saveImg} />
-      </KeyboardAwareScrollView>
+          <Button title="Upload my post" onPress={this._saveImg} />
+        </KeyboardAwareScrollView>
+      </Image>  
     );
   }
 }
