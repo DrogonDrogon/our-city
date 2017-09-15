@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, FlatList, StatusBar, Text, Image, Modal, Button } from 'react-native';
+import CustomButton from './Button';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import ActionSheet from 'react-native-actionsheet';
@@ -146,7 +147,10 @@ class PhotoTagSolutions extends React.Component {
             destructiveButtonIndex={WARNING_INDEX}
             onPress={this.handleActionSheetPress}
           />
-          <Button title="Close" onPress={this.props.toggleSolutionsModal} />
+          <CustomButton label="Close"
+            onPress={this.props.toggleSolutionsModal}
+            styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
+          />
         </Image>
       </Modal>
     );

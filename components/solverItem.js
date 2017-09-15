@@ -8,7 +8,7 @@ class SolverItem extends React.Component {
       <View style={AppStyles.container}>
         <TouchableHighlight onPress={this.props.goToSolver} style={{ width: 200, height: 200 }}>
           <View>
-            <Image style={AppStyles.imageStyle} source={{ uri: this.props.solution.imageUrl }} />
+            <Image style={styles.imageStyle} source={{ uri: this.props.solution.imageUrl }} />
             <Text>{this.props.solution.description}</Text>
           </View>
         </TouchableHighlight>
