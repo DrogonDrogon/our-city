@@ -201,14 +201,12 @@ const AppStyles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-<<<<<<< HEAD
-  containerRow:{
+  containerRow: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '80%',
   },
-=======
   editButton: {
     borderColor: '#2f95dc',
     borderWidth: 1,
@@ -250,7 +248,6 @@ const AppStyles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'transparent',
   }
->>>>>>> styles
 });
 
 export default AppStyles;
