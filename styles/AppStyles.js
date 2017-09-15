@@ -145,7 +145,7 @@ const AppStyles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: Image.resizeMode.contain,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
   iconBadgeStyle: {
     width: 30,
@@ -158,6 +158,14 @@ const AppStyles = StyleSheet.create({
     height: 50,
     margin: 6,
     borderRadius: 25,
+  },
+  imageHolder: {
+    height: 350,
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center', 
+    backgroundColor: 'transparent',
   },
 
   hashtag: {
@@ -174,6 +182,12 @@ const AppStyles = StyleSheet.create({
     borderRadius: 20,
     marginTop: 10,
     marginBottom: 10,
+  },
+  containerRow:{
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
   },
 });
 
