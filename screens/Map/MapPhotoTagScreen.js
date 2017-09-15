@@ -511,7 +511,7 @@ class MapPhotoTagScreen extends React.Component {
                 </View>
                 <View style={AppStyles.horizontalDisplayNoSpace}>
                 <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="transparent">
-                  <Ionicons name="md-list" size={32} color="white" />
+                  <Ionicons name="md-cog" size={32} color="white" />
                 </TouchableHighlight>
                   <Button title="View suggested fixes" onPress={()=> {this.toggleActionModal(); this.toggleSolutionsModal()}} />
                 </View>
