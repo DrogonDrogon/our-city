@@ -439,7 +439,7 @@ class MapPhotoTagScreen extends React.Component {
             />
             {isEditable && (
               <TouchableHighlight onPress={this.openEditDescription} underlayColor="#ccc">
-                <Ionicons name="md-create" size={28} color="gray" />
+                <Ionicons name="md-create" size={28} color="white" />
               </TouchableHighlight>
             )}
           </View>
@@ -452,7 +452,7 @@ class MapPhotoTagScreen extends React.Component {
               <Ionicons
                 name="md-arrow-dropup"
                 size={32}
-                color={userVoteStatus === 1 ? 'orange' : 'gray'}
+                color={userVoteStatus === 1 ? 'orange' : 'white'}
               />
             </TouchableHighlight>
             <Text style={AppStyles.titleText}>{this.state.voteTotal}</Text>
@@ -460,7 +460,7 @@ class MapPhotoTagScreen extends React.Component {
               <Ionicons
                 name="md-arrow-dropdown"
                 size={32}
-                color={userVoteStatus === -1 ? 'orange' : 'gray'}
+                color={userVoteStatus === -1 ? 'orange' : 'white'}
               />
             </TouchableHighlight>
             <TouchableHighlight onPress={this.share} underlayColor="#ccc">
@@ -470,9 +470,29 @@ class MapPhotoTagScreen extends React.Component {
               <Ionicons
                 name="md-heart"
                 size={32}
-                color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'gray'}
+                color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'white'}
               />
             </TouchableHighlight>
+          </View>
+          {this.state.phototag.reps && (
+            <View style={AppStyles.horizontalDisplayNoSpace}>
+              <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="#ccc">
+                <Ionicons name="md-contacts" size={32} color="white" />
+              </TouchableHighlight>
+              <Button title="Contact an official" onPress={this.goToElectedOfficials} />
+            </View>
+          )}
+          <View style={AppStyles.horizontalDisplayNoSpace}>
+            <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
+              <Ionicons name="md-bulb" size={32} color="white" />
+            </TouchableHighlight>
+            <Button title="Volunteer a fix" onPress={this.solve} />
+          </View>
+          <View style={AppStyles.horizontalDisplayNoSpace}>
+          <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="#ccc">
+            <Ionicons name="md-list" size={32} color="white" />
+          </TouchableHighlight>
+            <Button title="View suggested fixes" onPress={this.toggleSolutionsModal} />
           </View>
           <Text style={AppStyles.titleText}>Comments</Text>
           {this.state.comments.map((comment, i) => (
@@ -495,26 +515,7 @@ class MapPhotoTagScreen extends React.Component {
               <Ionicons name="md-send" size={32} color="gray" />
             </TouchableHighlight>
           </View>
-          {this.state.phototag.reps && (
-            <View style={AppStyles.horizontalDisplayNoSpace}>
-              <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="#ccc">
-                <Ionicons name="md-contacts" size={32} color="gray" />
-              </TouchableHighlight>
-              <Button title="Contact an official" onPress={this.goToElectedOfficials} />
-            </View>
-          )}
-          <View style={AppStyles.horizontalDisplayNoSpace}>
-            <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
-              <Ionicons name="md-bulb" size={32} color="gray" />
-            </TouchableHighlight>
-            <Button title="Volunteer a fix" onPress={this.solve} />
-          </View>
-          <View style={AppStyles.horizontalDisplayNoSpace}>
-          <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="#ccc">
-            <Ionicons name="md-list" size={32} color="gray" />
-          </TouchableHighlight>
-            <Button title="View suggested fixes" onPress={this.toggleSolutionsModal} />
-          </View>
+          
           <PhotoTagSolutions
             style={{ height: '75%' }}
             navigation={this.props.navigation}

@@ -30,7 +30,7 @@ const AppStyles = StyleSheet.create({
     width: '80%',
   },
   photoDisplayContainer: {
-    width: '100%',
+    width: 250,
     height: 250,
     marginBottom: 20,
   },
@@ -47,6 +47,7 @@ const AppStyles = StyleSheet.create({
   },
   descriptionContainerText: {
     fontSize: 18,
+    color: 'white',
   },
   authorContainer: {
     flex: 1,
