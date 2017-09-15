@@ -13,6 +13,7 @@ const AppStyles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingBottom: 50,
+    backgroundColor: 'transparent',
     // backgroundColor: '#FBF8F5', // light bg color
   },
   titleText: {
