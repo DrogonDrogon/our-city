@@ -91,7 +91,7 @@ export default TabNavigator(
     tabBarOptions: {
       showLabel: false,
       style: {
-        height: 40,
+        height: 45,
         backgroundColor: 'black',
       },
     },

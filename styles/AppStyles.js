@@ -232,8 +232,13 @@ const AppStyles = StyleSheet.create({
     width: 200,
     backgroundColor: 'transparent',
   },
+  mapsTabStyle: {
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    borderColor: '#2f95dc',
+    height: 28,
+  },
   tabStyle: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(255,255,255,0.6)',
     borderColor: '#2f95dc',
     height: 28,
   },
