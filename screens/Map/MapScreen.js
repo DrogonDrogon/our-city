@@ -255,17 +255,7 @@ class MapScreen extends React.Component {
     if (this.state.selectedIndex === 0) {
       return (
         <View style={{ height: '100%' }}>
-          <SegmentedControlTab
-            values={['Map', 'List']}
-            selectedIndex={this.state.selectedIndex}
-            onTabPress={this._handleIndexChange}
-            borderRadius={14}
-            tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
-            tabStyle={AppStyles.tabStyle}
-            tabTextStyle={AppStyles.tabTextStyle}
-            activeTabStyle={AppStyles.activeTabStyle}
-            activeTabTextStyle={AppStyles.activeTabTextStyle}
-          />
+          
           <FilterScreen
             filters={this.state.filters}
             tags={this.state.tags}
@@ -303,6 +293,17 @@ class MapScreen extends React.Component {
                   </MapView.Marker>
                 ))}
           </MapView>
+          <SegmentedControlTab
+            values={['Map', 'List']}
+            selectedIndex={this.state.selectedIndex}
+            onTabPress={this._handleIndexChange}
+            borderRadius={14}
+            tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
+            tabStyle={AppStyles.tabStyle}
+            tabTextStyle={AppStyles.tabTextStyle}
+            activeTabStyle={AppStyles.activeTabStyle}
+            activeTabTextStyle={AppStyles.activeTabTextStyle}
+          />
         </View>
       );
     } else {
