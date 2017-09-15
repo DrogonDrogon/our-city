@@ -7,23 +7,25 @@ import AppStyles from '../styles/AppStyles';
 class PhototagItem extends React.Component {
   render() {
     return (
-      <View style={[AppStyles.container, {backgroundColor: 'transparent',}]}>
+      <View style={[AppStyles.container, {backgroundColor: 'black',}]}>
         <View
           style={{
             alignSelf: 'flex-end',
             marginTop: -5,
-            // position: 'absolute',
+            position: 'absolute',
           }}>
           <IconBadge
             MainElement={<View style={AppStyles.iconBadgeMain} />}
-            BadgeElement={<Text style={{ color: 'transparent' }}>{this.props.badges}</Text>}
+            BadgeElement={<Text style={{ color: '#000' }}>{this.props.badges}</Text>}
             IconBadgeStyle={AppStyles.iconBadgeStyle}
             Hidden={!this.props.badges || this.props.badges === 0}
           />
         </View>
-        <View style={[AppStyles.container, {backgroundColor: 'transparent',
-            justifyContent: 'space-around',
-            flexDirection: 'row'}]}>
+        <View style={{
+          backgroundColor: 'transparent',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          flex: 1}}>
           <TouchableHighlight
             onPress={() => {
               if (this.props.decreaseBadges) {
@@ -32,7 +34,7 @@ class PhototagItem extends React.Component {
               }
               this.props.goToPhototags();
             }}
-            style={{ width: '100%', height: '100%' }}>
+            style={{height: 100, }}>
             <Image style={[AppStyles.imageStyle,]} source={{ uri: this.props.phototag.imageUrl }} />
           </TouchableHighlight>
           <TaggedText navigation={this.props.navigation} text={this.props.phototag.description} />
