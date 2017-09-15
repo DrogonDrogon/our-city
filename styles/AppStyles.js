@@ -33,6 +33,7 @@ const AppStyles = StyleSheet.create({
     width: '100%',
     height: 250,
     marginBottom: 20,
+    zIndex: 1,
   },
   phototagImage: {
     width: '100%',
@@ -47,6 +48,7 @@ const AppStyles = StyleSheet.create({
   },
   descriptionContainerText: {
     fontSize: 18,
+    color: 'white',
   },
   authorContainer: {
     flex: 1,

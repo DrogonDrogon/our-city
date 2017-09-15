@@ -7,7 +7,7 @@ import AppStyles from '../styles/AppStyles';
 class PhototagItem extends React.Component {
   render() {
     return (
-      <View style={AppStyles.container}>
+      <View style={[AppStyles.container, {backgroundColor: 'transparent'}]}>
         <View
           style={{
             alignSelf: 'flex-end',
