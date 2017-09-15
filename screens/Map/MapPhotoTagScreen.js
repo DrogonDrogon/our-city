@@ -424,7 +424,7 @@ class MapPhotoTagScreen extends React.Component {
 
     return (
       <Image
-          style={{ height: '100%', width: '100%',  alignItems: 'center', }}
+          style={{ height: '100%', width: '100%',  alignItems: 'center', backgroundColor: 'black' }}
           source={require('../../assets/images/water.png')}
           resizeMode="cover">
         <KeyboardAwareScrollView contentContainerStyle={[AppStyles.scrollViewContainer, {backgroundColor:'transparent'}]}>
@@ -438,7 +438,7 @@ class MapPhotoTagScreen extends React.Component {
               style={AppStyles.descriptionContainerView}
             />
             {isEditable && (
-              <TouchableHighlight onPress={this.openEditDescription} underlayColor="#ccc">
+              <TouchableHighlight onPress={this.openEditDescription} underlayColor="transparent">
                 <Ionicons name="md-create" size={28} color="white" />
               </TouchableHighlight>
             )}
@@ -448,7 +448,7 @@ class MapPhotoTagScreen extends React.Component {
           <Text style={AppStyles.dateText}>{moment(this.state.phototag.timestamp).fromNow()}</Text>
           <View style={{ flex: 1, flexDirection: 'column' }} />
           <View style={AppStyles.horizontalDisplay}>
-            <TouchableHighlight onPress={this.handleClickUpvote} underlayColor="#ccc">
+            <TouchableHighlight onPress={this.handleClickUpvote} underlayColor="transparent">
               <Ionicons
                 name="md-arrow-dropup"
                 size={32}
@@ -456,7 +456,7 @@ class MapPhotoTagScreen extends React.Component {
               />
             </TouchableHighlight>
             <Text style={AppStyles.titleText}>{this.state.voteTotal}</Text>
-            <TouchableHighlight onPress={this.handleClickDownvote} underlayColor="#ccc">
+            <TouchableHighlight onPress={this.handleClickDownvote} underlayColor="transparent">
               <Ionicons
                 name="md-arrow-dropdown"
                 size={32}
@@ -464,9 +464,9 @@ class MapPhotoTagScreen extends React.Component {
               />
             </TouchableHighlight>
             <TouchableHighlight onPress={this.share} underlayColor="#ccc">
-              <Ionicons name="ios-share-outline" size={32} color="gray" />
+              <Ionicons name="ios-share-outline" size={32} color="white" />
             </TouchableHighlight>
-            <TouchableHighlight onPress={this.handleClickFav} underlayColor="#ccc">
+            <TouchableHighlight onPress={this.handleClickFav} underlayColor="transparent">
               <Ionicons
                 name="md-heart"
                 size={32}
@@ -476,7 +476,7 @@ class MapPhotoTagScreen extends React.Component {
           </View>
           {this.state.phototag.reps && (
             <View style={AppStyles.horizontalDisplayNoSpace}>
-              <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="#ccc">
+              <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="transparent">
                 <Ionicons name="md-contacts" size={32} color="white" />
               </TouchableHighlight>
               <Button title="Contact an official" onPress={this.goToElectedOfficials} />
@@ -489,7 +489,7 @@ class MapPhotoTagScreen extends React.Component {
             <Button title="Volunteer a fix" onPress={this.solve} />
           </View>
           <View style={AppStyles.horizontalDisplayNoSpace}>
-          <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="#ccc">
+          <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="transparent">
             <Ionicons name="md-list" size={32} color="white" />
           </TouchableHighlight>
             <Button title="View suggested fixes" onPress={this.toggleSolutionsModal} />

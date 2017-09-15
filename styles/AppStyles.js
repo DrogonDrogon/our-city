@@ -60,6 +60,7 @@ const AppStyles = StyleSheet.create({
   authorNameText: {
     fontWeight: 'bold',
     marginRight: 10,
+    color: 'white',
   },
   imageSetting: {
     height: 40,
@@ -112,6 +113,7 @@ const AppStyles = StyleSheet.create({
   dateText: {
     fontSize: 12,
     marginRight: 10,
+    color: 'white',
   },
   commentText: {
     fontSize: 16,
@@ -146,10 +148,11 @@ const AppStyles = StyleSheet.create({
   },
   imageStyle: {
     flex: 1,
-    width: 200,
-    height: 200,
-    resizeMode: Image.resizeMode.contain,
+    width: 70,
+    height: 70,
+    resizeMode: Image.resizeMode.cover,
     backgroundColor: 'transparent',
+    borderRadius: 35,
   },
   iconBadgeStyle: {
     width: 30,
@@ -157,7 +160,7 @@ const AppStyles = StyleSheet.create({
     backgroundColor: '#ff0000',
   },
   iconBadgeMain: {
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     width: 50,
     height: 50,
     margin: 6,
