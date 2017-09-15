@@ -96,46 +96,51 @@ export default class electedOfficials extends React.Component {
     ];
 
     return (
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <Picker
-          style={styles.picker}
-          itemStyle={styles.pickerItem}
-          selectedValue={this.state.electedOfficialPositionName}
-          onValueChange={(itemValue, itemIndex) =>
-            this.updateSelectedOfficial(itemValue, itemIndex)}>
-          {this.state.phototag.reps.offices.map((office, i) => (
-            <Picker.Item key={i} label={office.name} value={office.name} />
-          ))}
-        </Picker>
-        <Image
-          style={{ width: '100%', height: 100, resizeMode: Image.resizeMode.contain }}
-          source={{
-            uri: currentSelectedOfficial.photoUrl,
-          }}
-        />
-        <Text>{currentSelectedOfficial.name}</Text>
-        <Text onPress={this._handleOpenWithBrowser} style={styles.urlLink}>
-          {currentSelectedOfficial.urls[0]}
-        </Text>
-        {this.state.twitterId !== '' && (
-          <Text onPress={this.share}>
-            <Ionicons name="logo-twitter" size={32} color="blue" />
-            <Text>{this.state.twitterId}</Text>
+      <Image
+        style={{ height: '100%', width: '100%', alignItems: 'center' }}
+        source={require('../assets/images/civic.jpg')}
+        resizeMode="cover">
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+          <Picker
+            style={styles.picker}
+            itemStyle={styles.pickerItem}
+            selectedValue={this.state.electedOfficialPositionName}
+            onValueChange={(itemValue, itemIndex) =>
+              this.updateSelectedOfficial(itemValue, itemIndex)}>
+            {this.state.phototag.reps.offices.map((office, i) => (
+              <Picker.Item key={i} label={office.name} value={office.name} />
+            ))}
+          </Picker>
+          <Image
+            style={{ width: '100%', height: 100, resizeMode: Image.resizeMode.contain }}
+            source={{
+              uri: currentSelectedOfficial.photoUrl,
+            }}
+          />
+          <Text>{currentSelectedOfficial.name}</Text>
+          <Text onPress={this._handleOpenWithBrowser} style={styles.urlLink}>
+            {currentSelectedOfficial.urls[0]}
           </Text>
-        )}
-        {this.state.fbId !== '' && (
-          <Text onPress={this.share}>
-            <Ionicons name="logo-facebook" size={32} color="blue" />
-            <Text>{this.state.fbId}</Text>
-          </Text>
-        )}
-        {this.state.emailId !== '' && (
-          <Text onPress={this._handleOpenEmail}>
-            <Ionicons name="md-mail" size={32} color="blue" />
-            <Text>{this.state.emailId}</Text>
-          </Text>
-        )}
-      </ScrollView>
+          {this.state.twitterId !== '' && (
+            <Text onPress={this.share}>
+              <Ionicons name="logo-twitter" size={32} color="blue" />
+              <Text>{this.state.twitterId}</Text>
+            </Text>
+          )}
+          {this.state.fbId !== '' && (
+            <Text onPress={this.share}>
+              <Ionicons name="logo-facebook" size={32} color="blue" />
+              <Text>{this.state.fbId}</Text>
+            </Text>
+          )}
+          {this.state.emailId !== '' && (
+            <Text onPress={this._handleOpenEmail}>
+              <Ionicons name="md-mail" size={32} color="blue" />
+              <Text>{this.state.emailId}</Text>
+            </Text>
+          )}
+        </ScrollView>
+      </Image>
     );
   }
 }
@@ -161,7 +166,8 @@ const styles = StyleSheet.create({
   },
   pickerItem: {
     height: 100,
-    color: 'black',
+    //color: 'white',
     fontSize: 16,
+    backgroundColor: 'transparent',
   },
 });
