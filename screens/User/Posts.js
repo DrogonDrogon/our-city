@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import PhototagItem from '../../components/PhototagItem';
 import AppStyles from '../../styles/AppStyles';
 
@@ -12,7 +12,7 @@ class Posts extends React.Component {
   render() {
     return (
       <View>
-        <Text style={styles.titleText}>My Posts</Text>
+        <Text style={AppStyles.titleText}>My Posts</Text>
         {this.props.phototags &&
           this.props.phototags
             .filter(item => item.userId === this.props.user.id)

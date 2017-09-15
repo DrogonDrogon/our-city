@@ -13,14 +13,15 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import axios from 'axios';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
 import FilterScreen from './FilterScreen';
 import * as Actions from '../../actions';
-import axios from 'axios';
 import AppStyles from '../../styles/AppStyles';
 //import registerForPushNotificationsAsync from 'registerForPushNotificationsAsync';
+
 const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
@@ -259,11 +260,11 @@ class MapScreen extends React.Component {
             selectedIndex={this.state.selectedIndex}
             onTabPress={this._handleIndexChange}
             borderRadius={14}
-            tabsContainerStyle={styles.tabsContainerStyle}
-            tabStyle={styles.tabStyle}
-            tabTextStyle={styles.tabTextStyle}
-            activeTabStyle={styles.activeTabStyle}
-            activeTabTextStyle={styles.activeTabTextStyle}
+            tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
+            tabStyle={AppStyles.tabStyle}
+            tabTextStyle={AppStyles.tabTextStyle}
+            activeTabStyle={AppStyles.activeTabStyle}
+            activeTabTextStyle={AppStyles.activeTabTextStyle}
           />
           <FilterScreen
             filters={this.state.filters}
@@ -312,11 +313,11 @@ class MapScreen extends React.Component {
             selectedIndex={this.state.selectedIndex}
             onTabPress={this._handleIndexChange}
             borderRadius={14}
-            tabsContainerStyle={styles.tabsContainerStyle}
-            tabStyle={styles.tabStyle}
-            tabTextStyle={styles.tabTextStyle}
-            activeTabStyle={styles.activeTabStyle}
-            activeTabTextStyle={styles.activeTabTextStyle}
+            tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
+            tabStyle={AppStyles.tabStyle}
+            tabTextStyle={AppStyles.tabTextStyle}
+            activeTabStyle={AppStyles.activeTabStyle}
+            activeTabTextStyle={AppStyles.activeTabTextStyle}
           />
           <FilterScreen
             filters={this.state.filters}
@@ -360,27 +361,5 @@ const styles = StyleSheet.create({
   },
   switchButton: {
     position: 'absolute',
-  },
-  tabsContainerStyle: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 200,
-    backgroundColor: 'transparent',
-  },
-  tabStyle: {
-    backgroundColor: '#fff',
-    borderColor: '#2f95dc',
-    height: 28,
-  },
-  tabTextStyle: {
-    color: '#2f95dc',
-  },
-  activeTabStyle: {
-    backgroundColor: '#2f95dc',
-    borderColor: '#2f95dc',
-  },
-  activeTabTextStyle: {
-    color: '#fff',
   },
 });

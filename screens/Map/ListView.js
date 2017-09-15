@@ -21,15 +21,14 @@ class ListView extends React.Component {
     // })
   };
 
-  render() { 
+  render() {
     const resizeMode = 'center';
 
     return (
       <Image
-          style={{ height: '100%', width: '100%' }}
-          source={require('../../assets/images/background-723053_1920.jpg')}
-          resizeMode="cover"
-        >
+        style={{ height: '100%', width: '100%' }}
+        source={require('../../assets/images/background-723053_1920.jpg')}
+        resizeMode="cover">
         <FlatList
           data={this.props.phototags}
           renderItem={({ item }) => (
@@ -40,9 +39,14 @@ class ListView extends React.Component {
             />
           )}
           keyExtractor={this._keyExtractor}
-          contentContainerStyle={{ alignItems: 'center', backgroundColor: 'transparent', marginTop: 20, }}
+          contentContainerStyle={{
+            alignItems: 'center',
+            backgroundColor: 'transparent',
+            marginTop: 20,
+            width: '100%',
+          }}
         />
-      </Image>  
+      </Image>
     );
   }
 }
