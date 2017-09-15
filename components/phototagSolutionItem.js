@@ -32,25 +32,45 @@ class PhototagSolutionItem extends React.Component {
 
   render() {
     return (
-      <View style={{ marginBottom: 20 }}>
-        <Text>{this.props.solution.description}</Text>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          width: '100%',
+          backgroundColor: 'rgba(255,255,255,0.3)',
+          paddingBottom: 10,
+          paddingTop: 40,
+        }}>
         <Image
-          style={{ width: 100, height: 100, resizeMode: Image.resizeMode.contain }}
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 50,
+            resizeMode: Image.resizeMode.contain,
+          }}
           source={{
             uri: this.props.solution.imageUrl,
           }}
         />
-        <Text>Suggested by {this.state.authorName}</Text>
-        <Button title="View" onPress={this.props.goToSolver} />
-        {this.props.isOwner &&
-        this.props.isOneAccepted === false && (
-          <Button
-            title="Mark as Chosen"
-            onPress={() => this.props.handleMarkSelected(this.props.solution.id)}
-          />
-        )}
-        {this.props.isOneAccepted === true &&
-        this.props.solution.isAccepted && <Text style={{ color: 'green' }}>Marked as best</Text>}
+        <Text style={AppStyles.solutionTextTitle}>{this.props.solution.description}</Text>
+        <Text>
+          <Text>Suggested by </Text>
+          <Text style={AppStyles.solutionTextBold}>{this.state.authorName}</Text>
+        </Text>
+        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+          <Button title="View" onPress={this.props.goToSolver} />
+          {this.props.isOwner &&
+          this.props.isOneAccepted === false && (
+            <Button
+              title="Mark as Chosen"
+              onPress={() => this.props.confirmMarkSolution(this.props.solution.id)}
+            />
+          )}
+          {this.props.isOneAccepted === true &&
+          this.props.solution.isAccepted && (
+            <Text style={AppStyles.solutionMarkedAsBest}>Marked as best</Text>
+          )}
+        </View>
       </View>
     );
   }

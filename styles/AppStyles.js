@@ -175,6 +175,20 @@ const AppStyles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
+  solutionTextTitle: {
+    fontSize: 18,
+  },
+  solutionText: {
+    fontSize: 14,
+  },
+  solutionTextBold: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  solutionMarkedAsBest: {
+    fontSize: 18,
+    color: 'green',
+  },
 });
 
 export default AppStyles;

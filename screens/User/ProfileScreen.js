@@ -246,14 +246,13 @@ class HomeScreen extends React.Component {
           <Image
             style={{ height: '25%', width: '100%' }}
             source={require('../../assets/images/background-723053_1920.jpg')}
-            resizeMode="cover"
-          >
+            resizeMode="cover">
             <View style={styles.container}>
               <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
               <Text>{displayName}</Text>
               <Button title="Edit Profile" onPress={this._handleClickEdit} />
               <Button title="Logout" onPress={this._logout} />
-            </View>  
+            </View>
             <Modal
               animationType={'slide'}
               transparent={false}
@@ -286,9 +285,9 @@ class HomeScreen extends React.Component {
                   </Text>
                 </View>
               </ScrollView>
-            </Modal> 
-          </Image>    
-          <ScrollView contentContainerStyle={styles.scrollContainer}> 
+            </Modal>
+          </Image>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
             <SegmentedControlTab
               values={['Posts', 'Favs', 'Comments']}
               selectedIndex={this.state.selectedIndex}
@@ -301,7 +300,7 @@ class HomeScreen extends React.Component {
               </View>
             )}
           </ScrollView>
-        </View>  
+        </View>
       );
     } else {
       return <ScrollView />;
