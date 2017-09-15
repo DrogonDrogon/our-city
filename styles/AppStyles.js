@@ -159,6 +159,14 @@ const AppStyles = StyleSheet.create({
     margin: 6,
     borderRadius: 25,
   },
+  imageHolder: {
+    height: 350,
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
 
   hashtag: {
     color: 'blue',
@@ -210,8 +218,8 @@ const AppStyles = StyleSheet.create({
   // segmented control styling
   mapsTabsContainerStyle: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: 10,
+    right: 10,
     width: 200,
     backgroundColor: 'transparent',
   },
@@ -233,7 +241,36 @@ const AppStyles = StyleSheet.create({
   profileTabsContainerStyle: {
     width: '100%',
     backgroundColor: 'transparent',
-  }
+  },
+
+  // Filter Screen styles
+  filterCategorySection: {
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 10,
+    padding: 10,
+  },
+  filterTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  filterPicker: {
+    width: '95%',
+    height: 100,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderColor: 'gray',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  filterPickerItem: {
+    height: 100,
+    color: 'black',
+    fontSize: 16,
+  },
 });
 
 export default AppStyles;
