@@ -488,7 +488,7 @@ class MapPhotoTagScreen extends React.Component {
             transparent={true}
             visible={this.state.modalActionVis}
             onRequestClose={() => {}}> 
-            <View style={AppStyles.container}>
+            <View style={[AppStyles.container, {alignSelf: 'center', justifySelf: 'center'}]}>
               <View style={{flexDirection:'row', justifyContent: 'flex-start'}}>  
                 <TouchableHighlight onPress={this.toggleActionModal} underlayColor="transparent">
                   <Ionicons name="md-close-circle" size={32} color="white" />
