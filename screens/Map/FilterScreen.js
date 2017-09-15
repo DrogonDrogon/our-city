@@ -10,8 +10,7 @@ import {
   TouchableHighlight,
   Modal,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import db from '../../db';
+import { MaterialIcons } from '@expo/vector-icons';
 import Button from '../../components/Button';
 import FilterTag from '../../components/FilterTag.js';
 import AppStyles from '../../styles/AppStyles';
@@ -46,23 +45,24 @@ class FilterScreen extends Component {
   }
   selectTag(val) {
     let tagList = this.state.selectedTags;
-
     tagList.includes(val) ? tagList.splice(tagList.indexOf(val), 1) : tagList.push(val);
 
     this.setState({ selectedTags: tagList });
   }
+
   getInitialState() {
     return {
       FavIsSelected: false,
     };
   }
+
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
 
   render() {
     return (
-      <View style={styles.touchableStyle}>
+      <View style={styles.mainFilterViewButton}>
         <Modal
           animationType={'slide'}
           transparent
@@ -70,25 +70,36 @@ class FilterScreen extends Component {
           onRequestClose={() => {
             alert('Filters has been closed.');
           }}>
-          <View style={{ marginTop: 75, backgroundColor: 'white', padding: 20 }}>
-            <View>
+          <View style={{ marginTop: 75, backgroundColor: 'white' }}>
+            <View
+              style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
               <Button
-                label="Save & Close"
+                label="Close"
                 onPress={() => {
                   this.props.getFilters(this.state);
                   this.setModalVisible(!this.state.modalVisible);
                 }}
                 styles={{ button: styles.hideFilterButton, label: styles.hideFilterTextLabel }}
               />
-              <ScrollView style={{ height: '100%' }}>
-                <ScrollView contentContainerStyle={{ height: '50%' }}>
-                  <Text>Tags</Text>
+            </View>
+            <ScrollView>
+              <View>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 20,
+                  }}>
+                  <Text style={AppStyles.filterTitle}>Tags</Text>
                   <View
                     style={{
                       flex: 1,
                       flexDirection: 'row',
                       flexWrap: 'wrap',
                       alignItems: 'center',
+                      marginBottom: 20,
                     }}>
                     {this.props.tags
                       .sort((a, b) => {
@@ -103,17 +114,9 @@ class FilterScreen extends Component {
                         />
                       ))}
                   </View>
-                </ScrollView>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '33%',
-                  }}>
+                  <Text style={AppStyles.filterTitle}>Distance (km): {this.state.radius}</Text>
                   <Slider
-                    style={{ width: 300 }}
+                    style={{ width: 300, marginBottom: 20 }}
                     step={0.1}
                     minimumValue={0.1}
                     maximumValue={50.0}
@@ -121,9 +124,9 @@ class FilterScreen extends Component {
                     onValueChange={val => this.setState({ radius: Number(val.toPrecision(2)) })}
                     onSlidingComplete={val => this.getVal(val)}
                   />
-                  <Text>Distance (km): {this.state.radius}</Text>
+                  <Text style={AppStyles.filterTitle}>Results: {this.state.numResults}</Text>
                   <Slider
-                    style={{ width: 300 }}
+                    style={{ width: 300, marginBottom: 20 }}
                     step={1}
                     minimumValue={1}
                     maximumValue={50}
@@ -131,11 +134,10 @@ class FilterScreen extends Component {
                     onValueChange={val => this.setState({ numResults: val })}
                     onSlidingComplete={val => this.getVal(val)}
                   />
-                  <Text>Results: {this.state.numResults}</Text>
-                </View>
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={AppStyles.filterTitle}>Sort by</Text>
                   <Picker
-                    style={styles.filterPickerStyle}
+                    style={AppStyles.filterPicker}
+                    itemStyle={AppStyles.filterPickerItem}
                     selectedValue={this.state.sortBy}
                     onValueChange={method => this.setState({ sortBy: method })}>
                     <Picker.Item label="Most Recent" value="Date" />
@@ -145,32 +147,38 @@ class FilterScreen extends Component {
                   </Picker>
                   <View
                     style={{
-                      width: '50%',
                       flex: 1,
-                      flexDirection: 'column',
+                      flexDirection: 'row',
                       alignItems: 'center',
+                      marginBottom: 100,
                     }}>
-                    <Text>Only Show Favorites</Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginRight: 20,
+                      }}>
+                      Only Show Favorites
+                    </Text>
                     <Switch
                       onValueChange={value => this.setState({ FavIsSelected: value })}
-                      style={{ marginBottom: 10 }}
                       value={this.state.FavIsSelected}
                     />
                   </View>
                 </View>
-              </ScrollView>
-            </View>
+              </View>
+            </ScrollView>
           </View>
         </Modal>
         <TouchableHighlight
-          style={styles.filterStyle}
+          style={styles.touchableFilterStyle}
           onPress={() => {
             this.props.genFilterTags();
             this.setModalVisible(true);
           }}
           underlayColor="#ccc">
           <View style={styles.wrap}>
-          <MaterialIcons name="filter-list" size={22} color="white" style={{ marginRight: 5 }} />
+            <MaterialIcons name="filter-list" size={22} color="white" style={{ marginRight: 5 }} />
             <Text style={styles.filterTextLabel}>Filter</Text>
           </View>
         </TouchableHighlight>
@@ -182,17 +190,17 @@ class FilterScreen extends Component {
 export default FilterScreen;
 
 const styles = {
-  touchableStyle: {
+  mainFilterViewButton: {
     zIndex: 2,
     width: 100,
     height: 28,
     borderRadius: 14,
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: 10,
+    left: 10,
     backgroundColor: 'coral',
   },
-  filterStyle: {
+  touchableFilterStyle: {
     width: 100,
     height: 28,
     borderRadius: 14,
@@ -202,14 +210,14 @@ const styles = {
     backgroundColor: 'transparent',
   },
   filterTextLabel: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#fff',
   },
   hideFilterButton: {
     backgroundColor: 'coral',
-    height: 20,
-    width: 200,
-    borderRadius: 10,
+    height: 12,
+    width: 100,
+    borderRadius: 16,
     marginTop: 10,
     marginBottom: 10,
   },

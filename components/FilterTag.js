@@ -1,5 +1,5 @@
 import React from 'React';
-import { View, Text, Image, StyleSheet, Button } from 'react-native';
+import { Button } from 'react-native';
 import AppStyles from '../styles/AppStyles';
 
 
@@ -8,7 +8,7 @@ class FilterTag extends React.Component {
     super(props);
     this.state = {
       pressed: false,
-      color: "#841584",
+      color: '#2f95dc',
     }
   }
   componentWillMount(){
@@ -19,19 +19,18 @@ class FilterTag extends React.Component {
   setColor() {
     if (!this.state.pressed) {
       this.setState({
-        color: '#000742',
+        color: 'coral',
         pressed: !this.state.pressed,
       });
     } else {
       this.setState({
-        color: '#841584',
+        color: '#2f95dc',
         pressed: !this.state.pressed,
       });
     }
   }
 
   render(){
-    
     return(
       <Button
         onPress={(e) => {
