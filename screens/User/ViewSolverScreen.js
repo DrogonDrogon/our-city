@@ -53,9 +53,9 @@ const generateRandomID = () => {
 };
 
 class ViewSolverScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Volunteer a Fix',
-  };
+  // static navigationOptions = {
+  //   title: 'Volunteer a Fix',
+  // };
 
   state = {
     solution: this.props.navigation.state.params,
@@ -185,7 +185,7 @@ class ViewSolverScreen extends React.Component {
             source={{ uri: this.state.photoUri }}
           />
           <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Text style={styles.whiteText}>{this.state.editedDescription}</Text>
+            <Text style={AppStyles.whiteText}>{this.state.editedDescription}</Text>
             <EditPhototagModal
               toggleEditModal={this.modalEditVis}
               modalEditVis={this.state.modalEditVis}
@@ -196,12 +196,12 @@ class ViewSolverScreen extends React.Component {
             />
             {isEditable && (
               <TouchableHighlight onPress={this.openEditDescription}>
-                <Ionicons name="md-create" size={28} color="white" style={styles.iconStyle} />
+                <Ionicons name="md-create" size={28} color="white" style={{ marginLeft: 10 }} />
               </TouchableHighlight>
             )}
           </View>
           <View>
-            <Text style={styles.whiteText}>(Optional) Take an updated image of the fix</Text>
+            <Text style={AppStyles.whiteTextTitle}>(Optional) Take an updated image of the fix</Text>
             <Button label="Edit photo"
             onPress={this._takePic}
             styles={{ button: AppStyles.editButton, label: AppStyles.buttonBlueText }}
@@ -242,11 +242,6 @@ const styles = {
   },
   center: {
     alignItems: 'center',
-  },
-  whiteText: {
-    marginRight: 10,
-    backgroundColor: 'transparent',
-    color: 'white',
   },
 };
 

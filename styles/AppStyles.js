@@ -180,7 +180,7 @@ const AppStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // solution
+  // view solution list styles
   solutionTextTitle: {
     fontSize: 18,
   },
@@ -289,6 +289,42 @@ const AppStyles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
   },
+
+  // create/edit solution styles
+  whiteText: {
+    marginTop: 10,
+    marginRight: 10,
+    backgroundColor: 'transparent',
+    color: 'white',
+  },
+  whiteTextTitle: {
+    marginTop: 10,
+    marginRight: 10,
+    backgroundColor: 'transparent',
+    color: 'white',
+    fontSize: 16,
+  },
+  writeDescriptionInput: {
+    height: 80,
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: '80%',
+    textAlignVertical: 'top',
+    fontSize: 16,
+    padding: 10,
+    color: 'white',
+  },
+
+// edit modal style
+  editInputStyle: {
+    padding: 10,
+    fontSize: 16,
+  },
+  modalScrollView: {
+    backgroundColor: 'white',
+    width: '100%',
+    paddingBottom: 50,
+  }
 });
 
 export default AppStyles;
