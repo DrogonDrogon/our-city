@@ -94,6 +94,7 @@ const AppStyles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '80%',
     padding: 10,
+    borderRadius: 5,
     justifyContent: 'center',
   },
   columnContainer: {

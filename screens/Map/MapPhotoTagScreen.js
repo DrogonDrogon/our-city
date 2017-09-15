@@ -423,112 +423,117 @@ class MapPhotoTagScreen extends React.Component {
     let userVoteStatus = this.props.user.votes[this.state.phototag.id];
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={AppStyles.scrollViewContainer}>
-        <View style={AppStyles.photoDisplayContainer}>
-          <Image style={AppStyles.phototagImage} source={{ uri: this.state.phototag.imageUrl }} />
-        </View>
-        <View style={AppStyles.authorContainer}>
-          <TaggedText
-            navigation={this.props.navigation}
-            text={this.state.phototag.description}
-            style={AppStyles.descriptionContainerView}
-          />
-          {isEditable && (
-            <TouchableHighlight onPress={this.openEditDescription} underlayColor="#ccc">
-              <Ionicons name="md-create" size={28} color="gray" />
-            </TouchableHighlight>
-          )}
-        </View>
-        <Image source={{ uri: this.state.authorPhoto }} style={AppStyles.imageSetting} />
-        <Text style={AppStyles.authorNameText}>{this.state.authorName}</Text>
-        <Text style={AppStyles.dateText}>{moment(this.state.phototag.timestamp).fromNow()}</Text>
-        <View style={{ flex: 1, flexDirection: 'column' }} />
-        <View style={AppStyles.horizontalDisplay}>
-          <TouchableHighlight onPress={this.handleClickUpvote} underlayColor="#ccc">
-            <Ionicons
-              name="md-arrow-dropup"
-              size={32}
-              color={userVoteStatus === 1 ? 'orange' : 'gray'}
-            />
-          </TouchableHighlight>
-          <Text style={AppStyles.titleText}>{this.state.voteTotal}</Text>
-          <TouchableHighlight onPress={this.handleClickDownvote} underlayColor="#ccc">
-            <Ionicons
-              name="md-arrow-dropdown"
-              size={32}
-              color={userVoteStatus === -1 ? 'orange' : 'gray'}
-            />
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.share} underlayColor="#ccc">
-            <Ionicons name="ios-share-outline" size={32} color="gray" />
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.handleClickFav} underlayColor="#ccc">
-            <Ionicons
-              name="md-heart"
-              size={32}
-              color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'gray'}
-            />
-          </TouchableHighlight>
-        </View>
-        <Text style={AppStyles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => (
-          <Comment
-            key={comment.id}
-            comment={comment}
-            userId={this.props.user.id}
-            notifyDeletedComment={this.notifyDeletedComment}
-          />
-        ))}
-        <View style={AppStyles.horizontalDisplay}>
-          <TextInput
-            value={this.state.comment}
-            placeholder="Type a comment..."
-            onChangeText={text => this.editComment(text)}
-            clearButtonMode={'always'}
-            style={AppStyles.commentInput}
-          />
-          <TouchableHighlight onPress={this.handleSubmitComment} underlayColor="#ccc">
-            <Ionicons name="md-send" size={32} color="gray" />
-          </TouchableHighlight>
-        </View>
-        {this.state.phototag.reps && (
-          <View style={AppStyles.horizontalDisplayNoSpace}>
-            <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="#ccc">
-              <Ionicons name="md-contacts" size={32} color="gray" />
-            </TouchableHighlight>
-            <Button title="Contact an official" onPress={this.goToElectedOfficials} />
+      <Image
+          style={{ height: '100%', width: '100%',  alignItems: 'center', }}
+          source={require('../../assets/images/water.png')}
+          resizeMode="cover">
+        <KeyboardAwareScrollView contentContainerStyle={[AppStyles.scrollViewContainer, {backgroundColor:'transparent'}]}>
+          <View style={AppStyles.photoDisplayContainer}>
+            <Image style={AppStyles.phototagImage} source={{ uri: this.state.phototag.imageUrl }} />
           </View>
-        )}
-        <View style={AppStyles.horizontalDisplayNoSpace}>
-          <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
-            <Ionicons name="md-bulb" size={32} color="gray" />
+          <View style={AppStyles.authorContainer}>
+            <TaggedText
+              navigation={this.props.navigation}
+              text={this.state.phototag.description}
+              style={AppStyles.descriptionContainerView}
+            />
+            {isEditable && (
+              <TouchableHighlight onPress={this.openEditDescription} underlayColor="#ccc">
+                <Ionicons name="md-create" size={28} color="gray" />
+              </TouchableHighlight>
+            )}
+          </View>
+          <Image source={{ uri: this.state.authorPhoto }} style={AppStyles.imageSetting} />
+          <Text style={AppStyles.authorNameText}>{this.state.authorName}</Text>
+          <Text style={AppStyles.dateText}>{moment(this.state.phototag.timestamp).fromNow()}</Text>
+          <View style={{ flex: 1, flexDirection: 'column' }} />
+          <View style={AppStyles.horizontalDisplay}>
+            <TouchableHighlight onPress={this.handleClickUpvote} underlayColor="#ccc">
+              <Ionicons
+                name="md-arrow-dropup"
+                size={32}
+                color={userVoteStatus === 1 ? 'orange' : 'gray'}
+              />
+            </TouchableHighlight>
+            <Text style={AppStyles.titleText}>{this.state.voteTotal}</Text>
+            <TouchableHighlight onPress={this.handleClickDownvote} underlayColor="#ccc">
+              <Ionicons
+                name="md-arrow-dropdown"
+                size={32}
+                color={userVoteStatus === -1 ? 'orange' : 'gray'}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.share} underlayColor="#ccc">
+              <Ionicons name="ios-share-outline" size={32} color="gray" />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.handleClickFav} underlayColor="#ccc">
+              <Ionicons
+                name="md-heart"
+                size={32}
+                color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'gray'}
+              />
+            </TouchableHighlight>
+          </View>
+          <Text style={AppStyles.titleText}>Comments</Text>
+          {this.state.comments.map((comment, i) => (
+            <Comment
+              key={comment.id}
+              comment={comment}
+              userId={this.props.user.id}
+              notifyDeletedComment={this.notifyDeletedComment}
+            />
+          ))}
+          <View style={AppStyles.horizontalDisplay}>
+            <TextInput
+              value={this.state.comment}
+              placeholder="Type a comment..."
+              onChangeText={text => this.editComment(text)}
+              clearButtonMode={'always'}
+              style={AppStyles.commentInput}
+            />
+            <TouchableHighlight onPress={this.handleSubmitComment} underlayColor="#ccc">
+              <Ionicons name="md-send" size={32} color="gray" />
+            </TouchableHighlight>
+          </View>
+          {this.state.phototag.reps && (
+            <View style={AppStyles.horizontalDisplayNoSpace}>
+              <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="#ccc">
+                <Ionicons name="md-contacts" size={32} color="gray" />
+              </TouchableHighlight>
+              <Button title="Contact an official" onPress={this.goToElectedOfficials} />
+            </View>
+          )}
+          <View style={AppStyles.horizontalDisplayNoSpace}>
+            <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
+              <Ionicons name="md-bulb" size={32} color="gray" />
+            </TouchableHighlight>
+            <Button title="Volunteer a fix" onPress={this.solve} />
+          </View>
+          <View style={AppStyles.horizontalDisplayNoSpace}>
+          <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="#ccc">
+            <Ionicons name="md-list" size={32} color="gray" />
           </TouchableHighlight>
-          <Button title="Volunteer a fix" onPress={this.solve} />
-        </View>
-        <View style={AppStyles.horizontalDisplayNoSpace}>
-        <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="#ccc">
-          <Ionicons name="md-list" size={32} color="gray" />
-        </TouchableHighlight>
-          <Button title="View suggested fixes" onPress={this.toggleSolutionsModal} />
-        </View>
-        <PhotoTagSolutions
-          style={{ height: '75%' }}
-          navigation={this.props.navigation}
-          toggleSolutionsModal={this.toggleSolutionsModal}
-          modalSolutionsVis={this.state.modalSolutionsVis}
-          phototag={this.state.phototag}
-          userId={this.props.user.id}
-        />
-        <EditPhototagModal
-          toggleEditModal={this.modalEditVis}
-          modalEditVis={this.state.modalEditVis}
-          phototag={this.state.phototag}
-          modalNavRightButton={this.state.modalNavRightButton}
-          modalNavLeftButton={this.state.modalNavLeftButton}
-          editedDescription={this.state.editedDescription}
-          editDescription={this.editDescription}
-        />
-      </KeyboardAwareScrollView>
+            <Button title="View suggested fixes" onPress={this.toggleSolutionsModal} />
+          </View>
+          <PhotoTagSolutions
+            style={{ height: '75%' }}
+            navigation={this.props.navigation}
+            toggleSolutionsModal={this.toggleSolutionsModal}
+            modalSolutionsVis={this.state.modalSolutionsVis}
+            phototag={this.state.phototag}
+            userId={this.props.user.id}
+          />
+          <EditPhototagModal
+            toggleEditModal={this.modalEditVis}
+            modalEditVis={this.state.modalEditVis}
+            phototag={this.state.phototag}
+            modalNavRightButton={this.state.modalNavRightButton}
+            modalNavLeftButton={this.state.modalNavLeftButton}
+            editedDescription={this.state.editedDescription}
+            editDescription={this.editDescription}
+          />
+        </KeyboardAwareScrollView>
+      </Image>  
     );
   }
 }
