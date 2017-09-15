@@ -138,7 +138,7 @@ const AppStyles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 15,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.6)',
     borderRadius: 20,
     width: '80%',
   },

@@ -7,7 +7,7 @@ import AppStyles from '../styles/AppStyles';
 class PhototagItem extends React.Component {
   render() {
     return (
-      <View style={[AppStyles.container, {backgroundColor: 'transparent',}]}>
+      <View style={[AppStyles.container, ]}>
         <View
           style={{
             alignSelf: 'flex-end',
@@ -47,4 +47,5 @@ class PhototagItem extends React.Component {
 // <Text>
 // Location: {this.props.phototag.locationLat}, {this.props.phototag.locationLong}
 // </Text>
+// {backgroundColor: 'transparent',}
 export default PhototagItem;
