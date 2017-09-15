@@ -233,7 +233,7 @@ const AppStyles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   tabStyle: {
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     borderColor: '#2f95dc',
     height: 28,
   },
