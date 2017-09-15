@@ -254,18 +254,7 @@ class MapScreen extends React.Component {
   render() {
     if (this.state.selectedIndex === 0) {
       return (
-        <View style={{ height: '100%', backgroundColor: 'black' }}>
-          <SegmentedControlTab
-            values={['Map', 'List']}
-            selectedIndex={this.state.selectedIndex}
-            onTabPress={this._handleIndexChange}
-            borderRadius={14}
-            tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
-            tabStyle={AppStyles.tabStyle}
-            tabTextStyle={AppStyles.tabTextStyle}
-            activeTabStyle={AppStyles.activeTabStyle}
-            activeTabTextStyle={AppStyles.activeTabTextStyle}
-          />
+        <View style={{ height: '100%' }}>
           <FilterScreen
             filters={this.state.filters}
             tags={this.state.tags}
@@ -303,22 +292,22 @@ class MapScreen extends React.Component {
                   </MapView.Marker>
                 ))}
           </MapView>
-        </View>
-      );
-    } else {
-      return (
-        <View style={{ height: '100%', backgroundColor: 'black' }}>
           <SegmentedControlTab
             values={['Map', 'List']}
             selectedIndex={this.state.selectedIndex}
             onTabPress={this._handleIndexChange}
             borderRadius={14}
             tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
-            tabStyle={AppStyles.tabStyle}
+            tabStyle={AppStyles.mapsTabStyle}
             tabTextStyle={AppStyles.tabTextStyle}
             activeTabStyle={AppStyles.activeTabStyle}
             activeTabTextStyle={AppStyles.activeTabTextStyle}
           />
+        </View>
+      );
+    } else {
+      return (
+        <View style={{ height: '100%', backgroundColor: 'black' }}>
           <FilterScreen
             filters={this.state.filters}
             tags={this.state.tags}
@@ -337,6 +326,17 @@ class MapScreen extends React.Component {
               <ActivityIndicator animated={this.props.isLoading} size="large" />
             </View>
           )}
+          <SegmentedControlTab
+            values={['Map', 'List']}
+            selectedIndex={this.state.selectedIndex}
+            onTabPress={this._handleIndexChange}
+            borderRadius={14}
+            tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
+            tabStyle={AppStyles.mapsTabStyle}
+            tabTextStyle={AppStyles.tabTextStyle}
+            activeTabStyle={AppStyles.activeTabStyle}
+            activeTabTextStyle={AppStyles.activeTabTextStyle}
+          />
         </View>
       );
     }

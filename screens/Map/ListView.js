@@ -27,7 +27,7 @@ class ListView extends React.Component {
     return (
       <Image
         style={{ height: '100%', width: '100%' }}
-        source={require('../../assets/images/background-723053_1920.jpg')}
+        source={require('../../assets/images/manyBulbs.png')}
         resizeMode="cover">
         <FlatList
           data={this.props.phototags}
