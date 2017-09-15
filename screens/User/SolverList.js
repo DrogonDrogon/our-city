@@ -41,7 +41,16 @@ class SolverList extends React.Component {
         source={require('../../assets/images/manyBulbs.png')}
         resizeMode="cover">
         <KeyboardAwareScrollView>
-          <Text style={{color:'white', backgroundColor:'transparent', alignSelf:'center'}}>Your Solutions</Text>
+          <Text
+            style={{
+              color: 'white',
+              backgroundColor: 'transparent',
+              alignSelf: 'center',
+              fontSize: 20,
+              marginBottom: 10,
+            }}>
+            Your Solutions
+          </Text>
           <FlatList
             data={this.props.solutions}
             renderItem={({ item }) => (
