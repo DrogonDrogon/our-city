@@ -310,21 +310,22 @@ class CameraScreen extends React.Component {
               />
             </TouchableHighlight>
           </View>
-          <TextInput
-            style={styles.descriptionInput}
-            placeholder="Enter description"
-            onChangeText={text => this.setState({ description: text })}
-            keyboardType={'default'}
-            multiline
-            ref={input => (this.descriptionInput = input)}>
-            <Text>{parts}</Text>
-          </TextInput>
-          <Button
-            label="Post"
-            onPress={this._saveImg}
-            styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
-          />
-          
+          <View style={styles.view}>
+            <TextInput
+              style={styles.descriptionInput}
+              placeholder="Enter description"
+              onChangeText={text => this.setState({ description: text })}
+              keyboardType={'default'}
+              multiline
+              ref={input => (this.descriptionInput = input)}>
+              <Text>{parts}</Text>
+            </TextInput>
+            <Button
+              label="Post"
+              onPress={this._saveImg}
+              styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
+            />
+          </View>
         </KeyboardAwareScrollView>
       </Image>
     );
@@ -338,11 +339,11 @@ const styles = {
     borderRadius: 125,
   },
   descriptionInput: {
-    height: 80,
+    // height: 80,
     borderColor: 'gray',
     borderRadius: 5,
     borderWidth: 1,
-    width: '80%',
+    // width: '80%',
     textAlignVertical: 'top',
     fontSize: 16,
     padding: 10,
@@ -357,8 +358,9 @@ const styles = {
     fontWeight: 'bold',
   },
   view: {
+    flex: 1,
     alignItems: 'center',
-    margin: 20,
+    // margin: 20,
     backgroundColor: 'transparent',
   },
   text: {
