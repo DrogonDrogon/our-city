@@ -244,19 +244,23 @@ class HomeScreen extends React.Component {
 
       return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.container}>
-            <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
-            <Text>{displayName}</Text>
-            <CustomButton
-              label="Edit Profile"
-              onPress={this._handleClickEdit}
-              styles={{ button: AppStyles.editButton, label: AppStyles.buttonBlueText }}
-            />
-            <CustomButton
-              label="Log Out"
-              onPress={this._logout}
-              styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
-            />
+          <View style={[styles.container, {flexDirection: 'row', justifyContent: 'space-between'}]}>
+            <View style={{flex: 1, flexDirection:'column', alignItems:'center',}}>  
+              <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
+              <Text>{displayName}</Text>
+            </View>  
+            <View style={{flex: 1, flexDirection:'column', alignItems:'center',}}>
+              <CustomButton
+                label="Edit Profile"
+                onPress={this._handleClickEdit}
+                styles={{ button: AppStyles.editButton, label: AppStyles.buttonBlueText }}
+              />
+              <CustomButton
+                label="Log Out"
+                onPress={this._logout}
+                styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
+              />
+            </View>  
           </View>
           <Modal
             animationType={'slide'}
