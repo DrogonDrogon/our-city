@@ -464,7 +464,7 @@ class MapPhotoTagScreen extends React.Component {
               />
             </TouchableHighlight>
             <TouchableHighlight onPress={this.share} underlayColor="#ccc">
-              <Ionicons name="ios-share-outline" size={32} color="gray" />
+              <Ionicons name="ios-share-outline" size={32} color="white" />
             </TouchableHighlight>
             <TouchableHighlight onPress={this.handleClickFav} underlayColor="#ccc">
               <Ionicons
