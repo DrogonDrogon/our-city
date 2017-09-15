@@ -254,7 +254,7 @@ class MapScreen extends React.Component {
   render() {
     if (this.state.selectedIndex === 0) {
       return (
-        <View style={{ height: '100%' }}>
+        <View style={{ height: '100%', backgroundColor: 'black' }}>
           <SegmentedControlTab
             values={['Map', 'List']}
             selectedIndex={this.state.selectedIndex}
@@ -307,7 +307,7 @@ class MapScreen extends React.Component {
       );
     } else {
       return (
-        <View style={{ height: '100%' }}>
+        <View style={{ height: '100%', backgroundColor: 'black' }}>
           <SegmentedControlTab
             values={['Map', 'List']}
             selectedIndex={this.state.selectedIndex}

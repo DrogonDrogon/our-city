@@ -11,7 +11,7 @@ import {
   TouchableHighlight,
   Modal,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as Actions from '../../actions';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -180,8 +180,8 @@ class FilterScreen extends Component {
             this.setModalVisible(true);
           }}>
           <View style={styles.wrap}>
-          <Ionicons name="ios-funnel" size={32} color="gray" />
-          <Text style={{ fontSize: 12 }}>Filters</Text>
+          <MaterialIcons name="filter-list" size={32} color="white" />
+          <Text style={{ fontSize: 12, color: 'white', }}>Filters</Text>
           </View>
         </TouchableHighlight>
       </View>
@@ -208,10 +208,13 @@ const styles = {
     position: 'absolute',
     left: 0,
     top: 0,
+
     backgroundColor: 'transparent',
   },
   wrap: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
