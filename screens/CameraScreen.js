@@ -332,9 +332,9 @@ class CameraScreen extends React.Component {
 
 const styles = {
   imageSetting: {
-    width: 200,
-    height: 200,
-    borderRadius: 5,
+    width: 250,
+    height: 250,
+    borderRadius: 125,
   },
   descriptionInput: {
     height: 80,
