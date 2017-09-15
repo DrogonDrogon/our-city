@@ -176,7 +176,7 @@ const AppStyles = StyleSheet.create({
   },
 
   hashtag: {
-    color: 'blue',
+    color: '#63B8FF',
     fontWeight: 'bold',
   },
 
