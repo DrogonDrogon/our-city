@@ -323,6 +323,7 @@ class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   scrollContainer: {
     alignItems: 'center',
+    backgroundColor: 'darkgrey',
   },
   titleText: {
     textAlign: 'center',
