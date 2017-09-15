@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, Image, Share, Picker, Linking, Button, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  Image,
+  Share,
+  Picker,
+  Linking,
+  Button,
+  View,
+} from 'react-native';
 import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import AppStyles from '../styles/AppStyles';
@@ -108,11 +118,10 @@ export default class electedOfficials extends React.Component {
             onValueChange={(itemValue, itemIndex) =>
               this.updateSelectedOfficial(itemValue, itemIndex)}>
             {this.state.phototag.reps.offices
-              .reverse().map((office, i) => (
-              <Picker.Item key={i} label={office.name} value={office.name} />
-            ))}
+              .reverse()
+              .map((office, i) => <Picker.Item key={i} label={office.name} value={office.name} />)}
           </Picker>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <View>
               <Image
                 style={{ width: 100, height: 100, resizeMode: Image.resizeMode.contain }}
@@ -120,8 +129,8 @@ export default class electedOfficials extends React.Component {
                   uri: currentSelectedOfficial.photoUrl,
                 }}
               />
-            </View>   
-            <View style={{flexDirection: 'column'}}>  
+            </View>
+            <View style={{ flexDirection: 'column', backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
               <Text>{currentSelectedOfficial.name}</Text>
               <Text onPress={this._handleOpenWithBrowser} style={styles.urlLink}>
                 {currentSelectedOfficial.urls[0]}
@@ -145,7 +154,7 @@ export default class electedOfficials extends React.Component {
                 </Text>
               )}
             </View>
-          </View>    
+          </View>
         </ScrollView>
       </Image>
     );
@@ -164,17 +173,16 @@ const styles = StyleSheet.create({
   picker: {
     width: '95%',
     height: 100,
-    backgroundColor: '#FFFAFA',
     borderBottomWidth: 1,
     borderTopWidth: 1,
     borderColor: 'black',
     marginBottom: 10,
-    marginTop: 10,
+    marginTop: 180,
+    backgroundColor: 'transparent',
   },
   pickerItem: {
     height: 100,
-    //color: 'white',
+    color: 'white',
     fontSize: 16,
-    backgroundColor: 'transparent',
   },
 });
