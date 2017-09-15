@@ -7,7 +7,7 @@ import AppStyles from '../styles/AppStyles';
 class PhototagItem extends React.Component {
   render() {
     return (
-      <View style={[AppStyles.container, {backgroundColor: 'black',}]}>
+      <View style={[AppStyles.container, {backgroundColor: 'transparent',}]}>
         <View
           style={{
             alignSelf: 'flex-end',
@@ -34,7 +34,7 @@ class PhototagItem extends React.Component {
               }
               this.props.goToPhototags();
             }}
-            style={{height: 100, }}>
+            style={{height: 70, }}>
             <Image style={[AppStyles.imageStyle,]} source={{ uri: this.props.phototag.imageUrl }} />
           </TouchableHighlight>
           <TaggedText navigation={this.props.navigation} text={this.props.phototag.description} />
