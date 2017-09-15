@@ -421,7 +421,7 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   toggleActionModal = () => {
-    this.setState({ modalActionVis: !this.state.modalEditVis });
+    this.setState({ modalActionVis: !this.state.modalActionVis });
   };
 
   render() {
@@ -486,29 +486,36 @@ class MapPhotoTagScreen extends React.Component {
           <Modal
             animationType={'fade'}
             transparent={true}
-            visible={this.modalActionVis}
+            visible={this.state.modalActionVis}
             onRequestClose={() => {}}> 
-            <View>
-              {this.state.phototag.reps && (
-                <View style={AppStyles.horizontalDisplayNoSpace}>
-                  <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="transparent">
-                    <Ionicons name="md-contacts" size={32} color="white" />
-                  </TouchableHighlight>
-                  <Button title="Contact an official" onPress={this.goToElectedOfficials} />
-                </View>
-              )}
-              <View style={AppStyles.horizontalDisplayNoSpace}>
-                <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
-                  <Ionicons name="md-bulb" size={32} color="white" />
+            <View style={AppStyles.container}>
+              <View style={{flexDirection:'row', justifyContent: 'flex-start'}}>  
+                <TouchableHighlight onPress={this.toggleActionModal} underlayColor="transparent">
+                  <Ionicons name="md-close-circle" size={32} color="white" />
                 </TouchableHighlight>
-                <Button title="Volunteer a fix" onPress={this.solve} />
               </View>
-              <View style={AppStyles.horizontalDisplayNoSpace}>
-              <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="transparent">
-                <Ionicons name="md-list" size={32} color="white" />
-              </TouchableHighlight>
-                <Button title="View suggested fixes" onPress={this.toggleSolutionsModal} />
-              </View>
+              <View style={{justifyContent: 'flex-start', height: 100}}>
+                {this.state.phototag.reps && (
+                  <View style={AppStyles.horizontalDisplayNoSpace}>
+                    <TouchableHighlight onPress={()=> {this.toggleActionModal(); this.goToElectedOfficials()}} underlayColor="transparent">
+                      <Ionicons name="md-contacts" size={32} color="white" />
+                    </TouchableHighlight>
+                    <Button title="Contact an official" onPress={this.goToElectedOfficials} />
+                  </View>
+                )}
+                <View style={AppStyles.horizontalDisplayNoSpace}>
+                  <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
+                    <Ionicons name="md-bulb" size={32} color="white" />
+                  </TouchableHighlight>
+                  <Button title="Volunteer a fix" onPress={()=> {this.toggleActionModal(); this.solve()}} />
+                </View>
+                <View style={AppStyles.horizontalDisplayNoSpace}>
+                <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="transparent">
+                  <Ionicons name="md-list" size={32} color="white" />
+                </TouchableHighlight>
+                  <Button title="View suggested fixes" onPress={()=> {this.toggleActionModal(); this.toggleSolutionsModal()}} />
+                </View>
+              </View>  
             </View>
           </Modal>
           <Text style={AppStyles.titleText}>Comments</Text>
