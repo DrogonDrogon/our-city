@@ -176,7 +176,7 @@ class ViewSolverScreen extends React.Component {
     return (
       <Image
         style={{ height: '100%', width: '100%' }}
-        source={require('../../assets/images/background-723053_1920.jpg')}
+        source={require('../../assets/images/lowBulb.png')}
         resizeMode="cover"
       >
         <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>

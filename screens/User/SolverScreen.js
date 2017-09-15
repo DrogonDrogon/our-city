@@ -156,29 +156,35 @@ class SolverScreen extends React.Component {
 
   render() {
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <Text>Describe what you will do or have done:</Text>
-        <TextInput
-          style={styles.descriptionInput}
-          placeholder="i.e. I can move this..., I can repair this..."
-          onChangeText={text => this.setState({ description: text })}
-          keyboardType={'default'}
-          multiline
-          ref={input => {
-            this.descriptionInput = input;
-          }}
-        />
-        <View>
-          <Text>(Optional) Take an updated image of the site</Text>
-          <Button title="Take new photo" onPress={this._takePic} />
-        </View>
-        <Image
-          onPress={this.handleSelectImage}
-          style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
-          source={{ uri: this.state.photoUri }}
-        />
-        <Button title="Submit" onPress={this.handleSaveSolution} />
-      </KeyboardAwareScrollView>
+      <Image
+        style={{ height: '100%', width: '100%' }}
+        source={require('../../assets/images/lowBulb.png')}
+        resizeMode="cover"
+      >
+        <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
+          <Text>Describe what you will do or have done:</Text>
+          <TextInput
+            style={styles.descriptionInput}
+            placeholder="i.e. I can move this..., I can repair this..."
+            onChangeText={text => this.setState({ description: text })}
+            keyboardType={'default'}
+            multiline
+            ref={input => {
+              this.descriptionInput = input;
+            }}
+          />
+          <View>
+            <Text>(Optional) Take an updated image of the site</Text>
+            <Button title="Take new photo" onPress={this._takePic} />
+          </View>
+          <Image
+            onPress={this.handleSelectImage}
+            style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
+            source={{ uri: this.state.photoUri }}
+          />
+          <Button title="Submit" onPress={this.handleSaveSolution} />
+        </KeyboardAwareScrollView>
+      </Image>  
     );
   }
 }
