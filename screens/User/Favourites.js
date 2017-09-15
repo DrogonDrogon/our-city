@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import PhototagItem from '../../components/PhototagItem';
 import * as Actions from '../../actions';
 import AppStyles from '../../styles/AppStyles';
@@ -35,7 +35,7 @@ class Favourites extends React.Component {
   render() {
     return (
       <View>
-        <Text style={styles.titleText}>My Favourites</Text>
+        <Text style={AppStyles.titleText}>My Favourites</Text>
         {this.props.userFavs &&
           this.props.userFavs.map(fav => (
             <PhototagItem
@@ -52,12 +52,5 @@ class Favourites extends React.Component {
     );
   }
 }
-const styles = StyleSheet.create({
-  titleText: {
-    textAlign: 'center',
-    fontSize: 20,
-    margin: 10,
-  },
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Favourites);

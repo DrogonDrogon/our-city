@@ -1,10 +1,17 @@
 import React from 'react';
-import { FlatList, View, Text, Image, Modal, Alert, Button } from 'react-native';
+import { ScrollView, FlatList, StatusBar, Text, Image, Modal, Button } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
+import ActionSheet from 'react-native-actionsheet';
 import PhototagSolutionItem from './phototagSolutionItem';
 import db from '../db';
 import AppStyles from '../styles/AppStyles';
+
+// Settings for the ActionSheet
+const WARNING_INDEX = 0;
+const CANCEL_INDEX = 1;
+const options = ['Confirm', 'Cancel'];
+const title = 'Mark this solution as best?';
 
 class PhotoTagSolutions extends React.Component {
   state = {
@@ -85,14 +92,28 @@ class PhotoTagSolutions extends React.Component {
       });
   };
 
+  confirmMarkSolution = solutionId => {
+    console.log('confimring solution', solutionId);
+    this.setState({ solutionIdToMark: solutionId }, () => {
+      this.ActionSheet.show();
+    });
+  };
+
+  handleActionSheetPress = (selectedIndex, solutionId) => {
+    if (selectedIndex === WARNING_INDEX) {
+      this.editSolutionWithIdAndStatus(this.state.solutionIdToMark, true);
+    }
+  };
+
   handleMarkSelected = solutionId => {
     this.editSolutionWithIdAndStatus(solutionId, true);
   };
 
   render() {
+    StatusBar.setBarStyle('none');
+
     return (
       <Modal
-        style={{ top: 200 }}
         animationType={'fade'}
         transparent={false}
         visible={this.props.modalSolutionsVis}
@@ -100,25 +121,33 @@ class PhotoTagSolutions extends React.Component {
         <Image
           style={{ height: '100%', width: '100%' }}
           source={require('../assets/images/background-723053_1920.jpg')}
-          resizeMode="cover"
-        >
-          <Text>Solutions</Text>
-          <FlatList
-            contentContainerStyle={{ flex: 1, alignItems: 'center' }}
-            data={this.state.solutions}
-            renderItem={({ item }) => (
-              <PhototagSolutionItem
-                goToSolver={this.goToSolver.bind(this, item)}
-                navigation={this.props.navigation}
-                solution={item}
-                isOneAccepted={this.state.isOneAccepted}
-                isOwner={this.state.isOwner}
-                handleMarkSelected={this.handleMarkSelected}/>
-            )}
-            keyExtractor={this._keyExtractor}
+          resizeMode="cover">
+          <ScrollView>
+            <FlatList
+              data={this.state.solutions}
+              renderItem={({ item }) => (
+                <PhototagSolutionItem
+                  goToSolver={this.goToSolver.bind(this, item)}
+                  navigation={this.props.navigation}
+                  solution={item}
+                  isOneAccepted={this.state.isOneAccepted}
+                  isOwner={this.state.isOwner}
+                  confirmMarkSolution={this.confirmMarkSolution}
+                />
+              )}
+              keyExtractor={this._keyExtractor}
+            />
+          </ScrollView>
+          <ActionSheet
+            ref={sheet => (this.ActionSheet = sheet)}
+            title={title}
+            options={options}
+            cancelButtonIndex={CANCEL_INDEX}
+            destructiveButtonIndex={WARNING_INDEX}
+            onPress={this.handleActionSheetPress}
           />
           <Button title="Close" onPress={this.props.toggleSolutionsModal} />
-        </Image>  
+        </Image>
       </Modal>
     );
   }
