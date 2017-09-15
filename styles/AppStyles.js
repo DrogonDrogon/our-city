@@ -30,8 +30,8 @@ const AppStyles = StyleSheet.create({
     width: '80%',
   },
   photoDisplayContainer: {
-    width: 300,
-    height: 300,
+    width: 250,
+    height: 250,
     marginBottom: 20,
   },
   phototagImage: {
