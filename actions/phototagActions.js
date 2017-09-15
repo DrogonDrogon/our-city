@@ -1,6 +1,22 @@
 import db from '../db';
 import { RECEIVE_PHOTOTAGS, IS_LOADING, RECEIVE_FAVS } from './constants';
 import * as Actions from './userActions';
+import { store } from '../navigators/AppRoot.js';
+
+export const listenForPhototags = dispatch => {
+  db.child('phototags').on('value', snapshot => {
+    let data = snapshot.val();
+    let phototagArray = [];
+    for (var key in data) {
+      let obj = {};
+      obj = data[key];
+      obj.id = key;
+      phototagArray.push(obj);
+    }
+    dispatch(receivePhototags(phototagArray));
+    dispatch(updateLoadingStatus(false));
+  });
+};
 
 // For fetching all phototags (ALL users)
 export const fetchPhototags = dispatch => {
@@ -17,6 +33,18 @@ export const fetchPhototags = dispatch => {
         obj.id = key;
         phototagArray.push(obj);
       }
+      let userid = store.getState().user.id;
+      let badges = 0;
+      phototagArray.forEach(tag => {
+        if (userid === tag.userId) {
+          badges += tag.badges;
+        }
+      });
+      phototagArray = phototagArray.sort((a, b) => {
+        return b.badges - a.badges;
+      });
+
+      dispatch(Actions.setBadge(badges));
       dispatch(receivePhototags(phototagArray));
       dispatch(updateLoadingStatus(false));
     })
@@ -37,7 +65,7 @@ export const postNewPhototag = phototag => dispatch => {
     .update(phototag)
     .then(() => {
       // Fire another fetch to get all updated phototags
-      dispatch(fetchPhototags);
+      // dispatch(fetchPhototags);
       dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR writing to /posts', error));
@@ -51,19 +79,25 @@ export const updatePhototag = phototag => dispatch => {
     .update(phototag)
     .then(() => {
       // Fire another fetch to get all updated phototags
-      dispatch(fetchPhototags);
+      // dispatch(fetchPhototags);
       dispatch(updateLoadingStatus(false));
     })
     .catch(error => console.log('ERROR writing to /posts', error));
 };
 
 // For adding a new comment under 'comments' node
-export const addCommentUnderPhototag = (phototagId, commentData) => dispatch => {
+export const addCommentUnderPhototag = (phototagId, commentData, badgeCount) => dispatch => {
   db
     .child('phototags/' + phototagId + '/comments/')
     .update(commentData)
     .then(() => {
-      dispatch(fetchPhototags);
+      // dispatch(fetchPhototags);
+      db
+        .child('phototags/' + phototagId)
+        .update({ badges: badgeCount })
+        .then(() => {
+          console.log('Update comment done');
+        })
     })
     .catch(error => console.log('ERROR writing to /phototags/comments', error));
 };

@@ -1,12 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Image, TextInput, Text, ActivityIndicator, Alert, CameraRoll } from 'react-native';
+import {
+  Image,
+  TextInput,
+  Text,
+  ActivityIndicator,
+  Alert,
+  CameraRoll,
+  View,
+  TouchableHighlight,
+} from 'react-native';
+import Button from '../components/Button';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePicker, Location, Permissions } from 'expo';
 import { RNS3 } from 'react-native-aws3';
 import * as Actions from '../actions';
 import config from '../config/config';
 import axios from 'axios';
+import Colors from '../constants/Colors';
+import AppStyles from '../styles/AppStyles';
 
 const awsOptions = {
   keyPrefix: 'phototags/',
@@ -55,6 +68,7 @@ class CameraScreen extends React.Component {
     latitude: '',
     longitude: '',
     imageHasLocationExif: false,
+    address: '',
   };
 
   _takePic = async () => {
@@ -118,6 +132,10 @@ class CameraScreen extends React.Component {
         address,
         `${address[0].name} ${address[0].city} ${address[0].region} ${address[0].postalCode}`
       );
+      this.setState({
+        address: `${address[0].name} ${address[0].city} ${address[0].region} ${address[0]
+          .postalCode}`,
+      });
       axios
         .get('https://www.googleapis.com/civicinfo/v2/representatives', {
           params: {
@@ -183,10 +201,7 @@ class CameraScreen extends React.Component {
       phototag.comments = { placeholderComment: true };
       phototag.solutions = { solutionId: true };
       phototag.userProfileUrl = this.props.user.photoUrl;
-      phototag.address = await Location.reverseGeocodeAsync({
-        latitude: this.props.location.latitude,
-        longitude: this.props.location.longitude,
-      });
+      phototag.address = this.state.address;
       phototag.badges = 0;
       phototag.reps = this.state.reps;
       console.log('[saveImg] phototag.reps: ', phototag.reps);
@@ -215,6 +230,7 @@ class CameraScreen extends React.Component {
             latitude: '',
             longitude: '',
             imageHasLocationExif: false,
+            description: '',
           });
 
           // TODO: Error handling if post not successful from firebase
@@ -265,39 +281,74 @@ class CameraScreen extends React.Component {
     });
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.center} behavior="padding">
-        <Button title="Pick an image from camera roll" onPress={this._pickImage} />
-        <Button title="Use camera" onPress={this._takePic} />
-        {imageUri && <Image source={{ uri: imageUri }} style={styles.imageSetting} />}
-        <TextInput
-          style={styles.descriptionInput}
-          placeholder="Enter description"
-          onChangeText={text => this.setState({ description: text })}
-          keyboardType={'default'}
-          multiline
-          ref={input => (this.descriptionInput = input)}>
-          <Text>{parts}</Text>
-        </TextInput>
-
-        <Button title="Upload my post" onPress={this._saveImg} />
-      </KeyboardAwareScrollView>
+      <Image
+        style={{ height: '100%', width: '100%' }}
+        source={require('../assets/images/cameraBack.png')}
+        resizeMode="cover">
+        <KeyboardAwareScrollView contentContainerStyle={styles.center} behavior="padding">
+          <View style={styles.view}>
+            <Text style={styles.text}>Show Us What The World Could Be</Text>
+          </View>
+          <View style={AppStyles.imageHolder}>
+            {imageUri && <Image source={{ uri: imageUri }} style={styles.imageSetting} />}
+          </View>
+          <View style={AppStyles.containerRow}>
+            <TouchableHighlight onPress={this._takePic}>
+              <FontAwesome
+                name="camera-retro"
+                size={40}
+                color="white"
+                style={{ backgroundColor: 'transparent' }}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this._pickImage}>
+              <MaterialIcons
+                name="camera-roll"
+                size={40}
+                color="white"
+                style={{ backgroundColor: 'transparent' }}
+              />
+            </TouchableHighlight>
+          </View>
+          <View style={styles.view}>
+            <TextInput
+              style={styles.descriptionInput}
+              placeholder="Enter description"
+              onChangeText={text => this.setState({ description: text })}
+              keyboardType={'default'}
+              multiline
+              ref={input => (this.descriptionInput = input)}>
+              <Text>{parts}</Text>
+            </TextInput>
+            <Button
+              label="Post"
+              onPress={this._saveImg}
+              styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
+            />
+          </View>
+        </KeyboardAwareScrollView>
+      </Image>
     );
   }
 }
 
 const styles = {
   imageSetting: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
+    borderRadius: 125,
   },
   descriptionInput: {
-    height: 80,
+    // height: 80,
     borderColor: 'gray',
+    borderRadius: 5,
     borderWidth: 1,
-    width: '80%',
+    // width: '80%',
     textAlignVertical: 'top',
     fontSize: 16,
     padding: 10,
+    color: 'white',
+
   },
   center: {
     alignItems: 'center',
@@ -305,6 +356,18 @@ const styles = {
   hashtag: {
     color: 'blue',
     fontWeight: 'bold',
+  },
+  view: {
+    flex: 1,
+    alignItems: 'center',
+    // margin: 20,
+    backgroundColor: 'transparent',
+  },
+  text: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 40,
+    textAlign: 'center',
   },
 };
 

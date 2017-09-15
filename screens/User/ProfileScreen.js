@@ -9,7 +9,9 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
+import CustomButton from '../../components/Button';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import NavigationBar from 'react-native-navbar';
 import { NavigationActions } from 'react-navigation';
@@ -22,6 +24,7 @@ import * as Actions from '../../actions';
 import Favourites from './Favourites';
 import Posts from './Posts';
 import Comments from './Comments';
+import AppStyles from '../../styles/AppStyles';
 
 const awsOptions = {
   keyPrefix: 'users/',
@@ -39,15 +42,19 @@ const mapStateToProps = (state, ownProps) => {
     user: state.user,
     isLoading: state.isLoading,
     location: state.location,
+    badges: state.badges,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   // Define the function that will be passed as prop
   return {
-    getAllPhototags: () => {
+    listenForPhototags: () => {
       dispatch(Actions.updateLoadingStatus(true));
-      dispatch(Actions.fetchPhototags);
+      dispatch(Actions.listenForPhototags);
+    },
+    listenForUser: user => {
+      dispatch(Actions.listenForUserChanges(user));
     },
     submitUserUpdate: userInfo => {
       dispatch(Actions.updateUser(userInfo));
@@ -88,7 +95,8 @@ class HomeScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.props.getAllPhototags();
+    this.props.listenForPhototags();
+    // this.props.listenForUser(this.props.user);
   }
 
   _handleIndexChange = index => {
@@ -147,8 +155,9 @@ class HomeScreen extends React.Component {
     this.props.updatePhototag(phototag);
   }
 
-  resetBadges() {
-    this.props.updateBadge(0);
+  decreaseBadges(decreaseAmount) {
+    if (this.props.badges > 0) this.props.updateBadge(this.props.badges - decreaseAmount);
+    if ((this, this.props.badges < 0)) this.props.updateBadge(0);
   }
 
   _handleSaveProfile = () => {
@@ -203,13 +212,25 @@ class HomeScreen extends React.Component {
             goToPhototags={this.goToPhototags}
             navigation={this.props.navigation}
             deleteBadges={this.deleteBadges.bind(this)}
-            resetBadges={this.deleteBadges.bind(this)}
+            decreaseBadges={this.decreaseBadges.bind(this)}
           />
         );
       case 1:
-        return <Favourites navigation={this.props.navigation} />;
+        return (
+          <Favourites
+            navigation={this.props.navigation}
+            deleteBadges={this.deleteBadges.bind(this)}
+            decreaseBadges={this.decreaseBadges.bind(this)}
+          />
+        );
       case 2:
-        return <Comments navigation={this.props.navigation} />;
+        return (
+          <Comments
+            navigation={this.props.navigation}
+            deleteBadges={this.deleteBadges.bind(this)}
+            decreaseBadges={this.decreaseBadges.bind(this)}
+          />
+        );
       default:
         return <View />;
     }
@@ -222,58 +243,81 @@ class HomeScreen extends React.Component {
         this.props.user.displayName === '' ? this.props.user.email : this.props.user.displayName;
 
       return (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.container}>
-            <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
-            <Text>{displayName}</Text>
-            <Button title="Edit Profile" onPress={this._handleClickEdit} />
-            <Button title="Logout" onPress={this._logout} />
-          </View>
-          <Modal
-            animationType={'slide'}
-            transparent={false}
-            visible={this.state.modalVisibility}
-            onRequestClose={() => {
-              console.log('Modal closed');
-            }}>
-            <NavigationBar
-              title={this.state.navBarTitle}
-              rightButton={this.state.rightButton}
-              leftButton={this.state.leftButton}
-            />
-            <ScrollView>
-              <View style={styles.container}>
-                <Image style={styles.profileImage} source={{ uri: this.state.imageUri }} />
-                <Button
-                  title="Change picture"
-                  onPress={this._pickImage}
-                  style={styles.smallButton}
+        <Image
+          style={{ height: '100%', width: '100%' }}
+          source={require('../../assets/images/water.png')}
+          resizeMode="cover">
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={[styles.container, {flexDirection: 'row', justifyContent: 'space-between'}]}>
+              <View style={{flex: 1, flexDirection:'column', alignItems:'center',}}>  
+                <Image style={styles.profileImage} source={{ uri: this.props.user.photoUrl }} />
+                <Text style={{color:'white',}}>{displayName}</Text>
+              </View>  
+              <View style={{flex: 1, flexDirection:'column', alignItems:'center',}}>
+                <CustomButton
+                  label="Edit Profile"
+                  onPress={this._handleClickEdit}
+                  styles={{ button: AppStyles.editButton, label: AppStyles.buttonBlueText }}
                 />
-                <Text>
-                  Display Name
-                  <TextInput
-                    value={this.state.editDisplayNameText}
-                    keyboardType={'default'}
-                    placeholder="Enter name"
-                    onChangeText={editDisplayNameText => this.setState({ editDisplayNameText })}
-                    style={styles.inputBox}
-                  />
-                </Text>
-              </View>
-            </ScrollView>
-          </Modal>
-          <SegmentedControlTab
-            values={['Posts', 'Favs', 'Comments']}
-            selectedIndex={this.state.selectedIndex}
-            onTabPress={this._handleIndexChange}
-          />
-          {this.renderForm(this.state.selectedIndex)}
-          {this.props.isLoading && (
-            <View style={styles.loading}>
-              <ActivityIndicator animated={this.props.isLoading} size="large" />
+                <CustomButton
+                  label="Log Out"
+                  onPress={this._logout}
+                  styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
+                />
+              </View>  
             </View>
-          )}
-        </ScrollView>
+            <Modal
+              animationType={'slide'}
+              transparent={false}
+              visible={this.state.modalVisibility}
+              onRequestClose={() => {
+                console.log('Modal closed');
+              }}>
+              <NavigationBar
+                title={this.state.navBarTitle}
+                rightButton={this.state.rightButton}
+                leftButton={this.state.leftButton}
+              />
+              <ScrollView>
+                <View style={styles.container}>
+                  <Image style={styles.profileImage} source={{ uri: this.state.imageUri }} />
+                  <Button
+                    title="Change picture"
+                    onPress={this._pickImage}
+                    style={styles.smallButton}
+                  />
+                  <Text>
+                    Display Name
+                    <TextInput
+                      value={this.state.editDisplayNameText}
+                      keyboardType={'default'}
+                      placeholder="Enter name"
+                      onChangeText={editDisplayNameText => this.setState({ editDisplayNameText })}
+                      style={styles.inputBox}
+                    />
+                  </Text>
+                </View>
+              </ScrollView>
+            </Modal>
+            <SegmentedControlTab
+              values={['Posts', 'Favs', 'Comments']}
+              selectedIndex={this.state.selectedIndex}
+              onTabPress={this._handleIndexChange}
+              borderRadius={14}
+              tabsContainerStyle={AppStyles.profileTabsContainerStyle}
+              tabStyle={AppStyles.tabStyle}
+              tabTextStyle={AppStyles.tabTextStyle}
+              activeTabStyle={AppStyles.activeTabStyle}
+              activeTabTextStyle={AppStyles.activeTabTextStyle}
+            />
+            {this.renderForm(this.state.selectedIndex)}
+            {this.props.isLoading && (
+              <View style={styles.loading}>
+                <ActivityIndicator animated={this.props.isLoading} size="large" />
+              </View>
+            )}
+          </ScrollView>
+        </Image>  
       );
     } else {
       return <ScrollView />;
@@ -284,6 +328,7 @@ class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   scrollContainer: {
     alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   titleText: {
     textAlign: 'center',

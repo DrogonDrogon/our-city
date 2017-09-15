@@ -1,5 +1,6 @@
 import { Notifications } from 'expo';
 import React from 'react';
+import { StatusBar } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import LoginScreen from '../screens/Login/LoginScreen';
@@ -62,9 +63,11 @@ const RootStackNavigator = StackNavigator(
   },
   {
     navigationOptions: () => ({
-      headerTitleStyle: {
-        fontWeight: 'normal',
+      headerStyle: {
+        backgroundColor: 'black',
+        height: 30,
       },
+      statusBarStyle: 'light-content',
     }),
   }
 );
@@ -79,6 +82,7 @@ class RootNavigator extends React.Component {
   };
   componentWillMount() {
     this._registerForPushNotifications();
+    StatusBar.setBarStyle('light-content');
   }
   componentWillUnmount() {
     this._notificationSubscription && this._notificationSubscription.remove();

@@ -1,15 +1,14 @@
 import React from 'React';
-import { View, Text, Image, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import AppStyles from '../styles/AppStyles.js';
 
 class TaggedText extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {text: 'Hello #World'};
-  }
-
   goToTagLinkView(tag) {
     // let phototagData = this.state.phototag;
-    tag = tag.split('').slice(1).join('');
+    tag = tag
+      .split('')
+      .slice(1)
+      .join('');
     this.props.navigation.navigate('Map', {
       navFromLink: true,
       isMapToggled: false,
@@ -55,7 +54,7 @@ class TaggedText extends React.Component {
     parts = parts.map(text => {
       if (/^#/.test(text)) {
         return (
-          <Text onPress={() => this.goToTagLinkView(text)} key={text} style={styles.hashtag}>
+          <Text onPress={() => this.goToTagLinkView(text)} key={text} style={AppStyles.hashtag}>
             {text}
           </Text>
         );
@@ -65,18 +64,11 @@ class TaggedText extends React.Component {
     });
 
     return (
-      <View>
-        <Text>{parts}</Text>
+      <View style={AppStyles.descriptionContainerView}>
+        <Text style={AppStyles.descriptionContainerText}>{parts}</Text>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  hashtag: {
-    color: 'blue',
-    fontWeight: 'bold',
-  },
-});
 
 export default TaggedText;

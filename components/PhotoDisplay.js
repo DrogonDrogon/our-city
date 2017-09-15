@@ -1,6 +1,7 @@
 import React from 'React';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
 import moment from 'moment';
+import AppStyles from '../styles/AppStyles';
 
 export default class PhotoDisplay extends React.Component {
   render() {

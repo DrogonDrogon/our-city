@@ -5,6 +5,7 @@ import ActionSheet from 'react-native-actionsheet';
 import UserOwnComment from '../../components/UserOwnComment';
 import db from '../../db';
 import * as Actions from '../../actions';
+import AppStyles from '../../styles/AppStyles';
 
 // Settings for the ActionSheet
 const WARNING_INDEX = 0;
@@ -15,6 +16,7 @@ const title = 'Are you sure you want to delete this comment?';
 const mapStateToProps = state => {
   return {
     user: state.user,
+    userComments: state.userComments,
   };
 };
 
@@ -22,6 +24,12 @@ const mapDispatchToProps = dispatch => {
   return {
     updateLoadingStatus: bool => {
       dispatch(Actions.updateLoadingStatus(bool));
+    },
+    getAllCommentsByUser: user => {
+      dispatch(Actions.getAllCommentsByUser(user));
+    },
+    deleteOneComment: (commentId, userData, photoId) => {
+      dispatch(Actions.deleteComment(commentId, userData, photoId));
     },
   };
 };
@@ -36,59 +44,14 @@ class Comments extends React.Component {
   _keyExtractor = (item, index) => item.id;
 
   componentDidMount() {
-    this.getCommentsForUser();
+    this.props.getAllCommentsByUser(this.props.user);
   }
 
   goToPhototagsDetail = item => {
     this.props.navigation.navigate('PhototagFromMap', item);
   };
 
-  getCommentsForUser = () => {
-    this.props.updateLoadingStatus(true);
-    let commentKeys = Object.keys(this.props.user.comments);
-    // Use comment Id to query comments,
-    const commentPromises = commentKeys.map(id => {
-      return db
-        .child('comments/' + id)
-        .once('value')
-        .then(snapshot => {
-          return snapshot.val();
-        })
-        .catch(err => {
-          console.log('Err fetching comments', err);
-        });
-    });
-    Promise.all(commentPromises)
-      .then(comments => {
-        return comments;
-      })
-      // Then get the phototagData from comment.phototagId
-      .then(comments => {
-        let validComments = comments.filter(item => {
-          return item !== null && item !== undefined;
-        });
-
-        const photoPromises = validComments.map(comment => {
-          return db
-            .child('phototags/' + comment.phototagId)
-            .once('value')
-            .then(snapshot => {
-              comment.phototagData = snapshot.val();
-              return snapshot.val();
-            });
-        });
-        Promise.all(photoPromises).then(phototagData => {
-          this.setState({ comments: validComments });
-          this.props.updateLoadingStatus(false);
-        });
-      })
-      .catch(err => {
-        console.log('Err getting phototags', err);
-        this.props.updateLoadingStatus(false);
-      });
-  };
-
-  deleteComment = (commentId, phototagId) => {
+  confirmDelete = (commentId, phototagId) => {
     console.log('comment + photo ids', commentId, phototagId);
     this.setState(
       {
@@ -107,20 +70,10 @@ class Comments extends React.Component {
 
   handleActionSheetPress = selectedIndex => {
     if (selectedIndex === WARNING_INDEX) {
-      // Run the delete function
-      db.deleteComment(
+      this.props.deleteOneComment(
         this.state.commentIdSelected,
-        this.props.user.id,
-        this.state.phototagIdForComment,
-        (err, data) => {
-          if (err) {
-            console.log('Err deleting', err);
-            //TODO: handle error
-          } else {
-            console.log('Success deleting', data);
-            this.getCommentsForUser();
-          }
-        }
+        this.props.user,
+        this.state.phototagIdForComment
       );
     }
   };
@@ -128,14 +81,14 @@ class Comments extends React.Component {
   render() {
     return (
       <View>
-        <Text style={styles.titleText}>My Comments</Text>
+        <Text style={AppStyles.titleText}>My Comments</Text>
         <FlatList
-          data={this.state.comments}
+          data={this.props.userComments}
           renderItem={({ item }) => (
             <UserOwnComment
               userId={this.props.user.id}
               comment={item}
-              deleteComment={this.deleteComment}
+              deleteComment={this.confirmDelete}
               goToPhototags={this.goToPhototagsDetail.bind(this, item.phototagData)}
             />
           )}

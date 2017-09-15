@@ -1,5 +1,6 @@
 import React from 'React';
 import { View, Text, Image, StyleSheet, Button } from 'react-native';
+import AppStyles from '../styles/AppStyles';
 
 
 class FilterTag extends React.Component {

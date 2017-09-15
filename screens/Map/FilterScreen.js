@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import {
   ScrollView,
   StyleSheet,
@@ -11,20 +10,11 @@ import {
   TouchableHighlight,
   Modal,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as Actions from '../../actions';
-import { NavigationActions } from 'react-navigation';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Expo from 'expo';
-import firebase from 'firebase';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import db from '../../db';
+import Button from '../../components/Button';
 import FilterTag from '../../components/FilterTag.js';
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    phototags: state.phototags,
-  };
-};
+import AppStyles from '../../styles/AppStyles';
 
 class FilterScreen extends Component {
   constructor(props) {
@@ -80,18 +70,19 @@ class FilterScreen extends Component {
           onRequestClose={() => {
             alert('Filters has been closed.');
           }}>
-          <View style={{ marginTop: 75, backgroundColor: 'white' }}>
+          <View style={{ marginTop: 75, backgroundColor: 'white', padding: 20 }}>
             <View>
-              <TouchableHighlight
-                style={{ marginTop: 11 }}
+              <Button
+                label="Save & Close"
                 onPress={() => {
                   this.props.getFilters(this.state);
                   this.setModalVisible(!this.state.modalVisible);
-                }}>
-                <Text>Hide Filters</Text>
-              </TouchableHighlight>
+                }}
+                styles={{ button: styles.hideFilterButton, label: styles.hideFilterTextLabel }}
+              />
               <ScrollView style={{ height: '100%' }}>
                 <ScrollView contentContainerStyle={{ height: '50%' }}>
+                  <Text>Tags</Text>
                   <View
                     style={{
                       flex: 1,
@@ -144,7 +135,7 @@ class FilterScreen extends Component {
                 </View>
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                   <Picker
-                    style={{ width: '50%' }}
+                    style={styles.filterPickerStyle}
                     selectedValue={this.state.sortBy}
                     onValueChange={method => this.setState({ sortBy: method })}>
                     <Picker.Item label="Most Recent" value="Date" />
@@ -171,16 +162,16 @@ class FilterScreen extends Component {
             </View>
           </View>
         </Modal>
-
         <TouchableHighlight
           style={styles.filterStyle}
           onPress={() => {
             this.props.genFilterTags();
             this.setModalVisible(true);
-          }}>
+          }}
+          underlayColor="#ccc">
           <View style={styles.wrap}>
-          <Ionicons name="ios-funnel" size={32} color="gray" />
-          <Text style={{ fontSize: 12 }}>Filters</Text>
+          <MaterialIcons name="filter-list" size={22} color="white" style={{ marginRight: 5 }} />
+            <Text style={styles.filterTextLabel}>Filter</Text>
           </View>
         </TouchableHighlight>
       </View>
@@ -195,26 +186,45 @@ const styles = {
     zIndex: 2,
     width: 100,
     height: 28,
-    backgroundColor: 'transparent',
-  },
-  filterLabelStyle: {
-    width: 100,
-    height: 28,
+    borderRadius: 14,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    backgroundColor: 'coral',
   },
   filterStyle: {
     width: 100,
     height: 28,
+    borderRadius: 14,
     position: 'absolute',
-    left: 0,
     top: 0,
+    left: 0,
     backgroundColor: 'transparent',
+  },
+  filterTextLabel: {
+    fontSize: 14,
+    color: '#fff',
+  },
+  hideFilterButton: {
+    backgroundColor: 'coral',
+    height: 20,
+    width: 200,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  hideFilterTextLabel: {
+    fontSize: 16,
+    color: 'white',
   },
   wrap: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-}
+};
 
 //need an option for favorites
 //need a selector for recent, popular, most voted, most faved

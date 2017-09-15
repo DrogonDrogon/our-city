@@ -1,12 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Image, Text, TextInput, Button, CameraRoll, Alert } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TextInput,
+  Button,
+  CameraRoll,
+  Alert,
+  TouchableHighlight,
+ } from 'react-native';
 import { ImagePicker } from 'expo';
+import { Ionicons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RNS3 } from 'react-native-aws3';
 import * as Actions from '../../actions';
 import db from '../../db';
 import config from '../../config/config';
+import EditPhototagModal from '../../components/editPhototagModal';
+import AppStyles from '../../styles/AppStyles';
 
 const awsOptions = {
   keyPrefix: 'phototags/',
@@ -25,11 +38,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePhototag: phototag => {
-      dispatch(Actions.updatePhototag(phototag));
-    },
-    updateUser: userData => {
-      dispatch(Actions.updateUser(userData));
+    getSolutions: userId => {
+      dispatch(Actions.fetchSolutionsByUserId(userId));
     },
   };
 };
@@ -47,124 +57,155 @@ class ViewSolverScreen extends React.Component {
     title: 'Volunteer a Fix',
   };
 
-  state={
-
-  }
+  state = {
+    solution: this.props.navigation.state.params,
+    description: this.props.navigation.state.params.description,
+    photoUri: this.props.navigation.state.params.imageUrl,
+    modalEditVis: false,
+    modalSolutionsVis: false,
+    modalNavRightButton: {
+      title: 'Save',
+      handler: () => {
+        this.saveDescription(this.state.editedDescription);
+        this.toggleEditModal();
+      },
+    },
+    modalNavLeftButton: {
+      title: 'Cancel',
+      handler: () => {
+        this.toggleEditModal();
+      },
+    },
+    editedDescription: this.props.navigation.state.params.description,
+  };
 
   _takePic = async () => {
-    console.log('click image');
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [16, 9],
-      base64: true,
-      exif: true,
-    });
+    if (this.props.user.id === this.state.solution.userId) {
+      let result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [16, 9],
+        base64: true,
+        exif: true,
+      });
 
-    if (!result.cancelled) {
-      CameraRoll.saveToCameraRoll(result.uri);
-      this.setState({ photoUri: result.uri });
+      if (!result.cancelled) {
+        CameraRoll.saveToCameraRoll(result.uri);
+        this.setState({ photoUri: result.uri });
+      }
     }
   };
 
-   handleSaveSolution = () => {
-  //   let isNewPhoto = this.state.photoUri !== this.state.phototag.imageUrl;
+  handleSaveSolution = () => {
+    let isNewPhoto = this.state.photoUri !== this.state.solution.imageUrl;
 
-  //   if (isNewPhoto) {
-  //     // Set up file uri to save to AWS
-  //     let photoIdName = generateRandomID();
-  //     let file = {
-  //       uri: this.state.photoUri,
-  //       name: `${photoIdName}.jpg`,
-  //       type: 'image/jpg',
-  //     };
+    if (isNewPhoto) {
+      // Set up file uri to save to AWS
+      let photoIdName = generateRandomID();
+      let file = {
+        uri: this.state.photoUri,
+        name: `${photoIdName}.jpg`,
+        type: 'image/jpg',
+      };
 
-  //     // Make AWS upload request
-  //     RNS3.put(file, awsOptions).then(response => {
-  //       if (response.status !== 201) {
-  //         console.log('[s3 upload] ERROR failed to upload image', response.body);
-  //         // TODO: handle error through alert
-  //       } else {
-  //         console.log('[s3 upload] Success!');
-  //         let awsUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
-  //         let newSolution = {
-  //           imageUrl: awsUrl,
-  //           isAccepted: false,
-  //           description: this.state.description,
-  //           userId: this.props.user.id,
-  //           phototagId: this.state.phototag.id,
-  //         };
-  //         this.addSolution(this.props.user.id, newSolution);
-  //       }
-  //     });
-  //   } else {
-  //     let newSolution = {
-  //       imageUrl: this.state.photoUri,
-  //       isAccepted: false,
-  //       description: this.state.description,
-  //       userId: this.props.user.id,
-  //       phototagId: this.state.phototag.id,
-  //     };
-  //     this.addSolution(this.props.user.id, newSolution);
-  //     Alert.alert('Success', 'Solution posted', [
-  //       {
-  //         text: 'OK',
-  //         onPress: () => {
-  //           this.props.navigation.goBack();
-  //         },
-  //       },
-  //     ]);
-  //   }
-  // };
+      // Make AWS upload request
+      RNS3.put(file, awsOptions).then(response => {
+        if (response.status !== 201) {
+          console.log('[s3 upload] ERROR failed to upload image', response.body);
+          // TODO: handle error through alert
+        } else {
+          console.log('[s3 upload] Success!');
+          let awsUrl = `https://s3.amazonaws.com/${awsOptions.bucket}/${awsOptions.keyPrefix}${photoIdName}.jpg`;
+          let newSolution = {
+            imageUrl: awsUrl,
+            description: this.state.editedDescription,
+          };
+          this.updateSolution(this.props.user.id, newSolution);
+        }
+      });
+    } else {
+      let newSolution = {
+        imageUrl: this.state.photoUri,
+        description: this.state.editedDescription,
+      };
+      this.updateSolution(this.props.user.id, newSolution);
+      Alert.alert('Success', 'Solution posted', [
+        {
+          text: 'OK',
+          onPress: () => {
+            this.props.navigation.goBack();
+          },
+        },
+      ]);
+    }
+  };
 
-  // addSolution = (userId, solutionData) => {
-  //   // update the solutions node in firebase
-  //   let newSolutionId = db.child('solutions').push().key;
-  //   solutionData.id = newSolutionId;
-  //   db
-  //     .child('solutions/' + newSolutionId)
-  //     .update(solutionData)
-  //     .then(() => {
-  //       console.log('New solution posted. Id is', newSolutionId);
-  //       // do something
-  //     })
-  //     .catch(error => console.log('Error writing to solutions', error));
+  saveDescription = description => {
+    let updatedData = this.state.solution;
+    updatedData.description = description;
+    this.setState({ solution: updatedData });
+  };
 
-  //   // update the users node
-  //   let userData = Object.assign({}, this.props.user);
-  //   userData.solutions[newSolutionId] = true;
-  //   this.props.updateUser(userData);
+  updateSolution = (userId, solutionData) => {
+    // update the solutions node in firebase
+    var newSolutionId = this.state.solution.id;
+    db
+      .child('solutions/' + newSolutionId)
+      .update(solutionData)
+      .then(() => {
+        console.log('Solution updated. Id is', newSolutionId);
+        this.props.getSolutions(this.props.user.id);
+      })
+      .catch(error => console.log('Error writing to solutions', error));
+  };
 
-  //   // update the phototags node
-  //   let photoData = Object.assign({}, this.state.phototag);
-  //   photoData.solutions[newSolutionId] = true;
-  //   this.props.updatePhototag(photoData);
-   };
+  openEditDescription = () => {
+    console.log('Editing description');
+    this.toggleEditModal();
+  };
+
+  editDescription = description => {
+    this.setState({ editedDescription: description });
+  };
+
+  toggleEditModal = () => {
+    this.setState({ modalEditVis: !this.state.modalEditVis });
+  };
 
   render() {
+    let isEditable = this.props.user.id === this.state.solution.userId;
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <Text>Describe what you will do or have done:</Text>
-        <TextInput
-          style={styles.descriptionInput}
-          placeholder="i.e. I can move this..., I can repair this..."
-          onChangeText={text => this.setState({ description: text })}
-          keyboardType={'default'}
-          multiline
-          ref={input => {
-            this.descriptionInput = input;
-          }}
-        />
-        <View>
-          <Text>(Optional) Take an updated image of the site</Text>
-          <Button title="Take new photo" onPress={this._takePic} />
-        </View>
-        <Image
-          onPress={this.handleSelectImage}
-          style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
-          source={{ uri: this.state.photoUri }}
-        />
-        <Button title="Submit" onPress={this.handleSaveSolution} />
-      </KeyboardAwareScrollView>
+      <Image
+        style={{ height: '100%', width: '100%' }}
+        source={require('../../assets/images/lowBulb.png')}
+        resizeMode="cover"
+      >
+        <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
+          <Image
+            onPress={this.handleSelectImage}
+            style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
+            source={{ uri: this.state.photoUri }}
+          />
+          <Text>{this.state.editedDescription}</Text>
+           <EditPhototagModal
+            toggleEditModal={this.modalEditVis}
+            modalEditVis={this.state.modalEditVis}
+            modalNavRightButton={this.state.modalNavRightButton}
+            modalNavLeftButton={this.state.modalNavLeftButton}
+            editedDescription={this.state.editedDescription}
+            editDescription={this.editDescription}
+          />
+          {isEditable && (
+            <TouchableHighlight onPress={this.openEditDescription}>
+              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+            </TouchableHighlight>
+          )}
+          <View>
+            <Text>(Optional) Take an updated image of the site</Text>
+            <Button title="Take new photo" onPress={this._takePic} />
+          </View>
+          <Button title="Submit" onPress={this.handleSaveSolution} />
+        </KeyboardAwareScrollView>
+      </Image>  
     );
   }
 }
@@ -198,3 +239,18 @@ const styles = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewSolverScreen);
+
+/*
+        {/* <Text>{this.state.description}</Text>
+        <EditPhototagModal
+*/
+// <TextInput
+//           style={styles.descriptionInput}
+//           placeholder={this.state.text}
+//           onChangeText={text => this.setState({ text: text })}
+//           keyboardType={'default'}
+//           multiline
+//           ref={input => {
+//             this.descriptionInput = input;
+//           }}
+//         />

@@ -13,13 +13,15 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import axios from 'axios';
 import db from '../../db';
 import MarkerTag from '../../components/markerTag';
 import ListView from './ListView.js';
 import FilterScreen from './FilterScreen';
 import * as Actions from '../../actions';
-import axios from 'axios';
+import AppStyles from '../../styles/AppStyles';
 //import registerForPushNotificationsAsync from 'registerForPushNotificationsAsync';
+
 const mapStateToProps = (state, ownProps) => {
   return {
     phototags: state.phototags,
@@ -253,17 +255,6 @@ class MapScreen extends React.Component {
     if (this.state.selectedIndex === 0) {
       return (
         <View style={{ height: '100%' }}>
-          <SegmentedControlTab
-            values={['Map', 'List']}
-            selectedIndex={this.state.selectedIndex}
-            onTabPress={this._handleIndexChange}
-            borderRadius={14}
-            tabsContainerStyle={styles.tabsContainerStyle}
-            tabStyle={styles.tabStyle}
-            tabTextStyle={styles.tabTextStyle}
-            activeTabStyle={styles.activeTabStyle}
-            activeTabTextStyle={styles.activeTabTextStyle}
-          />
           <FilterScreen
             filters={this.state.filters}
             tags={this.state.tags}
@@ -301,22 +292,22 @@ class MapScreen extends React.Component {
                   </MapView.Marker>
                 ))}
           </MapView>
-        </View>
-      );
-    } else {
-      return (
-        <View style={{ height: '100%' }}>
           <SegmentedControlTab
             values={['Map', 'List']}
             selectedIndex={this.state.selectedIndex}
             onTabPress={this._handleIndexChange}
             borderRadius={14}
-            tabsContainerStyle={styles.tabsContainerStyle}
-            tabStyle={styles.tabStyle}
-            tabTextStyle={styles.tabTextStyle}
-            activeTabStyle={styles.activeTabStyle}
-            activeTabTextStyle={styles.activeTabTextStyle}
+            tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
+            tabStyle={AppStyles.mapsTabStyle}
+            tabTextStyle={AppStyles.tabTextStyle}
+            activeTabStyle={AppStyles.activeTabStyle}
+            activeTabTextStyle={AppStyles.activeTabTextStyle}
           />
+        </View>
+      );
+    } else {
+      return (
+        <View style={{ height: '100%', backgroundColor: 'black' }}>
           <FilterScreen
             filters={this.state.filters}
             tags={this.state.tags}
@@ -335,6 +326,17 @@ class MapScreen extends React.Component {
               <ActivityIndicator animated={this.props.isLoading} size="large" />
             </View>
           )}
+          <SegmentedControlTab
+            values={['Map', 'List']}
+            selectedIndex={this.state.selectedIndex}
+            onTabPress={this._handleIndexChange}
+            borderRadius={14}
+            tabsContainerStyle={AppStyles.mapsTabsContainerStyle}
+            tabStyle={AppStyles.mapsTabStyle}
+            tabTextStyle={AppStyles.tabTextStyle}
+            activeTabStyle={AppStyles.activeTabStyle}
+            activeTabTextStyle={AppStyles.activeTabTextStyle}
+          />
         </View>
       );
     }
@@ -359,27 +361,5 @@ const styles = StyleSheet.create({
   },
   switchButton: {
     position: 'absolute',
-  },
-  tabsContainerStyle: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 200,
-    backgroundColor: 'transparent',
-  },
-  tabStyle: {
-    backgroundColor: '#fff',
-    borderColor: '#2f95dc',
-    height: 28,
-  },
-  tabTextStyle: {
-    color: '#2f95dc',
-  },
-  activeTabStyle: {
-    backgroundColor: '#2f95dc',
-    borderColor: '#2f95dc',
-  },
-  activeTabTextStyle: {
-    color: '#fff',
   },
 });

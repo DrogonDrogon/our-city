@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
-
 import { StyleSheet, Text, TouchableHighlight } from 'react-native';
+import AppStyles from '../styles/AppStyles';
 
 function getContent(props) {
   if (props.children) {
     return props.children;
   }
-  return (
-    <Text style={props.styles.label}>
-      {props.label}
-    </Text>
-  );
+  return <Text style={props.styles.label}>{props.label}</Text>;
 }
 
 const Button = props => {
-  
-
   return (
     <TouchableHighlight
       underlayColor="#ccc"

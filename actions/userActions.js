@@ -3,6 +3,13 @@ import db from '../db';
 import { SET_USER, IS_LOGGED_IN, SET_BADGE } from './constants';
 import * as Actions from './phototagActions';
 
+export const listenForUserChanges = user => dispatch => {
+  db.child('users/' + user.id).on('value', snapshot => {
+    console.log('user was updated', snapshot.val());
+    dispatch(getUserInfoCompleted(snapshot.val()));
+  });
+};
+
 // For checking if user is logged in
 export const checkUserLogin = () => dispatch => {
   firebase.auth().onAuthStateChanged(user => {

@@ -20,6 +20,7 @@ import TaggedText from '../../components/TaggedText';
 import EditPhototagModal from '../../components/editPhototagModal';
 import * as Actions from '../../actions';
 import db from '../../db';
+import AppStyles from '../../styles/AppStyles.js';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -39,17 +40,23 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       phototagRecord[key] = true;
       dispatch(Actions.addFavUnderUserId(userId, phototagRecord));
     },
-    deleteFavUnderUserId: (userId, phototagId) => {
-      dispatch(Actions.deleteFavUnderUserId(userId, phototagId));
+    deleteFavUnderUserId: (userId, phototagId, badgeCount) => {
+      dispatch(Actions.deleteFavUnderUserId(userId, phototagId, badgeCount));
     },
-    updatePhototagWithComment: (phototagId, commentId) => {
+    updatePhototagWithComment: (phototagId, commentId, badgeCount) => {
       let newCommentRecord = {};
       let key = commentId;
       newCommentRecord[key] = true;
-      dispatch(Actions.addCommentUnderPhototag(phototagId, newCommentRecord));
+      dispatch(Actions.addCommentUnderPhototag(phototagId, newCommentRecord, badgeCount));
     },
     updateUser: userData => {
       dispatch(Actions.updateUser(userData));
+    },
+    deleteOneComment: (commentId, userData, photoId) => {
+      dispatch(Actions.deleteComment(commentId, userData, photoId));
+    },
+    getAllCommentsByUser: user => {
+      dispatch(Actions.getAllCommentsByUser(user));
     },
   };
 };
@@ -83,14 +90,13 @@ class MapPhotoTagScreen extends React.Component {
 
   componentDidMount() {
     let currentPhototag = this.props.navigation.state.params;
-    this.getCommentsForCurrentPhototag(currentPhototag);
+    this.getCommentsFromArrayOfCommentIds(Object.keys(currentPhototag.comments));
     this.getAuthorForCurrentPhototag(currentPhototag.userId);
   }
 
-  getCommentsForCurrentPhototag(currentPhototag) {
+  getCommentsFromArrayOfCommentIds(commentKeys) {
     // console.log('THIS COMMENTS -->', this.props.navigation.state.params.comments); // this is an object containing commentIds
     // Run the firebase query for comments here.
-    let commentKeys = Object.keys(currentPhototag.comments);
     const commentPromises = commentKeys.map(id => {
       return db
         .child('comments')
@@ -111,7 +117,9 @@ class MapPhotoTagScreen extends React.Component {
             validComments.push(item);
           }
         });
-        this.setState({ comments: validComments });
+        this.setState({ comments: validComments }, () => {
+          console.log('got comments for current phototag');
+        });
       })
       .catch(err => {
         console.log('Err getting comments', err);
@@ -265,28 +273,33 @@ class MapPhotoTagScreen extends React.Component {
   };
 
   handleClickFav = () => {
-    let updatedPhototag = this.state.phototag;
+    let updatedPhototag = Object.assign({}, this.state.phototag);
     // If user does not have this favorite, add
     if (!this.props.user.favs[this.state.phototag.id]) {
       this.props.addFavUnderUserId(this.props.user.id, this.state.phototag.id);
       updatedPhototag.favTotal += 1;
-      this.props.updatePhototag(this.state.phototag);
+      updatedPhototag.badges += 1;
+      this.props.updatePhototag(updatedPhototag);
+      this.setState({
+        phototag: updatedPhototag,
+      });
     } else {
       // If user does already have this favorite, remove
       this.props.deleteFavUnderUserId(this.props.user.id, this.state.phototag.id);
       updatedPhototag.favTotal -= 1;
-      this.props.updatePhototag(this.state.phototag);
+      this.props.updatePhototag(updatedPhototag);
+      this.setState({
+        phototag: updatedPhototag,
+      });
     }
     axios
-      .post('http://cd41a62b.ngrok.io/notification', {
+      .post('https://notification-server-walter.herokuapp.com/notification', {
         message: `someone liked your tag with description "${this.state.phototag.description}"`,
         userid: this.state.phototag.userId,
       })
       .then(res => {
         console.log(res.data);
       });
-    this.state.phototag.badges += 1;
-    this.props.updatePhototag(this.state.phototag);
   };
 
   editComment(text) {
@@ -331,18 +344,20 @@ class MapPhotoTagScreen extends React.Component {
     this.props.updateUser(updatedUser);
 
     // 3. Adds the commentId under the phototag 'comments' node
-    this.props.updatePhototagWithComment(phototagId, commentId);
     axios
-      .post('http://cd41a62b.ngrok.io/notification', {
+      .post('https://notification-server-walter.herokuapp.com/notification', {
         message: `someone commented "${this.state.comment}" on on your tag  "${this.state.phototag
           .description}"`,
         userid: this.state.phototag.userId,
       })
       .then(res => {
-        console.log(res.data);
+        console.log('Notification post success', res.data);
+        this.props.updatePhototagWithComment(phototagId, commentId, this.state.phototag.badges + 1);
+      })
+      .catch(err => {
+        console.log('Notification post err', err);
+        this.props.updatePhototagWithComment(phototagId, commentId, this.state.phototag.badges + 1);
       });
-    this.state.phototag.badges += 1;
-    this.props.updatePhototag(this.state.phototag);
   };
 
   share = () => {
@@ -364,9 +379,17 @@ class MapPhotoTagScreen extends React.Component {
     this.props.navigation.navigate('electedOfficials', { phototag: phototagData });
   };
 
-  notifyDeletedComment = () => {
+  notifyDeletedComment = (commentId, userData, photoId) => {
     // Once a comment is deleted, this component is notified and refreshes UI by getting the latest comments again
-    this.getCommentsForCurrentPhototag(this.props.navigation.state.params);
+    this.props.deleteOneComment(commentId, this.props.user, photoId);
+    let commentsCopy = this.state.comments.slice();
+    let savedCommentIds = [];
+    for (var i = 0; i < commentsCopy.length; i++) {
+      if (commentsCopy[i].id !== commentId) {
+        savedCommentIds.push(commentsCopy[i].id);
+      }
+    }
+    this.getCommentsFromArrayOfCommentIds(savedCommentIds);
   };
 
   openEditDescription = () => {
@@ -400,164 +423,120 @@ class MapPhotoTagScreen extends React.Component {
     let userVoteStatus = this.props.user.votes[this.state.phototag.id];
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <View style={styles.photoDisplayContainer}>
-          <Image
-            style={{ width: '100%', height: '100%', resizeMode: Image.resizeMode.contain }}
-            source={{ uri: this.state.phototag.imageUrl }}
-          />
-          <TaggedText navigation={this.props.navigation} text={this.state.phototag.description} />
-        </View>
-        <EditPhototagModal 
-          toggleEditModal={this.modalEditVis}
-          modalEditVis={this.state.modalEditVis}
-          phototag={this.state.phototag}
-          modalNavRightButton={this.state.modalNavRightButton}
-          modalNavLeftButton={this.state.modalNavLeftButton}
-          editedDescription={this.state.editedDescription}
-          editDescription={this.editDescription}
-        />
-        <View style={{ flex: 1, flexDirection: 'column' }}>
-          <TouchableHighlight onPress={this.handleClickUpvote}>
-            <Ionicons
-              name="md-arrow-round-up"
-              size={32}
-              color={userVoteStatus === 1 ? 'orange' : 'gray'}
+      <Image
+          style={{ height: '100%', width: '100%',  alignItems: 'center', }}
+          source={require('../../assets/images/water.png')}
+          resizeMode="cover">
+        <KeyboardAwareScrollView contentContainerStyle={[AppStyles.scrollViewContainer, {backgroundColor:'transparent'}]}>
+          <View style={AppStyles.photoDisplayContainer}>
+            <Image style={AppStyles.phototagImage} source={{ uri: this.state.phototag.imageUrl }} />
+          </View>
+          <View style={AppStyles.authorContainer}>
+            <TaggedText
+              navigation={this.props.navigation}
+              text={this.state.phototag.description}
+              style={AppStyles.descriptionContainerView}
             />
-          </TouchableHighlight>
-          <Text style={styles.titleText}>{this.state.voteTotal}</Text>
-          <TouchableHighlight onPress={this.handleClickDownvote}>
-            <Ionicons
-              name="md-arrow-round-down"
-              size={32}
-              color={userVoteStatus === -1 ? 'orange' : 'gray'}
-            />
-          </TouchableHighlight>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            width: '80%',
-            alignItems: 'center',
-          }}>
-          {isEditable && (
-            <TouchableHighlight onPress={this.openEditDescription}>
-              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
+            {isEditable && (
+              <TouchableHighlight onPress={this.openEditDescription} underlayColor="#ccc">
+                <Ionicons name="md-create" size={28} color="white" />
+              </TouchableHighlight>
+            )}
+          </View>
+          <Image source={{ uri: this.state.authorPhoto }} style={AppStyles.imageSetting} />
+          <Text style={AppStyles.authorNameText}>{this.state.authorName}</Text>
+          <Text style={AppStyles.dateText}>{moment(this.state.phototag.timestamp).fromNow()}</Text>
+          <View style={{ flex: 1, flexDirection: 'column' }} />
+          <View style={AppStyles.horizontalDisplay}>
+            <TouchableHighlight onPress={this.handleClickUpvote} underlayColor="#ccc">
+              <Ionicons
+                name="md-arrow-dropup"
+                size={32}
+                color={userVoteStatus === 1 ? 'orange' : 'white'}
+              />
             </TouchableHighlight>
+            <Text style={AppStyles.titleText}>{this.state.voteTotal}</Text>
+            <TouchableHighlight onPress={this.handleClickDownvote} underlayColor="#ccc">
+              <Ionicons
+                name="md-arrow-dropdown"
+                size={32}
+                color={userVoteStatus === -1 ? 'orange' : 'white'}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.share} underlayColor="#ccc">
+              <Ionicons name="ios-share-outline" size={32} color="gray" />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.handleClickFav} underlayColor="#ccc">
+              <Ionicons
+                name="md-heart"
+                size={32}
+                color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'white'}
+              />
+            </TouchableHighlight>
+          </View>
+          {this.state.phototag.reps && (
+            <View style={AppStyles.horizontalDisplayNoSpace}>
+              <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="#ccc">
+                <Ionicons name="md-contacts" size={32} color="white" />
+              </TouchableHighlight>
+              <Button title="Contact an official" onPress={this.goToElectedOfficials} />
+            </View>
           )}
-          <TouchableHighlight onPress={this.share}>
-            <Ionicons name="md-share" size={32} color="gray" />
+          <View style={AppStyles.horizontalDisplayNoSpace}>
+            <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
+              <Ionicons name="md-bulb" size={32} color="white" />
+            </TouchableHighlight>
+            <Button title="Volunteer a fix" onPress={this.solve} />
+          </View>
+          <View style={AppStyles.horizontalDisplayNoSpace}>
+          <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="#ccc">
+            <Ionicons name="md-list" size={32} color="white" />
           </TouchableHighlight>
-          <TouchableHighlight onPress={this.handleClickFav}>
-            <Ionicons
-              name="md-heart"
-              size={32}
-              color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'gray'}
+            <Button title="View suggested fixes" onPress={this.toggleSolutionsModal} />
+          </View>
+          <Text style={AppStyles.titleText}>Comments</Text>
+          {this.state.comments.map((comment, i) => (
+            <Comment
+              key={comment.id}
+              comment={comment}
+              userId={this.props.user.id}
+              notifyDeletedComment={this.notifyDeletedComment}
             />
-          </TouchableHighlight>
-        </View>
-        <View style={styles.authorContainer}>
-          <Image
-            style={styles.imageSetting}
-            source={{
-              uri: this.state.authorPhoto,
-            }}
-          />
-          <Text>
-            Posted by {this.state.authorName}, {moment(this.state.phototag.timestamp).fromNow()}
-          </Text>
-        </View>
-        <View>
-          <TouchableHighlight onPress={this.toggleSolutionsModal}>
-            <Ionicons name="md-list" size={32} color="gray" />
-          </TouchableHighlight>
+          ))}
+          <View style={AppStyles.horizontalDisplay}>
+            <TextInput
+              value={this.state.comment}
+              placeholder="Type a comment..."
+              onChangeText={text => this.editComment(text)}
+              clearButtonMode={'always'}
+              style={AppStyles.commentInput}
+            />
+            <TouchableHighlight onPress={this.handleSubmitComment} underlayColor="#ccc">
+              <Ionicons name="md-send" size={32} color="gray" />
+            </TouchableHighlight>
+          </View>
+          
           <PhotoTagSolutions
             style={{ height: '75%' }}
             navigation={this.props.navigation}
-            toggleSolutionsModal={this.toggleSolutionsModal.bind(this)}
+            toggleSolutionsModal={this.toggleSolutionsModal}
             modalSolutionsVis={this.state.modalSolutionsVis}
             phototag={this.state.phototag}
             userId={this.props.user.id}
           />
-          <TouchableHighlight onPress={this.solve}>
-            <Ionicons name="md-bulb" size={32} color="gray" />
-          </TouchableHighlight>
-        </View>
-        <Text style={styles.titleText}>Comments</Text>
-        {this.state.comments.map((comment, i) => (
-          <Comment
-            key={comment.id}
-            comment={comment}
-            userId={this.props.user.id}
-            notifyDeleted={this.notifyDeletedComment}
+          <EditPhototagModal
+            toggleEditModal={this.modalEditVis}
+            modalEditVis={this.state.modalEditVis}
+            phototag={this.state.phototag}
+            modalNavRightButton={this.state.modalNavRightButton}
+            modalNavLeftButton={this.state.modalNavLeftButton}
+            editedDescription={this.state.editedDescription}
+            editDescription={this.editDescription}
           />
-        ))}
-        <TextInput
-          value={this.state.comment}
-          placeholder="Enter a new comment"
-          onChangeText={text => this.editComment(text)}
-          clearButtonMode={'always'}
-          style={styles.commentInput}
-        />
-        <Button title="Submit comment" onPress={this.handleSubmitComment} />
-        {this.state.phototag.reps && (
-          <Button title="View government contact info" onPress={this.goToElectedOfficials} />
-        )}
-      </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView>
+      </Image>  
     );
   }
 }
-
-//<PhotoTagSolutions style={{height: '75%',}} toggleSolutionsModal={this.toggleSolutionsModal.bind(this)} modalSolutionsVis={this.state.modalSolutionsVis}/>
-
-const styles = StyleSheet.create({
-  scrollViewContainer: {
-    alignItems: 'center',
-    paddingBottom: 50,
-    backgroundColor: '#FBF8F5',
-  },
-  titleText: {
-    textAlign: 'center',
-    fontSize: 20,
-    alignItems: 'center',
-  },
-  commentInput: {
-    width: '80%',
-    backgroundColor: '#fff',
-    padding: 10,
-  },
-  photoDisplayContainer: {
-    width: 250,
-    height: 250,
-    marginBottom: 20,
-  },
-  authorContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    marginBottom: 10,
-    width: '80%',
-  },
-  imageSetting: {
-    height: 40,
-    width: 40,
-    marginRight: 10,
-    borderRadius: 20,
-  },
-  hashtag: {
-    color: 'blue',
-    fontWeight: 'bold',
-  },
-  iconStyle: {
-    backgroundColor: '#FBF8F5',
-  },
-  descriptionInput: {
-    width: '80%',
-    backgroundColor: '#fff',
-    padding: 10,
-  },
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapPhotoTagScreen);

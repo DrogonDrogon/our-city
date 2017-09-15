@@ -23,7 +23,7 @@ export default TabNavigator(
     Profile: {
       screen: HomeScreen,
       navigationOptions: ({ screenProps }) => ({
-        tabBarIcon: ({ tintColor }) => (
+        tabBarIcon: ({ tintColor, focused }) => (
           <View
             style={{
               flexDirection: 'row',
@@ -31,7 +31,16 @@ export default TabNavigator(
               justifyContent: 'center',
             }}>
             <IconBadge
-              MainElement={<Ionicons name="md-person" size={32} />}
+              MainElement={
+                <Ionicons
+                  name={
+                    Platform.OS === 'ios' ? `ios-person${focused ? '' : '-outline'}` : 'md-person'
+                  }
+                  size={28}
+                  style={{ marginBottom: -3 }}
+                  color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+                />
+              }
               BadgeElement={<Text style={{ color: '#FFFFFF' }}>{screenProps.badges}</Text>}
               IconBadgeStyle={{
                 width: 15,
@@ -82,8 +91,8 @@ export default TabNavigator(
     tabBarOptions: {
       showLabel: false,
       style: {
-        height: 40,
-        backgroundColor: '#fff',
+        height: 45,
+        backgroundColor: 'black',
       },
     },
     header: null,

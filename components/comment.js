@@ -4,6 +4,7 @@ import ActionSheet from 'react-native-actionsheet';
 import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
 import db from '../db';
+import AppStyles from '../styles/AppStyles';
 
 // Settings for the ActionSheet
 const WARNING_INDEX = 0;
@@ -12,7 +13,7 @@ const options = ['Delete', 'Cancel'];
 const title = 'Are you sure you want to delete this comment?';
 
 export default class Comment extends React.Component {
-  deleteComment = () => {
+  confirmDeleteComment = () => {
     this.showActionSheet();
   };
 
@@ -23,18 +24,10 @@ export default class Comment extends React.Component {
   handleActionSheetPress = selectedIndex => {
     if (selectedIndex === WARNING_INDEX) {
       // Run the delete function
-      db.deleteComment(
+      this.props.notifyDeletedComment(
         this.props.comment.id,
         this.props.userId,
-        this.props.comment.phototagId,
-        (err, data) => {
-          if (err) {
-            console.log('Err deleting', err);
-          } else {
-            console.log('Success deleting', data);
-            this.props.notifyDeleted();
-          }
-        }
+        this.props.comment.phototagId
       );
     }
   };
@@ -45,15 +38,15 @@ export default class Comment extends React.Component {
       isMyOwnComment = true;
     }
     return (
-      <View style={styles.commentContainer}>
-        <Image source={{ uri: this.props.comment.userImage }} style={styles.imageSetting} />
-        <View style={styles.textOnlyContainer}>
-          <Text style={styles.nameText}>{this.props.comment.userName}</Text>
-          <Text style={styles.dateText}>{moment(this.props.comment.timestamp).fromNow()}</Text>
-          <Text style={styles.commentText}>{this.props.comment.text}</Text>
+      <View style={AppStyles.commentView}>
+        <Image source={{ uri: this.props.comment.userImage }} style={AppStyles.imageSetting} />
+        <View style={AppStyles.columnContainer}>
+          <Text style={AppStyles.nameText}>{this.props.comment.userName}</Text>
+          <Text style={AppStyles.dateText}>{moment(this.props.comment.timestamp).fromNow()}</Text>
+          <Text style={AppStyles.commentText}>{this.props.comment.text}</Text>
         </View>
         {isMyOwnComment && (
-          <TouchableHighlight onPress={this.deleteComment} style={styles.touchableDelete}>
+          <TouchableHighlight onPress={this.confirmDeleteComment} style={AppStyles.touchableDelete}>
             <Ionicons name="md-close" size={20} color="gray" style={{ backgroundColor: '#fff' }} />
           </TouchableHighlight>
         )}
@@ -69,44 +62,3 @@ export default class Comment extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  commentContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
-    backgroundColor: '#fff',
-    width: '80%',
-    padding: 10,
-    justifyContent: 'center',
-  },
-  textOnlyContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-  },
-  nameText: {
-    fontSize: 16,
-    marginRight: 10,
-    flexWrap: 'wrap',
-  },
-  dateText: {
-    fontSize: 12,
-    marginRight: 10,
-  },
-  commentText: {
-    fontSize: 16,
-    marginTop: 5,
-    flexWrap: 'wrap',
-  },
-  imageSetting: {
-    height: 40,
-    width: 40,
-    marginRight: 10,
-    borderRadius: 20,
-  },
-  touchableDelete: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-  },
-});
