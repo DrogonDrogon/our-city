@@ -18,6 +18,7 @@ import { RNS3 } from 'react-native-aws3';
 import * as Actions from '../actions';
 import config from '../config/config';
 import axios from 'axios';
+import Colors from '../constants/Colors';
 import AppStyles from '../styles/AppStyles';
 
 const awsOptions = {
@@ -285,23 +286,30 @@ class CameraScreen extends React.Component {
         source={require('../assets/images/cameraBack.png')}
         resizeMode="cover">
         <KeyboardAwareScrollView contentContainerStyle={styles.center} behavior="padding">
-          <TouchableHighlight onPress={this._takePic}>
-            <FontAwesome
-              name="camera-retro"
-              size={40}
-              color="white"
-              style={{ backgroundColor: 'transparent' }}
-            />
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this._pickImage}>
-            <MaterialIcons
-              name="camera-roll"
-              size={40}
-              color="white"
-              style={{ backgroundColor: 'transparent' }}
-            />
-          </TouchableHighlight>
-          {imageUri && <Image source={{ uri: imageUri }} style={styles.imageSetting} />}
+          <View style={styles.view}>
+            <Text style={styles.text}>Show Us What The World Could Be</Text>
+          </View>
+          <View style={AppStyles.imageHolder}>
+            {imageUri && <Image source={{ uri: imageUri }} style={styles.imageSetting} />}
+          </View>
+          <View style={AppStyles.containerRow}>
+            <TouchableHighlight onPress={this._takePic}>
+              <FontAwesome
+                name="camera-retro"
+                size={40}
+                color="white"
+                style={{ backgroundColor: 'transparent' }}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this._pickImage}>
+              <MaterialIcons
+                name="camera-roll"
+                size={40}
+                color="white"
+                style={{ backgroundColor: 'transparent' }}
+              />
+            </TouchableHighlight>
+          </View>
           <TextInput
             style={styles.descriptionInput}
             placeholder="Enter description"
@@ -316,9 +324,7 @@ class CameraScreen extends React.Component {
             onPress={this._saveImg}
             styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
           />
-          <View style={styles.view}>
-            <Text style={styles.text}>Show Us What The World Could Be</Text>
-          </View>
+          
         </KeyboardAwareScrollView>
       </Image>
     );
@@ -327,18 +333,21 @@ class CameraScreen extends React.Component {
 
 const styles = {
   imageSetting: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
+    borderRadius: 125,
   },
   descriptionInput: {
     height: 80,
     borderColor: 'gray',
+    borderRadius: 5,
     borderWidth: 1,
     width: '80%',
     textAlignVertical: 'top',
     fontSize: 16,
     padding: 10,
     color: 'white',
+
   },
   center: {
     alignItems: 'center',
