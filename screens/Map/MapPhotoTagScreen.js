@@ -424,7 +424,7 @@ class MapPhotoTagScreen extends React.Component {
 
     return (
       <Image
-          style={{ height: '100%', width: '100%',  alignItems: 'center', }}
+          style={{ height: '100%', width: '100%',  alignItems: 'center', backgroundColor: 'black' }}
           source={require('../../assets/images/water.png')}
           resizeMode="cover">
         <KeyboardAwareScrollView contentContainerStyle={[AppStyles.scrollViewContainer, {backgroundColor:'transparent'}]}>

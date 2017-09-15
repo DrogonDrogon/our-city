@@ -60,6 +60,7 @@ const AppStyles = StyleSheet.create({
   authorNameText: {
     fontWeight: 'bold',
     marginRight: 10,
+    color: 'white',
   },
   imageSetting: {
     height: 40,
@@ -112,6 +113,7 @@ const AppStyles = StyleSheet.create({
   dateText: {
     fontSize: 12,
     marginRight: 10,
+    color: 'white',
   },
   commentText: {
     fontSize: 16,
