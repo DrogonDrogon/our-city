@@ -146,10 +146,11 @@ const AppStyles = StyleSheet.create({
   },
   imageStyle: {
     flex: 1,
-    width: 200,
-    height: 200,
-    resizeMode: Image.resizeMode.contain,
+    width: 100,
+    height: 100,
+    resizeMode: Image.resizeMode.cover,
     backgroundColor: 'transparent',
+    borderRadius: 50,
   },
   iconBadgeStyle: {
     width: 30,
@@ -157,7 +158,7 @@ const AppStyles = StyleSheet.create({
     backgroundColor: '#ff0000',
   },
   iconBadgeMain: {
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     width: 50,
     height: 50,
     margin: 6,

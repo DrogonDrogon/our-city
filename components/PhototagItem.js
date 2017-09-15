@@ -7,32 +7,36 @@ import AppStyles from '../styles/AppStyles';
 class PhototagItem extends React.Component {
   render() {
     return (
-      <View style={[AppStyles.container, {backgroundColor: 'transparent'}]}>
+      <View style={[AppStyles.container, {backgroundColor: 'transparent',}]}>
         <View
           style={{
             alignSelf: 'flex-end',
             marginTop: -5,
-            position: 'absolute',
+            // position: 'absolute',
           }}>
           <IconBadge
             MainElement={<View style={AppStyles.iconBadgeMain} />}
-            BadgeElement={<Text style={{ color: '#000' }}>{this.props.badges}</Text>}
+            BadgeElement={<Text style={{ color: 'transparent' }}>{this.props.badges}</Text>}
             IconBadgeStyle={AppStyles.iconBadgeStyle}
             Hidden={!this.props.badges || this.props.badges === 0}
           />
         </View>
-        <TouchableHighlight
-          onPress={() => {
-            if (this.props.decreaseBadges) {
-              this.props.decreaseBadges(this.props.phototag.badges);
-              this.props.deleteBadges(this.props.phototag);
-            }
-            this.props.goToPhototags();
-          }}
-          style={{ width: '100%', height: 200 }}>
-          <Image style={AppStyles.imageStyle} source={{ uri: this.props.phototag.imageUrl }} />
-        </TouchableHighlight>
-        <TaggedText navigation={this.props.navigation} text={this.props.phototag.description} />
+        <View style={[AppStyles.container, {backgroundColor: 'transparent',
+            justifyContent: 'space-around',
+            flexDirection: 'row'}]}>
+          <TouchableHighlight
+            onPress={() => {
+              if (this.props.decreaseBadges) {
+                this.props.decreaseBadges(this.props.phototag.badges);
+                this.props.deleteBadges(this.props.phototag);
+              }
+              this.props.goToPhototags();
+            }}
+            style={{ width: '100%', height: '100%' }}>
+            <Image style={[AppStyles.imageStyle,]} source={{ uri: this.props.phototag.imageUrl }} />
+          </TouchableHighlight>
+          <TaggedText navigation={this.props.navigation} text={this.props.phototag.description} />
+        </View>
       </View>
     );
   }
