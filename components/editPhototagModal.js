@@ -23,14 +23,14 @@ class EditPhototagModal extends React.Component {
           rightButton={this.props.modalNavRightButton}
           leftButton={this.props.modalNavLeftButton}
         />
-        <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-          <View style={styles.photoDisplayContainer}>
+        <KeyboardAwareScrollView contentContainerStyle={AppStyles.modalScrollView}>
+          <View style={AppStyles.photoDisplayContainer}>
             <TextInput
               value={this.props.editedDescription}
               placeholder="Enter description"
               onChangeText={text => this.props.editDescription(text)}
               clearButtonMode={'always'}
-              style={styles.descriptionInput}
+              style={AppStyles.editInputStyle}
               multiline
             />
           </View>
@@ -39,7 +39,5 @@ class EditPhototagModal extends React.Component {
     );
   }
 }
-
-const styles = {};
 
 export default EditPhototagModal;
