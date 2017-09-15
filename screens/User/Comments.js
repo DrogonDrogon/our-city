@@ -81,7 +81,7 @@ class Comments extends React.Component {
   render() {
     return (
       <View>
-        <Text style={styles.titleText}>My Comments</Text>
+        <Text style={AppStyles.titleText}>My Comments</Text>
         <FlatList
           data={this.props.userComments}
           renderItem={({ item }) => (

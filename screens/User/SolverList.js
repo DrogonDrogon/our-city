@@ -38,10 +38,10 @@ class SolverList extends React.Component {
     return (
       <Image
         style={{ height: '100%', width: '100%' }}
-        source={require('../../assets/images/background-723053_1920.jpg')}
+        source={require('../../assets/images/manyBulbs.png')}
         resizeMode="cover">
         <KeyboardAwareScrollView>
-          <Text>Your Solutions</Text>
+          <Text style={{color:'white', backgroundColor:'transparent', alignSelf:'center'}}>Your Solutions</Text>
           <FlatList
             data={this.props.solutions}
             renderItem={({ item }) => (
