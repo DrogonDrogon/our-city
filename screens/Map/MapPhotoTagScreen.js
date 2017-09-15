@@ -488,35 +488,37 @@ class MapPhotoTagScreen extends React.Component {
             transparent={true}
             visible={this.state.modalActionVis}
             onRequestClose={() => {}}> 
-            <View style={[AppStyles.container, {alignSelf: 'center', justifySelf: 'center'}]}>
-              <View style={{flexDirection:'row', justifyContent: 'flex-start'}}>  
-                <TouchableHighlight onPress={this.toggleActionModal} underlayColor="transparent">
-                  <Ionicons name="md-close-circle" size={32} color="white" />
-                </TouchableHighlight>
-              </View>
-              <View style={{justifyContent: 'flex-start', height: 100}}>
-                {this.state.phototag.reps && (
-                  <View style={AppStyles.horizontalDisplayNoSpace}>
-                    <TouchableHighlight onPress={()=> {this.toggleActionModal(); this.goToElectedOfficials()}} underlayColor="transparent">
-                      <Ionicons name="md-contacts" size={32} color="white" />
-                    </TouchableHighlight>
-                    <Button title="Contact an official" onPress={this.goToElectedOfficials} />
-                  </View>
-                )}
-                <View style={AppStyles.horizontalDisplayNoSpace}>
-                  <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
-                    <Ionicons name="md-bulb" size={32} color="white" />
+            <View style={{backgroundColor: 'transparent', height: '100%', alignItems: 'center', justifyContent:'center', flexDirection:'column'}}>
+              <View style={[AppStyles.container, {alignSelf: 'center', backgroundColor:'white'}]}>
+                <View style={{flexDirection:'row', justifyContent: 'flex-start'}}>  
+                  <TouchableHighlight onPress={this.toggleActionModal} underlayColor="transparent">
+                    <Ionicons name="md-close-circle" size={32} color="grey" />
                   </TouchableHighlight>
-                  <Button title="Volunteer a fix" onPress={()=> {this.toggleActionModal(); this.solve()}} />
                 </View>
-                <View style={AppStyles.horizontalDisplayNoSpace}>
-                <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="transparent">
-                  <Ionicons name="md-cog" size={32} color="white" />
-                </TouchableHighlight>
-                  <Button title="View suggested fixes" onPress={()=> {this.toggleActionModal(); this.toggleSolutionsModal()}} />
-                </View>
-              </View>  
-            </View>
+                <View style={{justifyContent: 'flex-start', height: 100}}>
+                  {this.state.phototag.reps && (
+                    <View style={AppStyles.horizontalDisplayNoSpace}>
+                      <TouchableHighlight onPress={()=> {this.toggleActionModal(); this.goToElectedOfficials()}} underlayColor="transparent">
+                        <Ionicons name="md-contacts" size={32} color="grey" />
+                      </TouchableHighlight>
+                      <Button title="Contact an official" onPress={this.goToElectedOfficials} />
+                    </View>
+                  )}
+                  <View style={AppStyles.horizontalDisplayNoSpace}>
+                    <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
+                      <Ionicons name="md-bulb" size={32} color="grey" />
+                    </TouchableHighlight>
+                    <Button title="Volunteer a fix" onPress={()=> {this.toggleActionModal(); this.solve()}} />
+                  </View>
+                  <View style={AppStyles.horizontalDisplayNoSpace}>
+                  <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="transparent">
+                    <Ionicons name="md-cog" size={32} color="grey" />
+                  </TouchableHighlight>
+                    <Button title="View suggested fixes" onPress={()=> {this.toggleActionModal(); this.toggleSolutionsModal()}} />
+                  </View>
+                </View>  
+              </View>
+            </View>  
           </Modal>
           <Text style={AppStyles.titleText}>Comments</Text>
           {this.state.comments.map((comment, i) => (
