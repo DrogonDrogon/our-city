@@ -164,17 +164,8 @@ const AppStyles = StyleSheet.create({
     color: 'blue',
     fontWeight: 'bold',
   },
-  buttonWhiteText: {
-    fontSize: 16,
-    color: '#FFF',
-  },
-  actionButton: {
-    backgroundColor: 'red',
-    height: 20,
-    borderRadius: 20,
-    marginTop: 10,
-    marginBottom: 10,
-  },
+
+  // solution
   solutionTextTitle: {
     fontSize: 18,
   },
@@ -189,6 +180,60 @@ const AppStyles = StyleSheet.create({
     fontSize: 18,
     color: 'green',
   },
+
+  // button styles
+  buttonWhiteText: {
+    fontSize: 16,
+    color: '#FFF',
+  },
+  actionButton: {
+    backgroundColor: 'red',
+    height: 20,
+    borderRadius: 20,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  editButton: {
+    borderColor: '#2f95dc',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    backgroundColor: '#fff',
+    height: 20,
+    borderRadius: 20,
+    marginTop: 10,
+  },
+  buttonBlueText: {
+    fontSize: 16,
+    color: '#2f95dc',
+  },
+
+  // segmented control styling
+  mapsTabsContainerStyle: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 200,
+    backgroundColor: 'transparent',
+  },
+  tabStyle: {
+    backgroundColor: '#fff',
+    borderColor: '#2f95dc',
+    height: 28,
+  },
+  tabTextStyle: {
+    color: '#2f95dc',
+  },
+  activeTabStyle: {
+    backgroundColor: '#2f95dc',
+    borderColor: '#2f95dc',
+  },
+  activeTabTextStyle: {
+    color: '#fff',
+  },
+  profileTabsContainerStyle: {
+    width: '100%',
+    backgroundColor: 'transparent',
+  }
 });
 
 export default AppStyles;

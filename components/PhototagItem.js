@@ -5,10 +5,6 @@ import IconBadge from 'react-native-icon-badge';
 import AppStyles from '../styles/AppStyles';
 
 class PhototagItem extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <View style={AppStyles.container}>
@@ -19,11 +15,7 @@ class PhototagItem extends React.Component {
             position: 'absolute',
           }}>
           <IconBadge
-            MainElement={
-              <View
-                style={AppStyles.iconBadgeMain}
-              />
-            }
+            MainElement={<View style={AppStyles.iconBadgeMain} />}
             BadgeElement={<Text style={{ color: '#000' }}>{this.props.badges}</Text>}
             IconBadgeStyle={AppStyles.iconBadgeStyle}
             Hidden={!this.props.badges || this.props.badges === 0}
@@ -45,7 +37,6 @@ class PhototagItem extends React.Component {
     );
   }
 }
-
 
 // <Text>
 // Location: {this.props.phototag.locationLat}, {this.props.phototag.locationLong}
