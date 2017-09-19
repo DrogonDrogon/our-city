@@ -21,7 +21,7 @@ You may need to register your own config for using Google Civic Data API, Fireba
 
 ## Screenshot
 
-![](assets/images/screenshot-main.png?raw=true)
+![](assets/images/screenshot-main.jpg?raw=true)
 
 ## Technology Stack
 
