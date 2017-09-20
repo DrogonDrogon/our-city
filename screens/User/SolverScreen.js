@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Image, Text, TextInput, Button, CameraRoll, Alert } from 'react-native';
+import { StyleSheet, View, Image, Text, TextInput, CameraRoll, Alert } from 'react-native';
 import { ImagePicker } from 'expo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RNS3 } from 'react-native-aws3';
+import Button from '../../components/Button';
 import * as Actions from '../../actions';
 import db from '../../db';
 import config from '../../config/config';
@@ -162,9 +163,9 @@ class SolverScreen extends React.Component {
         resizeMode="cover"
       >
         <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
-          <Text>Describe what you will do or have done:</Text>
+          <Text style={AppStyles.whiteText}>Describe what you will do or have done:</Text>
           <TextInput
-            style={styles.descriptionInput}
+            style={AppStyles.writeDescriptionInput}
             placeholder="i.e. I can move this..., I can repair this..."
             onChangeText={text => this.setState({ description: text })}
             keyboardType={'default'}
@@ -174,17 +175,23 @@ class SolverScreen extends React.Component {
             }}
           />
           <View>
-            <Text>(Optional) Take an updated image of the site</Text>
-            <Button title="Take new photo" onPress={this._takePic} />
+            <Text style={AppStyles.whiteText}>(Optional) Take an updated image of the fix</Text>
+            <Button label="Take new photo"
+            onPress={this._takePic}
+            styles={{ button: AppStyles.editButton, label: AppStyles.buttonBlueText }}
+            />
           </View>
           <Image
             onPress={this.handleSelectImage}
             style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.photoUri }}
           />
-          <Button title="Submit" onPress={this.handleSaveSolution} />
+          <Button label="Submit"
+            onPress={this.handleSaveSolution}
+            styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
+          />
         </KeyboardAwareScrollView>
-      </Image>  
+      </Image>
     );
   }
 }
@@ -202,15 +209,6 @@ const styles = {
   imageSetting: {
     width: 200,
     height: 200,
-  },
-  descriptionInput: {
-    height: 80,
-    borderColor: 'gray',
-    borderWidth: 1,
-    width: '80%',
-    textAlignVertical: 'top',
-    fontSize: 16,
-    padding: 10,
   },
   center: {
     alignItems: 'center',

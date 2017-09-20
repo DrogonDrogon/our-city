@@ -6,15 +6,15 @@ import {
   Image,
   Text,
   TextInput,
-  Button,
   CameraRoll,
   Alert,
   TouchableHighlight,
- } from 'react-native';
+} from 'react-native';
 import { ImagePicker } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RNS3 } from 'react-native-aws3';
+import Button from '../../components/Button';
 import * as Actions from '../../actions';
 import db from '../../db';
 import config from '../../config/config';
@@ -53,9 +53,9 @@ const generateRandomID = () => {
 };
 
 class ViewSolverScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Volunteer a Fix',
-  };
+  // static navigationOptions = {
+  //   title: 'Volunteer a Fix',
+  // };
 
   state = {
     solution: this.props.navigation.state.params,
@@ -177,35 +177,42 @@ class ViewSolverScreen extends React.Component {
       <Image
         style={{ height: '100%', width: '100%' }}
         source={require('../../assets/images/lowBulb.png')}
-        resizeMode="cover"
-      >
+        resizeMode="cover">
         <KeyboardAwareScrollView contentContainerStyle={styles.scrollViewContainer}>
           <Image
             onPress={this.handleSelectImage}
             style={{ width: 300, height: 300, resizeMode: Image.resizeMode.contain }}
             source={{ uri: this.state.photoUri }}
           />
-          <Text>{this.state.editedDescription}</Text>
-           <EditPhototagModal
-            toggleEditModal={this.modalEditVis}
-            modalEditVis={this.state.modalEditVis}
-            modalNavRightButton={this.state.modalNavRightButton}
-            modalNavLeftButton={this.state.modalNavLeftButton}
-            editedDescription={this.state.editedDescription}
-            editDescription={this.editDescription}
-          />
-          {isEditable && (
-            <TouchableHighlight onPress={this.openEditDescription}>
-              <Ionicons name="md-create" size={28} color="gray" style={styles.iconStyle} />
-            </TouchableHighlight>
-          )}
-          <View>
-            <Text>(Optional) Take an updated image of the site</Text>
-            <Button title="Take new photo" onPress={this._takePic} />
+          <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+            <Text style={AppStyles.whiteText}>{this.state.editedDescription}</Text>
+            <EditPhototagModal
+              toggleEditModal={this.modalEditVis}
+              modalEditVis={this.state.modalEditVis}
+              modalNavRightButton={this.state.modalNavRightButton}
+              modalNavLeftButton={this.state.modalNavLeftButton}
+              editedDescription={this.state.editedDescription}
+              editDescription={this.editDescription}
+            />
+            {isEditable && (
+              <TouchableHighlight onPress={this.openEditDescription}>
+                <Ionicons name="md-create" size={28} color="white" style={{ marginLeft: 10 }} />
+              </TouchableHighlight>
+            )}
           </View>
-          <Button title="Submit" onPress={this.handleSaveSolution} />
+          <View>
+            <Text style={AppStyles.whiteTextTitle}>(Optional) Take an updated image of the fix</Text>
+            <Button label="Edit photo"
+            onPress={this._takePic}
+            styles={{ button: AppStyles.editButton, label: AppStyles.buttonBlueText }}
+          />
+          </View>
+          <Button label="Submit"
+            onPress={this.handleSaveSolution}
+            styles={{ button: AppStyles.actionButton, label: AppStyles.buttonWhiteText }}
+          />
         </KeyboardAwareScrollView>
-      </Image>  
+      </Image>
     );
   }
 }
@@ -239,18 +246,3 @@ const styles = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewSolverScreen);
-
-/*
-        {/* <Text>{this.state.description}</Text>
-        <EditPhototagModal
-*/
-// <TextInput
-//           style={styles.descriptionInput}
-//           placeholder={this.state.text}
-//           onChangeText={text => this.setState({ text: text })}
-//           keyboardType={'default'}
-//           multiline
-//           ref={input => {
-//             this.descriptionInput = input;
-//           }}
-//         />

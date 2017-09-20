@@ -5,7 +5,7 @@ import AppStyles from '../styles/AppStyles';
 class SolverItem extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
+      <View style={AppStyles.container}>
         <TouchableHighlight onPress={this.props.goToSolver} style={{ width: 200, height: 200 }}>
           <View>
             <Image style={styles.imageStyle} source={{ uri: this.props.solution.imageUrl }} />

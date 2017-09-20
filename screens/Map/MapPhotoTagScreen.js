@@ -10,6 +10,7 @@ import {
   Button,
   TouchableHighlight,
   Share,
+  Modal,
 } from 'react-native';
 import axios from 'axios';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -71,6 +72,7 @@ class MapPhotoTagScreen extends React.Component {
     phototag: this.props.navigation.state.params,
     comments: [],
     modalEditVis: false,
+    modalActionVis: false,
     modalSolutionsVis: false,
     modalNavRightButton: {
       title: 'Save',
@@ -418,13 +420,17 @@ class MapPhotoTagScreen extends React.Component {
     this.setState({ modalSolutionsVis: !this.state.modalSolutionsVis });
   };
 
+  toggleActionModal = () => {
+    this.setState({ modalActionVis: !this.state.modalActionVis });
+  };
+
   render() {
     let isEditable = this.props.user.id === this.state.phototag.userId;
     let userVoteStatus = this.props.user.votes[this.state.phototag.id];
 
     return (
       <Image
-          style={{ height: '100%', width: '100%',  alignItems: 'center', }}
+          style={{ height: '100%', width: '100%',  alignItems: 'center', backgroundColor: 'black' }}
           source={require('../../assets/images/water.png')}
           resizeMode="cover">
         <KeyboardAwareScrollView contentContainerStyle={[AppStyles.scrollViewContainer, {backgroundColor:'transparent'}]}>
@@ -438,7 +444,7 @@ class MapPhotoTagScreen extends React.Component {
               style={AppStyles.descriptionContainerView}
             />
             {isEditable && (
-              <TouchableHighlight onPress={this.openEditDescription} underlayColor="#ccc">
+              <TouchableHighlight onPress={this.openEditDescription} underlayColor="transparent">
                 <Ionicons name="md-create" size={28} color="white" />
               </TouchableHighlight>
             )}
@@ -448,7 +454,7 @@ class MapPhotoTagScreen extends React.Component {
           <Text style={AppStyles.dateText}>{moment(this.state.phototag.timestamp).fromNow()}</Text>
           <View style={{ flex: 1, flexDirection: 'column' }} />
           <View style={AppStyles.horizontalDisplay}>
-            <TouchableHighlight onPress={this.handleClickUpvote} underlayColor="#ccc">
+            <TouchableHighlight onPress={this.handleClickUpvote} underlayColor="transparent">
               <Ionicons
                 name="md-arrow-dropup"
                 size={32}
@@ -456,7 +462,7 @@ class MapPhotoTagScreen extends React.Component {
               />
             </TouchableHighlight>
             <Text style={AppStyles.titleText}>{this.state.voteTotal}</Text>
-            <TouchableHighlight onPress={this.handleClickDownvote} underlayColor="#ccc">
+            <TouchableHighlight onPress={this.handleClickDownvote} underlayColor="transparent">
               <Ionicons
                 name="md-arrow-dropdown"
                 size={32}
@@ -464,36 +470,56 @@ class MapPhotoTagScreen extends React.Component {
               />
             </TouchableHighlight>
             <TouchableHighlight onPress={this.share} underlayColor="#ccc">
-              <Ionicons name="ios-share-outline" size={32} color="gray" />
+              <Ionicons name="ios-share-outline" size={32} color="white" />
             </TouchableHighlight>
-            <TouchableHighlight onPress={this.handleClickFav} underlayColor="#ccc">
+            <TouchableHighlight onPress={this.handleClickFav} underlayColor="transparent">
               <Ionicons
                 name="md-heart"
                 size={32}
                 color={this.props.user.favs[this.state.phototag.id] ? 'red' : 'white'}
               />
             </TouchableHighlight>
-          </View>
-          {this.state.phototag.reps && (
-            <View style={AppStyles.horizontalDisplayNoSpace}>
-              <TouchableHighlight onPress={this.goToElectedOfficials} underlayColor="#ccc">
-                <Ionicons name="md-contacts" size={32} color="white" />
-              </TouchableHighlight>
-              <Button title="Contact an official" onPress={this.goToElectedOfficials} />
-            </View>
-          )}
-          <View style={AppStyles.horizontalDisplayNoSpace}>
-            <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
-              <Ionicons name="md-bulb" size={32} color="white" />
+            <TouchableHighlight onPress={this.toggleActionModal} underlayColor="transparent">
+              <Ionicons name="md-list" size={32} color="white" />
             </TouchableHighlight>
-            <Button title="Volunteer a fix" onPress={this.solve} />
           </View>
-          <View style={AppStyles.horizontalDisplayNoSpace}>
-          <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="#ccc">
-            <Ionicons name="md-list" size={32} color="white" />
-          </TouchableHighlight>
-            <Button title="View suggested fixes" onPress={this.toggleSolutionsModal} />
-          </View>
+          <Modal
+            animationType={'fade'}
+            transparent={true}
+            visible={this.state.modalActionVis}
+            onRequestClose={() => {}}> 
+            <View style={{backgroundColor: 'transparent', height: '100%', alignItems: 'center', justifyContent:'center', flexDirection:'column'}}>
+              <View style={[AppStyles.container, {alignSelf: 'center', backgroundColor:'white'}]}>
+                <View style={{flexDirection:'row', justifyContent: 'flex-start'}}>  
+                  <TouchableHighlight onPress={this.toggleActionModal} underlayColor="transparent">
+                    <Ionicons name="md-close-circle" size={32} color="grey" />
+                  </TouchableHighlight>
+                </View>
+                <View style={{justifyContent: 'flex-start', height: 100}}>
+                  {this.state.phototag.reps && (
+                    <View style={AppStyles.horizontalDisplayNoSpace}>
+                      <TouchableHighlight onPress={()=> {this.toggleActionModal(); this.goToElectedOfficials()}} underlayColor="transparent">
+                        <Ionicons name="md-contacts" size={32} color="grey" />
+                      </TouchableHighlight>
+                      <Button title="Contact an official" onPress={this.goToElectedOfficials} />
+                    </View>
+                  )}
+                  <View style={AppStyles.horizontalDisplayNoSpace}>
+                    <TouchableHighlight onPress={this.solve} underlayColor="#ccc">
+                      <Ionicons name="md-bulb" size={32} color="grey" />
+                    </TouchableHighlight>
+                    <Button title="Volunteer a fix" onPress={()=> {this.toggleActionModal(); this.solve()}} />
+                  </View>
+                  <View style={AppStyles.horizontalDisplayNoSpace}>
+                  <TouchableHighlight onPress={this.toggleSolutionsModal} underlayColor="transparent">
+                    <Ionicons name="md-cog" size={32} color="grey" />
+                  </TouchableHighlight>
+                    <Button title="View suggested fixes" onPress={()=> {this.toggleActionModal(); this.toggleSolutionsModal()}} />
+                  </View>
+                </View>  
+              </View>
+            </View>  
+          </Modal>
           <Text style={AppStyles.titleText}>Comments</Text>
           {this.state.comments.map((comment, i) => (
             <Comment

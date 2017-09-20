@@ -60,6 +60,7 @@ const AppStyles = StyleSheet.create({
   authorNameText: {
     fontWeight: 'bold',
     marginRight: 10,
+    color: 'white',
   },
   imageSetting: {
     height: 40,
@@ -112,6 +113,7 @@ const AppStyles = StyleSheet.create({
   dateText: {
     fontSize: 12,
     marginRight: 10,
+    color: 'white',
   },
   commentText: {
     fontSize: 16,
@@ -136,7 +138,7 @@ const AppStyles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 15,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.6)',
     borderRadius: 20,
     width: '80%',
   },
@@ -146,10 +148,11 @@ const AppStyles = StyleSheet.create({
   },
   imageStyle: {
     flex: 1,
-    width: 200,
-    height: 200,
-    resizeMode: Image.resizeMode.contain,
+    width: 70,
+    height: 70,
+    resizeMode: Image.resizeMode.cover,
     backgroundColor: 'transparent',
+    borderRadius: 35,
   },
   iconBadgeStyle: {
     width: 30,
@@ -157,7 +160,7 @@ const AppStyles = StyleSheet.create({
     backgroundColor: '#ff0000',
   },
   iconBadgeMain: {
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     width: 50,
     height: 50,
     margin: 6,
@@ -168,16 +171,16 @@ const AppStyles = StyleSheet.create({
     width: '100%',
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center', 
+    justifyContent: 'center',
     backgroundColor: 'transparent',
   },
 
   hashtag: {
-    color: 'blue',
+    color: '#63B8FF',
     fontWeight: 'bold',
   },
 
-  // solution
+  // view solution list styles
   solutionTextTitle: {
     fontSize: 18,
   },
@@ -228,8 +231,8 @@ const AppStyles = StyleSheet.create({
   // segmented control styling
   mapsTabsContainerStyle: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: 10,
+    right: 10,
     width: 200,
     backgroundColor: 'transparent',
   },
@@ -256,6 +259,71 @@ const AppStyles = StyleSheet.create({
   profileTabsContainerStyle: {
     width: '100%',
     backgroundColor: 'transparent',
+  },
+
+  // Filter Screen styles
+  filterCategorySection: {
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 10,
+    padding: 10,
+  },
+  filterTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  filterPicker: {
+    width: '95%',
+    height: 100,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderColor: 'gray',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  filterPickerItem: {
+    height: 100,
+    color: 'black',
+    fontSize: 16,
+  },
+
+  // create/edit solution styles
+  whiteText: {
+    marginTop: 10,
+    marginRight: 10,
+    backgroundColor: 'transparent',
+    color: 'white',
+  },
+  whiteTextTitle: {
+    marginTop: 10,
+    marginRight: 10,
+    backgroundColor: 'transparent',
+    color: 'white',
+    fontSize: 16,
+  },
+  writeDescriptionInput: {
+    height: 80,
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: '80%',
+    textAlignVertical: 'top',
+    fontSize: 16,
+    padding: 10,
+    color: 'white',
+  },
+
+// edit modal style
+  editInputStyle: {
+    padding: 10,
+    fontSize: 16,
+  },
+  modalScrollView: {
+    backgroundColor: 'white',
+    width: '100%',
+    paddingBottom: 50,
   }
 });
 
