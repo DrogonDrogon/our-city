@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { TextInput, ScrollView, Alert } from 'react-native';
+import { Text, TextInput, ScrollView, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'firebase';
 import * as Actions from '../../actions';
 import Container from '../../components/Container';
 import Button from '../../components/Button';
-import Label from '../../components/Label';
 import LoginStyles from '../../styles/LoginStyles.js';
 import AppStyles from '../../styles/AppStyles';
 
@@ -43,8 +42,7 @@ class SignupScreen extends Component {
     }
   }
 
-  pressSignupWithEmail() {
-    console.log('Click Create Account with Email');
+  pressSignupWithEmail = () => {
     // Only allow saving if not blank
     if (
       this.state.email !== '' &&
@@ -54,11 +52,13 @@ class SignupScreen extends Component {
       let email = this.state.email;
       let password = this.state.password;
       // if valid: continue to create user with firebase auth
-      firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-        // Handle Errors here.
-        console.log('Error with create user', error.code, error.message);
-        Alert.alert('Error', error.message, [{ text: 'OK', onPress: () => {} }]);
-      });
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .catch(function(error) {
+          console.log('Error with create user', error.code, error.message);
+          Alert.alert('Error', error.message, [{ text: 'OK', onPress: () => {} }]);
+        });
 
       // TODO: If not valid because invalid email/password logic
     } else if (this.state.password !== this.state.passwordConfirm) {
@@ -79,18 +79,19 @@ class SignupScreen extends Component {
 
   render() {
     return (
-      <ScrollView style={LoginStyles.scroll}>
+      <ScrollView style={LoginStyles.container}>
         <Container>
           <Container>
-            <Label text="Email" />
+            <Text style={LoginStyles.buttonWhiteText}>Email</Text>
             <TextInput
               style={LoginStyles.textInput}
               placeholder="Email"
+              autoCapitalize="none"
               onChangeText={text => this.setState({ email: text })}
             />
           </Container>
           <Container>
-            <Label text="Password" />
+            <Text style={LoginStyles.buttonWhiteText}>Password</Text>
             <TextInput
               style={LoginStyles.textInput}
               placeholder="Password"
@@ -110,8 +111,11 @@ class SignupScreen extends Component {
         <Container>
           <Button
             label="Create Account"
-            styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
-            onPress={this.pressSignupWithEmail.bind(this)}
+            styles={{
+              button: [LoginStyles.primaryColor, LoginStyles.standardButtonSize],
+              label: LoginStyles.buttonWhiteText,
+            }}
+            onPress={this.pressSignupWithEmail}
           />
         </Container>
       </ScrollView>

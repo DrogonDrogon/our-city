@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, TextInput, ScrollView, Alert } from 'react-native';
+import { Text, View, TextInput, ScrollView, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Permissions, Notifications, Expo } from 'expo';
-//import Expo from 'expo';
+import Expo, { Permissions, Notifications  } from 'expo';
 import firebase from 'firebase';
 import * as Actions from '../../actions';
 import Container from '../../components/Container';
 import Button from '../../components/Button';
-import Label from '../../components/Label';
 import config from '../../config/config';
 import AppStyles from '../../styles/AppStyles.js';
 import LoginStyles from '../../styles/LoginStyles.js';
@@ -47,7 +45,6 @@ class Login extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     // If logged in, Navigate to main view
-
     if (nextProps.isLoggedIn === true) {
       this.notifications();
       this._navigateTo('Main');
@@ -129,16 +126,20 @@ class Login extends Component {
 
   render() {
     return (
-      <ScrollView style={LoginStyles.scroll}>
+      <ScrollView style={LoginStyles.container}>
         <Container>
-          <Label text="Username or Email" />
+          <Text style={LoginStyles.title}>Civic City</Text>
+        </Container>
+        <Container>
+          <Text style={LoginStyles.buttonWhiteText}>Email</Text>
           <TextInput
             style={LoginStyles.textInput}
+            autoCapitalize="none"
             onChangeText={text => this.setState({ email: text })}
           />
         </Container>
         <Container>
-          <Label text="Password" />
+          <Text style={LoginStyles.buttonWhiteText}>Password</Text>
           <TextInput
             secureTextEntry
             style={LoginStyles.textInput}
@@ -148,33 +149,29 @@ class Login extends Component {
         <Container>
           <Button
             label="Sign In"
-            styles={{ button: LoginStyles.primaryButton, label: LoginStyles.buttonWhiteText }}
+            styles={{
+              button: [LoginStyles.primaryColor, LoginStyles.standardButtonSize],
+              label: LoginStyles.buttonWhiteText,
+            }}
             onPress={this.pressLoginWithEmail.bind(this)}
           />
         </Container>
         <Container>
           <Button
-            styles={{ button: LoginStyles.transparentButton }}
+            styles={{ button: [LoginStyles.facebookColor, LoginStyles.standardButtonSize] }}
             onPress={this.pressLoginWithFb.bind(this)}>
             <View style={LoginStyles.inline}>
-              <Icon name="facebook-official" size={30} color="#3B5699" />
-              <Text style={[LoginStyles.buttonBlueText, LoginStyles.buttonBigText]}> Connect </Text>
-              <Text style={LoginStyles.buttonBlueText}>with Facebook</Text>
+              <Icon name="facebook-official" size={30} color="white" />
+              <Text style={LoginStyles.buttonWhiteText}>{'  '}Connect{' '}</Text>
+              <Text style={LoginStyles.buttonWhiteText}>with Facebook</Text>
             </View>
           </Button>
         </Container>
         <Container>
           <Button
             label="New user? Sign up"
-            styles={{ label: LoginStyles.label }}
+            styles={{ label: LoginStyles.signupLink }}
             onPress={this.pressSignup.bind(this)}
-          />
-        </Container>
-        <Container>
-          <Button
-            label="Forgot Login/Pass"
-            styles={{ label: LoginStyles.label }}
-            onPress={this.pressLoginWithFb.bind(this)}
           />
         </Container>
       </ScrollView>
@@ -182,4 +179,13 @@ class Login extends Component {
   }
 }
 
+/*
+  <Container>
+    <Button
+      label="Forgot Login/Pass"
+      styles={{ label: LoginStyles.label }}
+      onPress={this.pressLoginWithFb.bind(this)}
+    />
+  </Container>
+*/
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

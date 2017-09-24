@@ -6,7 +6,7 @@ export const getLocationAsync = async () => {
   if (status !== 'granted') {
     return {
       type: SET_LOCATION,
-      location: { error: 'Location permissions not disabled. Please enable in app settings.' },
+      location: { error: 'Location permissions are not enabled. Please enable in app settings.' },
     };
   } else {
     let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 });
