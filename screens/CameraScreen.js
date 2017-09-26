@@ -348,7 +348,6 @@ const styles = {
     fontSize: 16,
     padding: 10,
     color: 'white',
-
   },
   center: {
     alignItems: 'center',

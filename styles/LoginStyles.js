@@ -1,33 +1,47 @@
-import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 
-export default LoginStyles = StyleSheet.create({
-  scroll: {
-    backgroundColor: '#E1D7D8',
-    padding: 30,
+const facebookBlueColor = '#3B5699';
+const primaryGreen = '#34A853';
+
+const LoginStyles = StyleSheet.create({
+  container: {
+    backgroundColor: 'black',
+    paddingLeft: 30,
+    paddingRight: 30,
     flexDirection: 'column',
+    paddingTop: 70,
   },
-  label: {
-    color: '#0d8898',
-    fontSize: 20,
+  title: {
+    color: 'white',
+    fontSize: 50,
+    textAlign: 'center',
+  },
+  signupLink: {
+    color: 'lightblue',
+    fontSize: 12,
   },
   alignRight: {
     alignSelf: 'flex-end',
   },
   textInput: {
     height: 40,
-    fontSize: 20,
+    fontSize: 16,
     backgroundColor: '#FFF',
     padding: 10,
+    borderRadius: 5,
   },
   transparentButton: {
     marginTop: 30,
-    borderColor: '#3B5699',
+    borderColor: facebookBlueColor,
     borderWidth: 2,
   },
   buttonBlueText: {
-    fontSize: 20,
-    color: '#3B5699',
+    fontSize: 16,
+    color: facebookBlueColor,
+  },
+  buttonWhiteText: {
+    fontSize: 16,
+    color: 'white',
   },
   buttonBigText: {
     fontSize: 20,
@@ -35,19 +49,25 @@ export default LoginStyles = StyleSheet.create({
   },
   inline: {
     flexDirection: 'row',
-  },
-  buttonWhiteText: {
-    fontSize: 20,
-    color: '#FFF',
+    alignItems: 'center',
   },
   buttonBlackText: {
     fontSize: 20,
     color: '#595856',
   },
-  primaryButton: {
-    backgroundColor: '#34A853',
+  primaryColor: {
+    backgroundColor: primaryGreen,
+  },
+  facebookColor: {
+    backgroundColor: facebookBlueColor,
+  },
+  standardButtonSize: {
+    height: 50,
+    borderRadius: 5,
   },
   footer: {
     marginTop: 100,
   },
 });
+
+export default LoginStyles;
