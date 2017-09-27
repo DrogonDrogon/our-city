@@ -22,10 +22,11 @@ Run ```npm install``` to install all node modules.
 You may need to register your own config for using Google Civic Data API, Firebase, and AWS.
 
 ## Team
-- __Development Team Members__
- - __Nicholas Powel__ - Full stack engineer
- - __Walter Shub__ - Full stack engineer
- - __Angela Lin__ - Full stack engineer
+
+  - __Development Team Members__
+  	- __Nicholas Powel__ - Full stack engineer
+  	- __Walter Shub__ - Full stack engineer
+  	- __Angela Lin__ - Full stack engineer
 
 ## Technology Stack
 
