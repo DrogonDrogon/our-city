@@ -2,7 +2,7 @@
 
 Mobile app for civic engagement. Post suggestions, discuss issues, and volunteer to take action to improve your city.
 
-Live version [here](https://expo.io/@waltershub/ourcity). Installing [Expo](https://expo.io/) is required to run the app.
+Live version [here](https://expo.io/@tigclaw/OurCity). Installing [Expo](https://expo.io/) is required to run the app.
 
 ## Screenshot
 
