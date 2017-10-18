@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "drogon",
-    "description": "No description",
-    "slug": "drogon",
+    "name": "OurCity",
+    "description": "Post suggestions, discuss issues, and volunteer to take action to improve your city.",
+    "slug": "OurCity",
     "privacy": "public",
     "sdkVersion": "20.0.0",
     "version": "1.0.0",

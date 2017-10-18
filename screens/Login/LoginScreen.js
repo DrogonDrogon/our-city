@@ -128,7 +128,7 @@ class Login extends Component {
     return (
       <ScrollView style={LoginStyles.container}>
         <Container>
-          <Text style={LoginStyles.title}>Civic City</Text>
+          <Text style={LoginStyles.title}>OurCity</Text>
         </Container>
         <Container>
           <Text style={LoginStyles.buttonWhiteText}>Email</Text>
