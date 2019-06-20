@@ -16,7 +16,7 @@
     "@expo/samples": "^2.0.2",
     "axios": "^0.16.2",
     "babel-preset-react-native-stage-0": "^1.0.1",
-    "eslint": "^4.5.0",
+    "eslint": "^4.18.2",
     "expo": "^20.0.0",
     "firebase": "^4.3.0",
     "moment": "^2.18.1",
@@ -43,7 +43,7 @@
   "devDependencies": {
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
-    "eslint": "^4.5.0",
+    "eslint": "^4.18.2",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-expo": "^6.0.0",
     "eslint-plugin-import": "^2.7.0",
